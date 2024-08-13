@@ -1,0 +1,118 @@
+.main-wrapper_busqueda {
+    width: 100%;
+    padding: 20px; 
+    height: 1000px;
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.info-and-buttons-container {
+    width: 100%;
+    height: 100%;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+
+.title-and-role-container {
+    width: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    border: 1px solid #ccc;
+    border-radius: 20px;
+
+    box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+.title-and-role-container p {
+    font-weight: bold;
+}
+
+.functions-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+
+    color: #7B68EE;
+    text-align: center;
+}
+
+.functions-container button {
+    width: 100%; 
+    padding: 20px 30px;
+
+    background: #FFF;
+    border: 1px solid #62CCF9;
+    outline: none;
+
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0,0, 0, .1);
+
+    cursor: pointer;
+    font-size: 16px;
+    color: #62CCF9;
+
+    font-weight: bold;
+
+    transition: all 0.2s ease;
+}
+.functions-container button:hover {
+    background: #62CCF9;
+    color: #FFF;
+}
+
+.form-and-info-wrapper {
+    width: 100%;
+    height: 100%;
+
+    min-height: 100%;
+
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 20px;
+
+    box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    grid-template-columns: 1fr 1fr;
+    overflow-y: scroll;
+    box-sizing: border-box;
+
+}
+.boton_salir{
+    position: absolute;
+    top: 25px; 
+    right: 25px; 
+}
+
+@media (max-width: 750px) {
+    .main-wrapper {
+        grid-template-columns: 1fr;
+    }
+}

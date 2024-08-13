@@ -1,0 +1,26 @@
+  
+.input-container {
+    width: 100%;
+    margin: 20px 0; /* Reduce el margen vertical si es necesario */
+  }
+  
+  .input-container input {
+    width: 100%;
+    height: 40px; /* Ajusta la altura según sea necesario */
+    background: transparent;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 40px;
+    font-size: 16px;
+    color: black;
+    padding: 10px 20px; /* Ajusta el padding para reducir el espacio */
+  }
+  
+  .input-container label {
+    font-size: 13px; 
+    margin-left: 22px;
+    font-weight: bold;
+    color: rgb(48, 36, 221);
+  }
+  
+  

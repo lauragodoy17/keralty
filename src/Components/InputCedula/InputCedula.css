@@ -1,0 +1,94 @@
+.input-container-cedula {
+  display: flex;
+  flex-direction: column; 
+  gap: 10px; 
+  width: 30%;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.input-container-cedula input {
+  width: 100%; 
+  height: 40px; 
+  background: white;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 40px;
+  font-size: 16px; 
+  color: black;
+  padding: 10px 20px; 
+  margin: 0; 
+  box-sizing: border-box;
+}
+.Buscar {
+    width: 20%;
+    max-width: 200px; 
+    min-width: 100px; 
+    height: 40px;
+    background: #7B68EE;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .Buscar:hover {
+    background: #5b4bcf;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .2);
+  }
+  
+  @media (max-width: 768px) {
+    .Buscar {
+      width: 30%;
+      max-width: 150px;
+      height: 35px;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .Buscar {
+      width: 40%;
+      max-width: 120px;
+      height: 30px;
+      font-size: 12px;
+    }
+  }
+  @media (max-width: 480px) {
+    .Buscar {
+      width: 40%;
+      max-width: 120px;
+      height: 30px;
+      font-size: 12px;
+    }
+  }
+  @media (max-width: 768px) {
+    .input-container-cedula {
+      flex-direction: column; 
+      gap: 15px; 
+    }
+  
+    .input-container-cedula input {
+      height: 35px; 
+      font-size: 14px; 
+      padding: 8px 16px; 
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .input-container-cedula {
+      gap: 10px; 
+    }
+  
+    .input-container-cedula input {
+      height: 30px; 
+      font-size: 12px; 
+      padding: 6px 12px; 
+    }
+  }
+  
