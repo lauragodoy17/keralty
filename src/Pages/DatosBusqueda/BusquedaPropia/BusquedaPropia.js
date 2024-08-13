@@ -72,7 +72,7 @@ function BusquedaPropia() {
   };
 
   return (
-    <div>
+    <div className='busqueda-propia-container'>
       <div className='Busqueda_Datos_Personal'>
         <h1>BUSQUEDA PARA DATOS PERSONALES Y ÚNICOS</h1>
         <div className="select-container">
