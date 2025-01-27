@@ -1,0 +1,9 @@
+.table-actions {
+    width: 100px;
+    text-align: center;
+  }
+  
+  .table-cell {
+    padding: 4px 8px; /* Reduce el padding */
+  }
+  

@@ -68,6 +68,9 @@ app.get('/datos', (req, res) => {
         return res.status(400).json({ Error: "El nombre de la tabla es requerido" });
     }
 
+    // Verificar que el nombre de la tabla no tiene espacios no deseados
+    console.log(`Nombre de la tabla solicitado: ${tabla}`);
+
     const sql = `SELECT * FROM ${mysql.escapeId(tabla)}`;
 
     db.query(sql, (err, rows) => {
@@ -79,6 +82,8 @@ app.get('/datos', (req, res) => {
         }
     });
 });
+
+
 
 app.post('/Inicio', (req, res) => {
     const sql = 'SELECT * FROM usuarios WHERE email=?';
@@ -141,6 +146,8 @@ app.post('/Registrar', (req, res) => {
     });
 });
 
+
+
 app.get('/Registrar', (req, res) => {
     db.query('SELECT * FROM registro', (err, rows) => {
         if (err) {
@@ -162,13 +169,23 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/Eliminar', (req, res) => {
-    const { id } = req.body;
-    db.query('DELETE FROM registro WHERE id = ?', [id], (err, result) => {
+    const { id, nombreTabla } = req.body;
+
+    const tablasPermitidas = ['julio_septiembre', 'TIBI', 'JESSI', 'ROS', 'ALE', 'ANDRE', 'ELE', 'noviembre_diciembre_2023', 'enero_marzo_2024', 'abril_junio', 'LAURA_BELEÑO', 'ANA_CESPEDES', 'ANDREA_PENA', 'DAYANA_PINEDA', 'JUAN_NOVA', 'NINI_SILVA'];
+    
+    if (!tablasPermitidas.includes(nombreTabla)) {
+        console.error('Tabla no permitida:', nombreTabla);
+        return res.status(400).json({ Error: "Tabla no permitida" });
+    }
+
+    const query = `DELETE FROM ?? WHERE id = ?`;
+    
+    db.query(query, [nombreTabla, id], (err, result) => {
         if (err) {
             console.error('Error al eliminar datos:', err);
             return res.status(500).json({ Error: "Error al eliminar datos" });
         } else {
-            return res.status(200).json({ Status: "Success", message: "Usuario eliminado" });
+            return res.status(200).json({ Status: "Success", message: "Registro eliminado" });
         }
     });
 });
@@ -243,6 +260,9 @@ app.post('/Editar', (req, res) => {
         return res.status(200).json({ Status: "Success" });
     });
 });
+
+
+
 
 app.post('/EditarPersonal', (req, res) => {
     const { 
@@ -330,6 +350,141 @@ app.post('/EditarPersonal', (req, res) => {
         return res.status(200).json({ Status: "Success" });
     });
 });
+app.post('/EditarContratador', (req, res) => {
+    const {
+        tabla,
+        id,
+        fechaAsignacion,
+        contratador,
+        analistaSeleccion,
+        auxiliarSeleccion,
+        tipoDocumento,
+        docTrabajador,
+        nombreEmpleado,
+        fechaIngreso,
+        fechaTermina,
+        nombreEmpresa,
+        prioridad,
+        nombreCargo,
+        posicion,
+        ciudades,
+        regional,
+        porcentajeSalario,
+        salario,
+        jornada,
+        tipoPlanta,
+        motivo,
+        fuente,
+        observacionSeleccion,
+        responsableSeleccion,
+        estado,
+        telefono,
+        correo,
+        estadoCivil,
+        fechaNacimiento,
+        direccion,
+        idIdentidad,
+        clausulaAdicional,
+        retefuente,
+        gen,
+        pa40EPS,
+        pa40ARP,
+        pa40AFP,
+        pa40CCF,
+        pa40AFC,
+        fechaEntregaGestionDocumental,
+        estadoProceso,
+        causalDevolucion,
+        fechaRevision,
+        estadoRevision,
+        revisadoEnviado,
+        fechaContratoEnvioFirmar,
+        contratoEnvioFirmar,
+        fechaContratoRecibidoFirmado,
+        contratoRecibidoFirmado,
+        fechaClausulaEnvioFirmar,
+        clausulaEnvioFirmar,
+        fechaRecibidoClausulaFirmada,
+        fechaPrimerSeguimiento,
+        primerSeguimiento,
+        fechaSegundoSegumiento,
+        segundoSegumiento,
+        envioInformeOnboarding,
+        fechaPorletRepositorio,
+        porletRepositorio,
+        recuperadoPor,
+        observacionRecuperacionContrato,
+        inconsistenciaCuadro,
+        tipoFirma,
+        fechaRadicadoEPS,
+        radicadoEPS,
+        fechaRecibidoEPS,
+        recibidoEPS,
+        fechaRepositorio,
+        repositorio,
+        fechaPorlet,
+        porlet,
+        inconsistencia,
+        fechaCambioEPS,
+        cambioEPS,
+        nuevaFechaIngresoEPS,
+        fechaRadicadoARL,
+        afiliacionARL,
+        fechaRepositorio1,
+        repositorio1,
+        porlet1,
+        inconsistencia1,
+        fechaCambioARL,
+        cambioARL,
+        nuevaFechaIngresoARL,
+        fechaRadicadoCCF,
+        afiliacionCCF,
+        fechaRecibidoCCF,
+        recibidoCCF,
+        fechaRepositorio2,
+        repositorio2,
+        fechaPorlet2,
+        porlet2,
+        inconsistencia2,
+        fechaCambioCaja,
+        cambioCaja,
+        nuevaFechaIngresoCaja,
+        afiliacionPensionesCesantias,
+        fechaPorletRepositorio2,
+        porletRepositorio2,
+        erroresPA40Contratacion,
+        inconsistenciaCuadro2
+    } = req.body;
+
+    if (!tabla || !id) {
+        return res.status(400).json({ error: "El nombre de la tabla y el ID son requeridos" });
+    }
+
+    // Filtrar los campos dinámicos y preparar la consulta
+    const fields = Object.keys(req.body).filter(key => key !== 'tabla' && key !== 'id');
+    const updates = fields.map(field => `\`${field}\` = ?`).join(', ');
+    
+    // Crear la consulta SQL
+    const sql = `UPDATE \`${tabla}\` SET ${updates} WHERE id = ?`;
+
+    // Crear los parámetros para la consulta
+    const params = fields.map(field => req.body[field]);
+    params.push(id); // Añadir el ID al final de los parámetros
+
+    // Ejecutar la consulta
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar datos:', err);
+            return res.status(500).json({ error: "Error al actualizar datos", details: err });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "No se encontró el registro con el ID proporcionado" });
+        }
+        return res.status(200).json({ status: "Success" });
+    });
+});
+
+
 
 app.post('/EditarFormacion', (req, res) => {
     const { 
@@ -574,12 +729,509 @@ app.post('/EditarNomina', (req, res) => {
     });
 });
 
+app.post('/RegistrarGestion', (req, res) => {
+    // Seleccionamos la tabla según el auxiliar operativo elegido
+    let tableName;
+    switch (req.body.auxiliares) {
+        case 'ANA MARIA CESPEDES':
+            tableName = 'ana_cespedes';
+            break;
+        case 'LAURA BELEÑO':
+            tableName = 'laura_beleño';
+            break;
+        case 'JUAN ANDRES NOVA':
+            tableName = 'juan_nova';
+            break;
+        case 'NINI JOHANA SILVA':
+            tableName = 'nini_silva';
+            break;
+        case 'ANDREA PEÑA':
+            tableName = 'andrea_pena';
+            break;
+        case 'DAYANA PINEDA':
+            tableName = 'dayana_pineda';
+            break;
+        default:
+            return res.status(400).json({ Error: "Auxiliar operativo no válido" });
+    }
+
+    // Construimos la consulta SQL con la tabla seleccionada
+    const sql = `INSERT INTO ${tableName} (auxiliares, analista, fechaInicioProcesoAnalista, idRequisicion, fechaAsignacionCH, tipoProceso, empresa, nuevoReingreso, ciudad, fechaExpedicionCedula, cedula, nombreCandidato, cargo, correo, celular, tipoPlanta, tiempoContrato, fechaEnvioDocumentos, recepcionDocumentosCandidato, fechaProgramacionExamen, fechaConceptoExamen, fechaEnvioAYC, fechaConceptoEstudioSeguridad, fechaAsignacionAnalista, estado, novedadPendiente, induccion) VALUES (?)`;
+
+    const values = [
+        req.body.auxiliares, 
+        req.body.analista,
+        req.body.fechaInicioProcesoAnalista,
+        req.body.idRequisicion,
+        req.body.fechaAsignacionCH,
+        req.body.tipoProceso,
+        req.body.empresa,
+        req.body.nuevoReingreso,
+        req.body.ciudad,
+        req.body.fechaExpedicionCedula,
+        req.body.cedula,
+        req.body.nombreCandidato,
+        req.body.cargo,
+        req.body.correo,
+        req.body.celular,
+        req.body.tipoPlanta,
+        req.body.tiempoContrato,
+        req.body.fechaEnvioDocumentos,
+        req.body.recepcionDocumentosCandidato,
+        req.body.fechaProgramacionExamen,
+        req.body.fechaConceptoExamen,
+        req.body.fechaEnvioAYC,
+        req.body.fechaConceptoEstudioSeguridad,
+        req.body.fechaAsignacionAnalista,
+        req.body.estado,
+        req.body.novedadPendiente,
+        req.body.induccion
+    ];
+
+    // Ejecutamos la consulta
+    db.query(sql, [values], (err, result) => {
+        if (err) {
+            console.error("Error al insertar datos:", err);
+            return res.status(500).json({ Error: "Error al insertar datos" });
+        }
+        return res.status(201).json({ Status: "Success" });
+    });
+});
+
+
+app.post('/EditarPsicologos', (req, res) => {
+    const { 
+        tabla, 
+        id, 
+        fechaInicioProcesoAnalista,
+        idRequisicion,
+        fechaAsignacionConexionAuxOperativo,
+        tipoIngreso,
+        empresa,
+        servicio,
+        posicion,
+        nuevoReingreso,
+        ciudad,
+        teletrabajo,
+        fechaExpedicionCedula,
+        cedula,
+        nombreCandidato,
+        cargo,
+        correo,
+        celular,
+        tipoPlanta,
+        tiempoContrato,
+        fechaEnvioDocumentos,
+        solicitudExamenMedico,
+        fechaProgramacionExamenMedico,
+        fechaConceptoExamenMedico,
+        fechaProgramacionEstudioAYC,
+        fechaConceptoEstudioSeguridad,
+        fechaAsignacionAnalista,
+        hojaVidaKeralty,
+        cedulaPapel,
+        infolaft,
+        inhabilidades,
+        certificadoBancario,
+        certificadoEPS,
+        certificadoPension,
+        certificadoCesantias,
+        certificadosLaborales,
+        diplomaBachiller,
+        actaBachiller,
+        diplomaPregado,
+        actaPregado,
+        diplomaPosgrado,
+        actaPosgrado,
+        resolucionSecretariaSalud,
+        tarjetaProfesional,
+        rethus,
+        violenciaSexual,
+        gestionDuelo,
+        ataquesQuimicos,
+        donacionOrganos,
+        tomaMuestrasCitologia,
+        soporteVitalBasico,
+        soporteVitalAvanzado,
+        PALS,
+        NALS,
+        vacunasCovid,
+        vacunasHepatitis,
+        conceptoMedico,
+        conceptoInformeFinal,
+        sintesis,
+        certificadoInduccion,
+        cargaInhabilidades,
+        observacionesAuxOperativo,
+        fechaIngreso,
+        estado
+    } = req.body;
+
+    if (!tabla || !id) {
+        return res.status(400).json({ Error: "El nombre de la tabla y el ID son requeridos" });
+    }
+
+    const sql = `UPDATE \`${tabla}\` SET 
+        fechaInicioProcesoAnalista=?,
+        idRequisicion=?,
+        fechaAsignacionConexionAuxOperativo=?,
+        tipoIngreso=?,
+        empresa=?,
+        servicio=?,
+        posicion=?,
+        nuevoReingreso=?,
+        ciudad=?,
+        teletrabajo=?,
+        fechaExpedicionCedula=?,
+        cedula=?,
+        nombreCandidato=?,
+        cargo=?,
+        correo=?,
+        celular=?,
+        tipoPlanta=?,
+        tiempoContrato=?,
+        fechaEnvioDocumentos=?,
+        solicitudExamenMedico=?,
+        fechaProgramacionExamenMedico=?,
+        fechaConceptoExamenMedico=?,
+        fechaProgramacionEstudioAYC=?,
+        fechaConceptoEstudioSeguridad=?,
+        fechaAsignacionAnalista=?,
+        hojaVidaKeralty=?,
+        cedulaPapel=?,
+        infolaft=?,
+        inhabilidades=?,
+        certificadoBancario=?,
+        certificadoEPS=?,
+        certificadoPension=?,
+        certificadoCesantias=?,
+        certificadosLaborales=?,
+        diplomaBachiller=?,
+        actaBachiller=?,
+        diplomaPregado=?,
+        actaPregado=?,
+        diplomaPosgrado=?,
+        actaPosgrado=?,
+        resolucionSecretariaSalud=?,
+        tarjetaProfesional=?,
+        rethus=?,
+        violenciaSexual=?,
+        gestionDuelo=?,
+        ataquesQuimicos=?,
+        donacionOrganos=?,
+        tomaMuestrasCitologia=?,
+        soporteVitalBasico=?,
+        soporteVitalAvanzado=?,
+        PALS=?,
+        NALS=?,
+        vacunasCovid=?,
+        vacunasHepatitis=?,
+        conceptoMedico=?,
+        conceptoInformeFinal=?,
+        sintesis=?,
+        certificadoInduccion=?,
+        cargaInhabilidades=?,
+        observacionesAuxOperativo=?,
+        fechaIngreso=?,
+        estado=?
+        WHERE id=?`;
+
+    const params = [
+        fechaInicioProcesoAnalista,
+        idRequisicion,
+        fechaAsignacionConexionAuxOperativo,
+        tipoIngreso,
+        empresa,
+        servicio,
+        posicion,
+        nuevoReingreso,
+        ciudad,
+        teletrabajo,
+        fechaExpedicionCedula,
+        cedula,
+        nombreCandidato,
+        cargo,
+        correo,
+        celular,
+        tipoPlanta,
+        tiempoContrato,
+        fechaEnvioDocumentos,
+        solicitudExamenMedico,
+        fechaProgramacionExamenMedico,
+        fechaConceptoExamenMedico,
+        fechaProgramacionEstudioAYC,
+        fechaConceptoEstudioSeguridad,
+        fechaAsignacionAnalista,
+        hojaVidaKeralty,
+        cedulaPapel,
+        infolaft,
+        inhabilidades,
+        certificadoBancario,
+        certificadoEPS,
+        certificadoPension,
+        certificadoCesantias,
+        certificadosLaborales,
+        diplomaBachiller,
+        actaBachiller,
+        diplomaPregado,
+        actaPregado,
+        diplomaPosgrado,
+        actaPosgrado,
+        resolucionSecretariaSalud,
+        tarjetaProfesional,
+        rethus,
+        violenciaSexual,
+        gestionDuelo,
+        ataquesQuimicos,
+        donacionOrganos,
+        tomaMuestrasCitologia,
+        soporteVitalBasico,
+        soporteVitalAvanzado,
+        PALS,
+        NALS,
+        vacunasCovid,
+        vacunasHepatitis,
+        conceptoMedico,
+        conceptoInformeFinal,
+        sintesis,
+        certificadoInduccion,
+        cargaInhabilidades,
+        observacionesAuxOperativo,
+        fechaIngreso,
+        estado,
+        id
+    ];
+
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar datos:', err);
+            return res.status(500).json({ Error: "Error al actualizar datos", details: err });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ Error: "No se encontró el registro con el ID proporcionado" });
+        }
+        return res.status(200).json({ Status: "Success" });
+    });
+});
+
+app.post('/EditarGestion', (req, res) => {
+    const { 
+        tabla, 
+        id, 
+        auxiliares, // AUXILIAR OPERATIVO
+        analista, // ANALISTA
+        fechaInicioProcesoAnalista, // FECHA DE INICIO PROCESO ANALISTA
+        idRequisicion, // ID
+        fechaAsignacionCH, // FECHA ASIGNACION POR CH
+        tipoProceso, // TIPO PROCESO MANUAL O CH
+        empresa, // EMPRESA
+        nuevoReingreso, // NUEVO O REINGRESO
+        ciudad, // CIUDAD
+        fechaExpedicionCedula, // FECHA EXPEDICION
+        cedula, // CEDULA
+        nombreCandidato, // NOMBRES CANDIDATOS
+        cargo, // CARGO
+        correo, // CORREO
+        celular, // CELULAR
+        tipoPlanta, // TIPO DE PLANTA
+        tiempoContrato, // TIEMPO DE CONTRATO (Si es temporal)
+        fechaEnvioDocumentos, // ENVIO DE SOLICITUD DE DOCUMENTOS O PASO POR CH AL CANDIDATO
+        recepcionDocumentosCandidato, // RECEPCION DE DOCUMENTOS POR PARTE DEL CANDIDATO
+        fechaProgramacionExamen, // PROGAMACION EXAMEN (Dia asistencia)
+        fechaConceptoExamen, // FECHA CONCEPTO EXAMEN
+        fechaEnvioAYC, // FECHA ENVIO AYC
+        fechaConceptoEstudioSeguridad, // FECHA CONCEPTO ESTUDIO DE SEGURIDAD
+        fechaAsignacionAnalista, // FECHA ASIGNACION ANALISTA
+        estado, // ESTADO
+        novedadPendiente, // NOVEDAD PENDIENTE
+        induccion // INDUCCION
+    } = req.body;
+
+    // Validación inicial
+    if (!tabla || !id) {
+        return res.status(400).json({ Error: "El nombre de la tabla y el ID son requeridos" });
+    }
+
+    // Crear la consulta SQL para actualizar
+    const sql = `UPDATE \`${tabla}\` SET 
+        auxiliares=?,
+        analista=?,
+        fechaInicioProcesoAnalista=?,
+        idRequisicion=?,
+        fechaAsignacionCH=?,
+        tipoProceso=?,
+        empresa=?,
+        nuevoReingreso=?,
+        ciudad=?,
+        fechaExpedicionCedula=?,
+        cedula=?,
+        nombreCandidato=?,
+        cargo=?,
+        correo=?,
+        celular=?,
+        tipoPlanta=?,
+        tiempoContrato=?,
+        fechaEnvioDocumentos=?,
+        recepcionDocumentosCandidato=?,
+        fechaProgramacionExamen=?,
+        fechaConceptoExamen=?,
+        fechaEnvioAYC=?,
+        fechaConceptoEstudioSeguridad=?,
+        fechaAsignacionAnalista=?,
+        estado=?,
+        novedadPendiente=?,
+        induccion=?
+        WHERE id=?`;
+
+    // Parametros para la consulta SQL
+    const params = [
+        auxiliares,
+        analista,
+        fechaInicioProcesoAnalista,
+        idRequisicion,
+        fechaAsignacionCH,
+        tipoProceso,
+        empresa,
+        nuevoReingreso,
+        ciudad,
+        fechaExpedicionCedula,
+        cedula,
+        nombreCandidato,
+        cargo,
+        correo,
+        celular,
+        tipoPlanta,
+        tiempoContrato,
+        fechaEnvioDocumentos,
+        recepcionDocumentosCandidato,
+        fechaProgramacionExamen,
+        fechaConceptoExamen,
+        fechaEnvioAYC,
+        fechaConceptoEstudioSeguridad,
+        fechaAsignacionAnalista,
+        estado,
+        novedadPendiente,
+        induccion,
+        id
+    ];
+
+    // Ejecutar la consulta SQL
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar datos:', err);
+            return res.status(500).json({ Error: "Error al actualizar datos", details: err });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ Error: "No se encontró el registro con el ID proporcionado" });
+        }
+        return res.status(200).json({ Status: "Success" });
+    });
+});
+
+
+app.post('/RegistrarContratador', (req, res) => {
+    // Seleccionamos la tabla según el período elegido
+    let tableName;
+    switch (req.body.periodo) {
+        case 'JULIO':
+            tableName = 'julio';
+            break;
+        case 'AGOSTO':
+            tableName = 'agosto';
+            break;
+        case 'SEPTIEMBRE':
+            tableName = 'septiembre';
+            break;
+        case 'OCTUBRE':
+            tableName = 'octubre';
+            break;
+        case 'NOVIEMBRE':
+            tableName = 'noviembre';
+            break;
+        default:
+            return res.status(400).json({ Error: "Período no válido" });
+    }
+
+    // Verificamos si el período tiene campos adicionales
+    const hasExtraFields = ['SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE'].includes(req.body.periodo);
+
+    // Construimos la consulta SQL y los valores según los campos opcionales
+    let sql = `INSERT INTO ${tableName} (
+        fechaAsignacion, contratador, analistaSeleccion, auxiliarSeleccion, tipoDocumento, docTrabajador, nombreEmpleado,
+        fechaIngreso, fechaTermina, nombreEmpresa, prioridad, nombreCargo, posicion, ciudades, regional, porcentajeSalario,
+        salario, jornada, tipoPlanta, motivo, fuente, observacionSeleccion, responsableSeleccion, estado, telefono, correo,
+        estadoCivil, fechaNacimiento, direccion, idIdentidad, clausulaAdicional, retefuente, gen, pa40EPS, pa40ARP, pa40AFP,
+        pa40CCF, pa40AFC, fechaEntregaGestionDocumental, estadoProceso, causalDevolucion, fechaRevision, estadoRevision,
+        revisadoEnviado, fechaContratoEnvioFirmar, contratoEnvioFirmar, fechaContratoRecibidoFirmado, contratoRecibidoFirmado,
+        fechaClausulaEnvioFirmar, clausulaEnvioFirmar, fechaRecibidoClausulaFirmada, fechaPrimerSeguimiento, primerSeguimiento,
+        fechaSegundoSeguimiento, segundoSeguimiento, envioInformeOnboarding, fechaPorletRepositorio, porletRepositorio,
+        recuperadoPor, observacionRecuperacionContrato, inconsistenciaCuadro, tipoFirma`;
+
+    // Agregamos campos adicionales si el período lo requiere
+    if (hasExtraFields) {
+        sql += `,
+        fechaRadicadoEPS, radicadoEPS, fechaRecibidoEPS, recibidoEPS, fechaRepositorio, repositorio, fechaPorlet, porlet,
+        inconsistencia, fechaCambioEPS, cambioEPS, nuevaFechaIngresoEPS, fechaRadicadoARL, afiliacionARL, fechaRepositorio1,
+        repositorio1, porlet1, inconsistencia1, fechaCambioARL, cambioARL, nuevaFechaIngresoARL, fechaRadicadoCCF,
+        afiliacionCCF, fechaRecibidoCCF, recibidoCCF, fechaRepositorio2, repositorio2, fechaPorlet2, porlet2, inconsistencia2,
+        fechaCambioCaja, cambioCaja, nuevaFechaIngresoCaja, afiliacionPensionesCesantias, fechaPorletRepositorio2,
+        porletRepositorio2, erroresPA40Contratacion, inconsistenciaCuadro2`;
+    }
+
+    sql += `) VALUES (?)`;
+
+    // Construimos el array de valores
+    const values = [
+        req.body.fechaAsignacion, req.body.contratador, req.body.analistaSeleccion, req.body.auxiliarSeleccion,
+        req.body.tipoDocumento, req.body.docTrabajador, req.body.nombreEmpleado, req.body.fechaIngreso, req.body.fechaTermina,
+        req.body.nombreEmpresa, req.body.prioridad, req.body.nombreCargo, req.body.posicion, req.body.ciudades,
+        req.body.regional, req.body.porcentajeSalario, req.body.salario, req.body.jornada, req.body.tipoPlanta, req.body.motivo,
+        req.body.fuente, req.body.observacionSeleccion, req.body.responsableSeleccion, req.body.estado, req.body.telefono,
+        req.body.correo, req.body.estadoCivil, req.body.fechaNacimiento, req.body.direccion, req.body.idIdentidad,
+        req.body.clausulaAdicional, req.body.retefuente, req.body.gen, req.body.pa40EPS, req.body.pa40ARP, req.body.pa40AFP,
+        req.body.pa40CCF, req.body.pa40AFC, req.body.fechaEntregaGestionDocumental, req.body.estadoProceso,
+        req.body.causalDevolucion, req.body.fechaRevision, req.body.estadoRevision, req.body.revisadoEnviado,
+        req.body.fechaContratoEnvioFirmar, req.body.contratoEnvioFirmar, req.body.fechaContratoRecibidoFirmado,
+        req.body.contratoRecibidoFirmado, req.body.fechaClausulaEnvioFirmar, req.body.clausulaEnvioFirmar,
+        req.body.fechaRecibidoClausulaFirmada, req.body.fechaPrimerSeguimiento, req.body.primerSeguimiento,
+        req.body.fechaSegundoSeguimiento, req.body.segundoSeguimiento, req.body.envioInformeOnboarding,
+        req.body.fechaPorletRepositorio, req.body.porletRepositorio, req.body.recuperadoPor,
+        req.body.observacionRecuperacionContrato, req.body.inconsistenciaCuadro, req.body.tipoFirma
+    ];
+
+    // Añadimos los valores de los campos adicionales si es necesario
+    if (hasExtraFields) {
+        values.push(
+            req.body.fechaRadicadoEPS, req.body.radicadoEPS, req.body.fechaRecibidoEPS, req.body.recibidoEPS,
+            req.body.fechaRepositorio, req.body.repositorio, req.body.fechaPorlet, req.body.porlet, req.body.inconsistencia,
+            req.body.fechaCambioEPS, req.body.cambioEPS, req.body.nuevaFechaIngresoEPS, req.body.fechaRadicadoARL,
+            req.body.afiliacionARL, req.body.fechaRepositorio1, req.body.repositorio1, req.body.porlet1, req.body.inconsistencia1,
+            req.body.fechaCambioARL, req.body.cambioARL, req.body.nuevaFechaIngresoARL, req.body.fechaRadicadoCCF,
+            req.body.afiliacionCCF, req.body.fechaRecibidoCCF, req.body.recibidoCCF, req.body.fechaRepositorio2,
+            req.body.repositorio2, req.body.fechaPorlet2, req.body.porlet2, req.body.inconsistencia2, req.body.fechaCambioCaja,
+            req.body.cambioCaja, req.body.nuevaFechaIngresoCaja, req.body.afiliacionPensionesCesantias, req.body.fechaPorletRepositorio2,
+            req.body.porletRepositorio2, req.body.erroresPA40Contratacion, req.body.inconsistenciaCuadro2
+        );
+    }
+
+    // Ejecutamos la consulta
+    db.query(sql, [values], (err, result) => {
+        if (err) {
+            console.error("Error al insertar datos:", err);
+            return res.status(500).json({ Error: "Error al insertar datos" });
+        }
+        return res.status(201).json({ Status: "Success" });
+    });
+});
+
+
+
 app.post('/RegistrarSeleccion', (req, res) => {
-    // Seleccionamos la tabla según el psicólogo elegido
+    // Seleccionamos la tabla según el auxiliar operativo elegido
     let tableName;
     switch (req.body.psicologos) {
         case 'TIBI':
-            tableName = 'tibi'; // Asumiendo que esta tabla también existe
+            tableName = 'tibi';
             break;
         case 'JESSI':
             tableName = 'jessi';
@@ -588,7 +1240,7 @@ app.post('/RegistrarSeleccion', (req, res) => {
             tableName = 'ros';
             break;
         case 'ALE DUQUE':
-            tableName = 'ale';
+            tableName = 'ale_duque';
             break;
         case 'ANDRE':
             tableName = 'andre';
@@ -597,14 +1249,77 @@ app.post('/RegistrarSeleccion', (req, res) => {
             tableName = 'ele';
             break;
         default:
-            return res.status(400).json({ Error: "Psicólogo no válido" });
+            return res.status(400).json({ Error: "psicologo  no válido" });
     }
 
     // Construimos la consulta SQL con la tabla seleccionada
-    const sql = `INSERT INTO ${tableName} (fechaInicioProcesoAnalista, idRequisicion, fechaAsignacionConexionAuxOperativo, tipoIngreso, empresa, servicio, posicion, nuevoReingreso, ciudad, teletrabajo, fechaExpedicionCedula, cedula, nombreCandidato, cargo, correo, celular, tipoPlanta, tiempoContrato, fechaEnvioDocumentos, solicitudExamenMedico, fechaProgramacionExamenMedico, fechaConceptoExamenMedico, fechaProgramacionEstudioAYC, fechaConceptoEstudioSeguridad, fechaAsignacionAnalista, hojaVidaKeralty, cedulaPapel, infolaft, inhabilidades, certificadoBancario, certificadoEPS, certificadoPension, certificadoCesantias, certificadosLaborales, diplomaBachiller, actaBachiller, diplomaPregado, actaPregado, diplomaPosgrado, actaPosgrado, resolucionSecretariaSalud, tarjetaProfesional, rethus, violenciaSexual, gestionDuelo, ataquesQuimicos, donacionOrganos, tomaMuestrasCitologia, soporteVitalBasico, soporteVitalAvanzado, PALS, NALS, vacunasCovid, vacunasHepatitis, conceptoMedico, conceptoInformeFinal, sintesis, certificadoInduccion, cargaInhabilidades, observacionesAuxOperativo, fechaIngreso, estado) VALUES (?)`;
-
+    const sql = `INSERT INTO ${tableName} (
+        fechaInicioProcesoAnalista, 
+        idRequisicion, 
+        fechaAsignacionConexionAuxOperativo, 
+        tipoIngreso, 
+        empresa, 
+        servicio, 
+        posicion, 
+        nuevoReingreso, 
+        ciudad, 
+        teletrabajo, 
+        fechaExpedicionCedula, 
+        cedula, 
+        nombreCandidato, 
+        cargo, 
+        correo, 
+        celular, 
+        tipoPlanta, 
+        tiempoContrato, 
+        fechaEnvioDocumentos, 
+        solicitudExamenMedico, 
+        fechaProgramacionExamenMedico, 
+        fechaConceptoExamenMedico, 
+        fechaProgramacionEstudioAYC, 
+        fechaConceptoEstudioSeguridad, 
+        fechaAsignacionAnalista, 
+        hojaVidaKeralty, 
+        cedulaPapel, 
+        infolaft, 
+        inhabilidades, 
+        certificadoBancario, 
+        certificadoEPS, 
+        certificadoPension, 
+        certificadoCesantias, 
+        certificadosLaborales, 
+        diplomaBachiller, 
+        actaBachiller, 
+        diplomaPregado, 
+        actaPregado, 
+        diplomaPosgrado, 
+        actaPosgrado, 
+        resolucionSecretariaSalud, 
+        tarjetaProfesional, 
+        rethus, 
+        violenciaSexual, 
+        gestionDuelo, 
+        ataquesQuimicos, 
+        donacionOrganos, 
+        tomaMuestrasCitologia, 
+        soporteVitalBasico, 
+        soporteVitalAvanzado, 
+        PALS, 
+        NALS, 
+        vacunasCovid, 
+        vacunasHepatitis, 
+        conceptoMedico, 
+        conceptoInformeFinal, 
+        sintesis, 
+        certificadoInduccion, 
+        cargaInhabilidades, 
+        observacionesAuxOperativo, 
+        fechaIngreso, 
+        estado
+    ) VALUES (?)`;
 
     const values = [
+ // Este campo debe ser proporcionado también en el cuerpo de la solicitud.
         req.body.fechaInicioProcesoAnalista,
         req.body.idRequisicion,
         req.body.fechaAsignacionConexionAuxOperativo,
@@ -678,6 +1393,8 @@ app.post('/RegistrarSeleccion', (req, res) => {
         return res.status(201).json({ Status: "Success" });
     });
 });
+
+
 
 
 app.listen(port, () => {

@@ -3,26 +3,37 @@ import axios from 'axios';
 import { Table, TableContainer, TableHead, TableRow, TableCell, Paper, TableBody, Button, IconButton, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { format,parseISO } from 'date-fns';
 import { EditOutlined, DeleteForever as MdDeleteForever } from '@mui/icons-material';
-import './ModificarDatosPersonales.css';
 import swal from 'sweetalert';
 
-const ModificarDatosPersonales = () => {
+const ModificarDatosPersonalesGestion = () => {
   const initialState = {
-    auxiliarSeleccion: '',
-    documento: 0,
-    nombreCompleto: '',
-    fechaIngreso: '',
-    fechaTerminacion: '',
-    regional: '',
-    empresa: '',
-    cargo: '',
-    posicion: 0,
-    tipoGasto: '',
-    centroCosto: '',
-    tipoPlanta: '',
-    tipoIngreso: '',
-    analistaSeleccion: '',
-    estado: ''
+    auxiliares: '', // AUXILAR OPERATIVO
+    analista: '', // ANALISTA
+    fechaInicioProcesoAnalista: null, // FECHA DE INICIO PROCESO ANALISTA
+    idRequisicion: '', // ID
+    fechaAsignacionCH: null, // FECHA ASIGNACION POR CH
+    tipoProceso: '', // TIPO PROCESO MANUAL O CH
+    empresa: '', // EMPRESA
+    nuevoReingreso: '', // NUEVO O REINGRESO
+    ciudad: '', // CIUDAD
+    fechaExpedicionCedula: null, // FECHA EXPEDICION
+    cedula: '', // CEDULA
+    nombreCandidato: '', // NOMBRES CANDIDATOS
+    cargo: '', // CARGO
+    correo: '', // CORREO
+    celular: '', // CELULAR
+    tipoPlanta: '', // TIPO DE PLANTA
+    tiempoContrato: '', // TIEMPO DE CONTRATO (Si es temporal)
+    fechaEnvioDocumentos: null, // ENVIO DE SOLICITUD DE DOCUMENTOS O PASO POR CH AL CANDIDATO
+    recepcionDocumentosCandidato: null, // RECEPCION DE DOCUMENTOS POR PARTE DEL CANDIDATO
+    fechaProgramacionExamen: null, // PROGAMACION EXAMEN (Dia asistencia)
+    fechaConceptoExamen: null, // FECHA CONCEPTO EXAMEN
+    fechaEnvioAYC: null, // FECHA ENVIO AYC
+    fechaConceptoEstudioSeguridad: null, // FECHA CONCEPTO ESTUDIO DE SEGURIDAD
+    fechaAsignacionAnalista: null, // FECHA ASIGNACION ANALISTA
+    estado: '', // ESTADO
+    novedadPendiente: '', // NOVEDAD PENDIENTE
+    induccion: ''
   };
 
   const [userList, setUserList] = useState([]);
@@ -34,12 +45,13 @@ const ModificarDatosPersonales = () => {
   const [mensaje, setMensaje] = useState({ ident: null, message: null, type: null });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  
   const getUsers = async () => {
     try {
       const response = await axios.get('http://localhost:3080/datos', {
         params: { tabla: selectedTable }
       });
+      console.log('Response:', response.data); // Revisa la estructura aquí
       if (response.data.rows) {
         setUserList(response.data.rows);
       } else {
@@ -49,12 +61,13 @@ const ModificarDatosPersonales = () => {
       console.error('Error fetching users:', error);
     }
   };
-
+  
   useEffect(() => {
     if (selectedTable) {
       getUsers();
     }
   }, [selectedTable]);
+  
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -87,7 +100,7 @@ const ModificarDatosPersonales = () => {
   
       console.log('Sending data:', requestData);
   
-      const { data } = await axios.post('http://localhost:3080/Editar', requestData);
+      const { data } = await axios.post('http://localhost:3080/EditarGestion', requestData);
   
       setMensaje({
         ident: new Date().getTime(),
@@ -170,6 +183,7 @@ const onDelete = async (id) => {
     }
 };
 
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -185,19 +199,20 @@ const onDelete = async (id) => {
       <div className='Busqueda_Datos_Personal'>
         <h1>MODIFICACIÓN PARA DATOS PERSONALES Y ÚNICOS</h1>
         <div className="select-container">
-        <label className="estado">Selecciona el periodo *</label>
-<select
-    className='select'
-    value={selectedTable}
-    onChange={(e) => setSelectedTable(e.target.value)}
->
-    <option value="">Selecciona uno</option>
-    <option value="noviembre_diciembre_2023">Noviembre-Diciembre 2023</option>
-    <option value="enero_marzo_2024">Enero-Marzo 2024</option>
-    <option value="abril_junio">Abril-Junio 2024</option>
-    <option value="julio_septiembre">Julio-Septiembre 2024</option>
-</select>
-
+          <label className="estado">Selecciona el auxiliar operativo *</label>
+          <select
+            className='select'
+            value={selectedTable}
+            onChange={(e) => setSelectedTable(e.target.value)}
+          >
+                        <option value="">- Selecciona uno -</option>
+                        <option value="ANA_CESPEDES">ANA MARIA CESPEDES</option>
+<option value="LAURA_BELEÑO">LAURA BELEÑO</option>
+<option value="JUAN_NOVA">JUAN ANDRES NOVA</option>
+<option value="NINI_SILVA">NINI JOHANA SILVA</option>
+<option value="ANDREA_PENA">ANDREA PEÑA</option>
+<option value="DAYANA_PINEDA">DAYANA PINEDA</option>
+          </select>
         </div>
         <div className="select-container">
           <label className="estado">Selecciona el campo para búsqueda *</label>
@@ -208,10 +223,9 @@ const onDelete = async (id) => {
             onChange={handleFilterChange}
           >
             <option value="">- Selecciona uno -</option>
-            <option value="documento">Búsqueda por cédula</option>
+            <option value="cedula">Búsqueda por cédula</option>
             <option value="empresa">Búsqueda por empresa</option>
-            <option value="regional">Búsqueda por regional</option>
-            <option value="posicion">Búsqueda por posición</option>
+
           </select>
         </div>
         <div className='input-container-filtro'>
@@ -226,48 +240,75 @@ const onDelete = async (id) => {
               <Table className="table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>AUXILIAR DE SELECCIÓN</TableCell>
-                    <TableCell>DOCUMENTO</TableCell>
-                    <TableCell>NOMBRE COMPLETO</TableCell>
-                    <TableCell>FECHA INGRESO</TableCell>
-                    <TableCell>FECHA TERMINACION</TableCell>
-                    <TableCell>REGIONAL</TableCell>
-                    <TableCell>EMPRESA</TableCell>
-                    <TableCell>CARGO</TableCell>
-                    <TableCell>POSICIÓN</TableCell>
-                    <TableCell>TIPO GASTO</TableCell>
-                    <TableCell>CENTRO COSTO</TableCell>
-                    <TableCell>TIPO PLANTA</TableCell>
-                    <TableCell>TIPO INGRESO</TableCell>
-                    <TableCell>ANALISTA SELECCIÓN</TableCell>
-                    <TableCell>ESTADO</TableCell>
+                  <TableCell>AUXILIARES</TableCell>
+<TableCell>ANALISTA</TableCell>
+<TableCell>FECHA INICIO PROCESO ANALISTA</TableCell>
+<TableCell>ID REQUISICION</TableCell>
+<TableCell>FECHA ASIGNACION POR CH</TableCell>
+<TableCell>TIPO PROCESO</TableCell>
+<TableCell>EMPRESA</TableCell>
+<TableCell>NUEVO O REINGRESO</TableCell>
+<TableCell>CIUDAD</TableCell>
+<TableCell>FECHA EXPEDICION CEDULA</TableCell>
+<TableCell>CEDULA</TableCell>
+<TableCell>NOMBRE CANDIDATO</TableCell>
+<TableCell>CARGO</TableCell>
+<TableCell>CORREO</TableCell>
+<TableCell>CELULAR</TableCell>
+<TableCell>TIPO DE PLANTA</TableCell>
+<TableCell>TIEMPO DE CONTRATO</TableCell>
+<TableCell>FECHA ENVIO DOCUMENTOS</TableCell>
+<TableCell>RECEPCION DOCUMENTOS CANDIDATO</TableCell>
+<TableCell>FECHA PROGRAMACION EXAMEN</TableCell>
+<TableCell>FECHA CONCEPTO EXAMEN</TableCell>
+<TableCell>FECHA ENVIO AYC</TableCell>
+<TableCell>FECHA CONCEPTO ESTUDIO DE SEGURIDAD</TableCell>
+<TableCell>FECHA ASIGNACION ANALISTA</TableCell>
+<TableCell>ESTADO</TableCell>
+<TableCell>NOVEDAD PENDIENTE</TableCell>
+<TableCell>INDUCCIÓN</TableCell>
+
+
                     <TableCell>ACCIONES</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredResults.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell>{user.auxiliarSeleccion}</TableCell>                      
-                      <TableCell>{user.documento}</TableCell>
-                      <TableCell>{user.nombreCompleto}</TableCell>
-                      <TableCell>{formatDate(user.fechaIngreso)}</TableCell>
-                      <TableCell>{formatDate(user.fechaTerminacion)}</TableCell>
-                      <TableCell>{user.regional}</TableCell>
-                      <TableCell>{user.empresa}</TableCell>
-                      <TableCell>{user.cargo}</TableCell>
-                      <TableCell>{user.posicion}</TableCell>
-                      <TableCell>{user.tipoGasto}</TableCell>
-                      <TableCell>{user.centroCosto}</TableCell>
-                      <TableCell>{user.tipoPlanta}</TableCell>
-                      <TableCell>{user.tipoIngreso}</TableCell>
-                      <TableCell>{user.analistaSeleccion}</TableCell>
-                      <TableCell>{user.estado}</TableCell>
+<TableCell>{user.auxiliares}</TableCell>
+<TableCell>{user.analista}</TableCell>
+<TableCell>{formatDate(user.fechaInicioProcesoAnalista)}</TableCell>
+<TableCell>{user.idRequisicion}</TableCell>
+<TableCell>{formatDate(user.fechaAsignacionCH)}</TableCell>
+<TableCell>{user.tipoProceso}</TableCell>
+<TableCell>{user.empresa}</TableCell>
+<TableCell>{user.nuevoReingreso}</TableCell>
+<TableCell>{user.ciudad}</TableCell>
+<TableCell>{formatDate(user.fechaExpedicionCedula)}</TableCell>
+<TableCell>{user.cedula}</TableCell>
+<TableCell>{user.nombreCandidato}</TableCell>
+<TableCell>{user.cargo}</TableCell>
+<TableCell>{user.correo}</TableCell>
+<TableCell>{user.celular}</TableCell>
+<TableCell>{user.tipoPlanta}</TableCell>
+<TableCell>{user.tiempoContrato}</TableCell>
+<TableCell>{formatDate(user.fechaEnvioDocumentos)}</TableCell>
+<TableCell>{formatDate(user.recepcionDocumentosCandidato)}</TableCell>
+<TableCell>{formatDate(user.fechaProgramacionExamen)}</TableCell>
+<TableCell>{formatDate(user.fechaConceptoExamen)}</TableCell>
+<TableCell>{formatDate(user.fechaEnvioAYC)}</TableCell>
+<TableCell>{formatDate(user.fechaConceptoEstudioSeguridad)}</TableCell>
+<TableCell>{formatDate(user.fechaAsignacionAnalista)}</TableCell>
+<TableCell>{user.estado}</TableCell>
+<TableCell>{user.novedadPendiente}</TableCell>
+<TableCell>{user.induccion}</TableCell>
+
+
                       <TableCell>
                         <IconButton onClick={() => handleEditClick(user)}>
                           <EditOutlined />
                         </IconButton>
                         <IconButton onClick={() => handleDeleteClick(user.id)}>
-
                           <MdDeleteForever />
                         </IconButton>
                       </TableCell>
@@ -290,92 +331,124 @@ const onDelete = async (id) => {
       </div>
 
       <Dialog open={openDialog} onClose={handleDialog}>
-        <DialogTitle>Editar Datos</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+    <DialogTitle>Editar Datos</DialogTitle>
+    <DialogContent>
+        <Grid container spacing={2}>
+            {/* Campo Fecha Inicio Proceso Analista */}
+
+            <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
-      <InputLabel>Auxiliar de Selección</InputLabel>
+      <InputLabel>Auxiliar Operativo</InputLabel>
       <Select
-        name="auxiliarSeleccion"
-        value={body.auxiliarSeleccion}
-        onChange={e => onChange({ target: { name: 'auxiliarSeleccion', value: e.target.value } })}
+        name="auxiliares"
+        value={body.auxiliares}
+        onChange={onChange}
         fullWidth
       >
-        <MenuItem value="ANA MARIA CESPEDES">ANA MARIA CESPEDES</MenuItem>
-        <MenuItem value="ANDREA PEÑA">ANDREA PEÑA</MenuItem>
-        <MenuItem value="JUAN ANDRES NOVA">JUAN ANDRES NOVA</MenuItem>
-        <MenuItem value="LAURA BELEÑO">LAURA BELEÑO</MenuItem>
-        <MenuItem value="DAYANA PINEDA">DAYANA PINEDA</MenuItem>
-        <MenuItem value="NINI YOJANA SILVA">NINI YOJANA SILVA</MenuItem>
-        <MenuItem value="REGIONAL BARRANQUILLA">REGIONAL BARRANQUILLA</MenuItem>
-        <MenuItem value="REGIONAL BUCARAMANGA">REGIONAL BUCARAMANGA</MenuItem>
-        <MenuItem value="REGIONAL CALI">REGIONAL CALI</MenuItem>
-        <MenuItem value="REGIONAL MEDELLIN">REGIONAL MEDELLIN</MenuItem>
-
+<MenuItem value="ANA MARIA CESPEDES">ANA MARIA CESPEDES</MenuItem>
+<MenuItem value="LAURA BELEÑO">LAURA BELEÑO</MenuItem>
+<MenuItem value="JUAN ANDRES NOVA">JUAN ANDRES NOVA</MenuItem>
+<MenuItem value="NINI JOHANA SILVA">NINI JOHANA SILVA</MenuItem>
+<MenuItem value="ANDREA PEÑA">ANDREA PEÑA</MenuItem>
+<MenuItem value="DAYANA PINEDA">DAYANA PINEDA</MenuItem>
       </Select>
     </FormControl>
   </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="documento"
-                label="Documento"
-                value={body.documento}
-                onChange={onChange}
-                fullWidth
-                
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="nombreCompleto"
-                label="Nombre Completo"
-                value={body.nombreCompleto}
-                onChange={onChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="fechaIngreso"
-                label="Fecha Ingreso"
-                type="date"
-                value={formatDate(body.fechaIngreso)}
-                onChange={e => onChange({ target: { name: 'fechaIngreso', value: e.target.value } })}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="fechaTerminacion"
-                label="Fecha Terminación"
-                type="date"
-                value={formatDate(body.fechaTerminacion)}
-                onChange={e => onChange({ target: { name: 'fechaTerminacion', value: e.target.value } })}
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+
+  <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
-      <InputLabel>Regional</InputLabel>
+      <InputLabel>Analista de selección</InputLabel>
       <Select
-        name="regional"
-        value={body.regional}
-        onChange={e => onChange({ target: { name: 'regional', value: e.target.value } })}
+        name="analista"
+        value={body.analista}
+        onChange={onChange}
         fullWidth
       >
-        <MenuItem value="REGIONAL BUCARAMANGA">REGIONAL BUCARAMANGA</MenuItem>
-        <MenuItem value="REGIONAL BOGOTA">REGIONAL BOGOTA</MenuItem>
-        <MenuItem value="REGIONAL CENTRO ORIENTE">REGIONAL CENTRO ORIENTE</MenuItem>
-        <MenuItem value="REGIONAL BARRANQUILLA">REGIONAL BARRANQUILLA</MenuItem>
-        <MenuItem value="REGIONAL CALI">REGIONAL CALI</MenuItem>
-        <MenuItem value="REGIONAL MEDELLIN">REGIONAL MEDELLIN</MenuItem>
-
+<MenuItem value="ANDREA CRUZ ARIAS">ANDREA CRUZ ARIAS</MenuItem>
+<MenuItem value="BEATRIZ ELENA ARBOLEDA CORTEZ">BEATRIZ ELENA ARBOLEDA CORTEZ</MenuItem>
+<MenuItem value="DIANA MARCELA OLARTE">DIANA MARCELA OLARTE</MenuItem>
+<MenuItem value="JEIMMY ALEXANDRA ESPITIA SUAREZ">JEIMMY ALEXANDRA ESPITIA SUAREZ</MenuItem>
+<MenuItem value="LEONARDO LEON ALARCON">LEONARDO LEON ALARCON</MenuItem>
+<MenuItem value="LUISA FERNANDA RUEDA SALAZAR">LUISA FERNANDA RUEDA SALAZAR</MenuItem>
+<MenuItem value="EDNA ROCIO VARGAS PENAGOS">EDNA ROCIO VARGAS PENAGOS</MenuItem>
+<MenuItem value="PAOLA ANDREA MALDONADO GIRALDO">PAOLA ANDREA MALDONADO GIRALDO</MenuItem>
+<MenuItem value="LUZ HELENA BERMUDEZ">LUZ HELENA BERMUDEZ</MenuItem>
+<MenuItem value="JHON SEBASTIAN URREA GUTIERREZ">JHON SEBASTIAN URREA GUTIERREZ</MenuItem>
+<MenuItem value="TIBISAY DAYANNA PEREZ LIZCANO">TIBISAY DAYANNA PEREZ LIZCANO</MenuItem>
+<MenuItem value="JESSICA MORENO ALFONSO">JESSICA MORENO ALFONSO</MenuItem>
+<MenuItem value="EDNA ROCIO VARGAS PENAGOS">EDNA ROCIO VARGAS PENAGOS</MenuItem>
+<MenuItem value="ROSMERY MARTINEZ">ROSMERY MARTINEZ</MenuItem>
+<MenuItem value="ANA MARIA SUESCA">ANA MARIA SUESCA</MenuItem>
+<MenuItem value="NATHALIA PEÑA VANEGAS">NATHALIA PEÑA VANEGAS</MenuItem>
+<MenuItem value="ANA LORENA LOPEZ">ANA LORENA LOPEZ</MenuItem>
+<MenuItem value="ANA MARIA PERAZA">ANA MARIA PERAZA</MenuItem>
+<MenuItem value="NATALY JIMENEZ">NATALY JIMENEZ</MenuItem>
+<MenuItem value="JULIE PULIDO">JULIE PULIDO</MenuItem>
+<MenuItem value="ERIKA BARBOSA">ERIKA BARBOSA</MenuItem>
+<MenuItem value="DIANA PAOLA BARRAGAN">DIANA PAOLA BARRAGAN</MenuItem>
       </Select>
     </FormControl>
   </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaInicioProcesoAnalista"
+                        label="Fecha de Inicio Proceso Analista"
+                        type="date"
+                        value={formatDate(body.fechaInicioProcesoAnalista)}
+                        onChange={e => onChange({ target: { name: 'fechaInicioProcesoAnalista', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            {/* Campo idRequisicion */}
+            <Grid item xs={12} sm={6}>
+                <TextField
+                    name="idRequisicion"
+                    label="ID"
+                    type="text"
+                    value={body.idRequisicion}
+                    onChange={onChange}
+                    fullWidth
+                    InputLabelProps={{
+                        shrink: body.idRequisicion !== '', // El label se moverá solo cuando haya un valor
+                    }}
+                />
+            </Grid>
+
+            {/* Campo Fecha Asignación Conexión Auxiliar Operativo */}
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaAsignacionCH"
+                        label="Fecha Asignación por CH"
+                        type="date"
+                        value={formatDate(body.fechaAsignacionCH)}
+                        onChange={e => onChange({ target: { name: 'fechaAsignacionCH', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Tipo de Proceso</InputLabel>
+      <Select
+        name="tipoProceso"
+        value={body.tipoProceso}
+        onChange={onChange}
+        fullWidth
+      >
+<MenuItem value="MANUAL">MANUAL</MenuItem>
+<MenuItem value="CONEXION HUMANA">CONEXION HUMANA</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
   <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Empresa</InputLabel>
@@ -385,39 +458,201 @@ const onDelete = async (id) => {
         onChange={onChange}
         fullWidth
       >
-        <MenuItem value="CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S">CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S</MenuItem>
-        <MenuItem value="CENTROS MEDICOS COLSANITAS SAS">CENTROS MEDICOS COLSANITAS SAS</MenuItem>
-        <MenuItem value="CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.">CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.</MenuItem>
-        <MenuItem value="CLINICA COLSANITAS S.A.">CLINICA COLSANITAS S.A.</MenuItem>
-        <MenuItem value="CLINICA DENTAL KERALTY SAS">CLINICA DENTAL KERALTY SAS</MenuItem>
-        <MenuItem value="COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.">COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.</MenuItem>
-        <MenuItem value="COMPAÑIA DE SEGUROS COLSANITAS S.A.">COMPAÑIA DE SEGUROS COLSANITAS S.A.</MenuItem>
-        <MenuItem value="OFTALMOSANITAS SAS">OFTALMOSANITAS SAS</MenuItem>
-        <MenuItem value="CORPORACION SOCIAL MEDICA SANITAS">CORPORACION SOCIAL MEDICA SANITAS</MenuItem>
-        <MenuItem value="EDITORIAL BIENESTAR S A S">EDITORIAL BIENESTAR S A S</MenuItem>
-        <MenuItem value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.</MenuItem>
-        <MenuItem value="FUNDACION KERALTY">FUNDACION KERALTY</MenuItem>
-        <MenuItem value="FUNDACION UNIVERSITARIA SANITAS">FUNDACION UNIVERSITARIA SANITAS</MenuItem>
-        <MenuItem value="KERALTY S.A.S">KERALTY S.A.S</MenuItem>
-        <MenuItem value="LAZOS HUMANOS SAS">LAZOS HUMANOS SAS</MenuItem>
-        <MenuItem value="MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL">MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL</MenuItem>
-        <MenuItem value="MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA">MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA</MenuItem>
-        <MenuItem value="OFTALMOSANITAS CALI SAS">OFTALMOSANITAS CALI SAS</MenuItem>
-        <MenuItem value="OPTICA COLSANITAS SAS">OPTICA COLSANITAS SAS</MenuItem>
-        <MenuItem value="PROMOTORA INMOBILIARIA SANITAS LTDA.">PROMOTORA INMOBILIARIA SANITAS LTDA.</MenuItem>
-        <MenuItem value="SALUD OCUPACIONAL SANITAS SAS">SALUD OCUPACIONAL SANITAS SAS</MenuItem>
-        <MenuItem value="SOCIEDAD CLINICA IBEROAMERICA S.A.S">SOCIEDAD CLINICA IBEROAMERICA S.A.S</MenuItem>
-        <MenuItem value="UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS">UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS</MenuItem>
-        <MenuItem value="VERSANIA PRIMERA INFANCIA SAS">VERSANIA PRIMERA INFANCIA SAS</MenuItem>
-        <MenuItem value="VERSANIA PSICOSOCIAL ITA S.A.S.">VERSANIA PSICOSOCIAL ITA S.A.S.</MenuItem>
-        <MenuItem value="ASOCIACION DE USUARIOS DE SANITAS">ASOCIACION DE USUARIOS DE SANITAS</MenuItem>
-        <MenuItem value="UNIDAD DE IMAGENES AVANZADAS SAS">UNIDAD DE IMAGENES AVANZADAS SAS</MenuItem>
-        <MenuItem value="VERSANIA SENIOR S.A.S">VERSANIA SENIOR S.A.S</MenuItem>
+<MenuItem value="ASOCIACION DE USUARIOS DE SANITAS">ASOCIACION DE USUARIOS DE SANITAS</MenuItem>
+<MenuItem value="CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S">CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S</MenuItem>
+<MenuItem value="CENTROS MEDICOS COLSANITAS SAS">CENTROS MEDICOS COLSANITAS SAS</MenuItem>
+<MenuItem value="CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.">CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.</MenuItem>
+<MenuItem value="CLINICA COLSANITAS S.A.">CLINICA COLSANITAS S.A.</MenuItem>
+<MenuItem value="CLINICA DENTAL KERALTY SAS">CLINICA DENTAL KERALTY SAS</MenuItem>
+<MenuItem value="COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.">COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.</MenuItem>
+<MenuItem value="COMPAÑIA DE SEGUROS COLSANITAS S.A.">COMPAÑIA DE SEGUROS COLSANITAS S.A.</MenuItem>
+<MenuItem value="CORPORACION SOCIAL MEDICA SANITAS">CORPORACION SOCIAL MEDICA SANITAS</MenuItem>
+<MenuItem value="EDITORIAL BIENESTAR S A S">EDITORIAL BIENESTAR S A S</MenuItem>
+<MenuItem value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.</MenuItem>
+<MenuItem value="FUNDACION KERALTY">FUNDACION KERALTY</MenuItem>
+<MenuItem value="FUNDACION UNIVERSITARIA SANITAS">FUNDACION UNIVERSITARIA SANITAS</MenuItem>
+<MenuItem value="KERALTY S.A.S">KERALTY S.A.S</MenuItem>
+<MenuItem value="LAZOS HUMANOS SAS">LAZOS HUMANOS SAS</MenuItem>
+<MenuItem value="MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL">MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL</MenuItem>
+<MenuItem value="MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA">MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA</MenuItem>
+<MenuItem value="OFTALMOSANITAS CALI SAS">OFTALMOSANITAS CALI SAS</MenuItem>
+<MenuItem value="OFTALMOSANITAS SAS">OFTALMOSANITAS SAS</MenuItem>
+<MenuItem value="OPTICA COLSANITAS SAS">OPTICA COLSANITAS SAS</MenuItem>
+<MenuItem value="PROMOTORA INMOBILIARIA SANITAS LTDA.">PROMOTORA INMOBILIARIA SANITAS LTDA.</MenuItem>
+<MenuItem value="SALUD OCUPACIONAL SANITAS SAS">SALUD OCUPACIONAL SANITAS SAS</MenuItem>
+<MenuItem value="SOCIEDAD CLINICA IBEROAMERICA S.A.S">SOCIEDAD CLINICA IBEROAMERICA S.A.S</MenuItem>
+<MenuItem value="UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS">UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS</MenuItem>
+<MenuItem value="UNIDAD DE IMAGENES AVANZADAS SAS">UNIDAD DE IMAGENES AVANZADAS SAS</MenuItem>
+<MenuItem value="VERSANIA PSICOSOCIAL ITA S.A.S.">VERSANIA PSICOSOCIAL ITA S.A.S.</MenuItem>
+<MenuItem value="VERSANIA SENIOR S.A.S">VERSANIA SENIOR S.A.S</MenuItem>
+<MenuItem value="VERSANIA PRIMERA INFANCIA SAS">VERSANIA PRIMERA INFANCIA SAS</MenuItem>
+<MenuItem value="COMPAÑIA DE SEGUROS COLSANITAS S.A.">COMPAÑIA DE SEGUROS COLSANITAS S.A.</MenuItem>
 
       </Select>
     </FormControl>
   </Grid>
+
   <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Nuevo o Reingreso</InputLabel>
+      <Select
+        name="nuevoReingreso"
+        value={body.nuevoReingreso}
+        onChange={onChange}
+        fullWidth
+      >
+<MenuItem value="NUEVO">NUEVO</MenuItem>
+<MenuItem value="REINGRESO">REINGRESO</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Ciudad</InputLabel>
+      <Select
+        name="ciudad"
+        value={body.ciudad}
+        onChange={onChange}
+        fullWidth
+      >
+<MenuItem value="ACACÍAS">ACACÍAS</MenuItem>
+<MenuItem value="AGUACHICA">AGUACHICA</MenuItem>
+<MenuItem value="AGUAZUL">AGUAZUL</MenuItem>
+<MenuItem value="ALBANIA">ALBANIA</MenuItem>
+<MenuItem value="ALTO BAUDÓ">ALTO BAUDÓ</MenuItem>
+<MenuItem value="ARAUCA">ARAUCA</MenuItem>
+<MenuItem value="ARAUQUITA">ARAUQUITA</MenuItem>
+<MenuItem value="ARMENIA">ARMENIA</MenuItem>
+<MenuItem value="BARRANCABERMEJA">BARRANCABERMEJA</MenuItem>
+<MenuItem value="BARRANCAS">BARRANCAS</MenuItem>
+<MenuItem value="BARRANQUILLA">BARRANQUILLA</MenuItem>
+<MenuItem value="BOGOTÁ, D.C.">BOGOTÁ, D.C.</MenuItem>
+<MenuItem value="BUCARAMANGA">BUCARAMANGA</MenuItem>
+<MenuItem value="BUENAVENTURA">BUENAVENTURA</MenuItem>
+<MenuItem value="CAJICÁ">CAJICÁ</MenuItem>
+<MenuItem value="CALI">CALI</MenuItem>
+<MenuItem value="CARTAGENA">CARTAGENA</MenuItem>
+<MenuItem value="CARTAGO">CARTAGO</MenuItem>
+<MenuItem value="CHÍA">CHÍA</MenuItem>
+<MenuItem value="CHIQUINQUIRÁ">CHIQUINQUIRÁ</MenuItem>
+<MenuItem value="CHITAGÁ">CHITAGÁ</MenuItem>
+<MenuItem value="CÚCUTA">CÚCUTA</MenuItem>
+<MenuItem value="DIBULLA">DIBULLA</MenuItem>
+<MenuItem value="DUITAMA">DUITAMA</MenuItem>
+<MenuItem value="FACATATIVÁ">FACATATIVÁ</MenuItem>
+<MenuItem value="FLORENCIA">FLORENCIA</MenuItem>
+<MenuItem value="FONSECA">FONSECA</MenuItem>
+<MenuItem value="FORTUL">FORTUL</MenuItem>
+<MenuItem value="FUSAGASUGÁ">FUSAGASUGÁ</MenuItem>
+<MenuItem value="GARZÓN">GARZÓN</MenuItem>
+<MenuItem value="GIRARDOT">GIRARDOT</MenuItem>
+<MenuItem value="GUACA">GUACA</MenuItem>
+<MenuItem value="GUADALUPE">GUADALUPE</MenuItem>
+<MenuItem value="HONDA">HONDA</MenuItem>
+<MenuItem value="IBAGUÉ">IBAGUÉ</MenuItem>
+<MenuItem value="IPIALES">IPIALES</MenuItem>
+<MenuItem value="ISNOS">ISNOS</MenuItem>
+<MenuItem value="ISTMINA">ISTMINA</MenuItem>
+<MenuItem value="LA CALERA">LA CALERA</MenuItem>
+<MenuItem value="LA PLATA">LA PLATA</MenuItem>
+<MenuItem value="LETICIA">LETICIA</MenuItem>
+<MenuItem value="MAICAO">MAICAO</MenuItem>
+<MenuItem value="MÁLAGA">MÁLAGA</MenuItem>
+<MenuItem value="MANIZALES">MANIZALES</MenuItem>
+<MenuItem value="MEDELLÍN">MEDELLÍN</MenuItem>
+<MenuItem value="MONTELÍBANO">MONTELÍBANO</MenuItem>
+<MenuItem value="MONTERÍA">MONTERÍA</MenuItem>
+<MenuItem value="NEIVA">NEIVA</MenuItem>
+<MenuItem value="OCAÑA">OCAÑA</MenuItem>
+<MenuItem value="PALMIRA">PALMIRA</MenuItem>
+<MenuItem value="PASTO">PASTO</MenuItem>
+<MenuItem value="PEREIRA">PEREIRA</MenuItem>
+<MenuItem value="PIENDAMÓ">PIENDAMÓ</MenuItem>
+<MenuItem value="PITALITO">PITALITO</MenuItem>
+<MenuItem value="POPAYÁN">POPAYÁN</MenuItem>
+<MenuItem value="QUIBDÓ">QUIBDÓ</MenuItem>
+<MenuItem value="RIOHACHA">RIOHACHA</MenuItem>
+<MenuItem value="RIONEGRO">RIONEGRO</MenuItem>
+<MenuItem value="SAN ANDRÉS">SAN ANDRÉS</MenuItem>
+<MenuItem value="SAN GIL">SAN GIL</MenuItem>
+<MenuItem value="SAN JUAN DEL CESAR">SAN JUAN DEL CESAR</MenuItem>
+<MenuItem value="SANTA MARTA">SANTA MARTA</MenuItem>
+<MenuItem value="SANTANDER DE QUILICHAO">SANTANDER DE QUILICHAO</MenuItem>
+<MenuItem value="SARDINATA">SARDINATA</MenuItem>
+<MenuItem value="SINCELEJO">SINCELEJO</MenuItem>
+<MenuItem value="SOACHA">SOACHA</MenuItem>
+<MenuItem value="SOGAMOSO">SOGAMOSO</MenuItem>
+<MenuItem value="SOLEDAD">SOLEDAD</MenuItem>
+<MenuItem value="TAME">TAME</MenuItem>
+<MenuItem value="TULUÁ">TULUÁ</MenuItem>
+<MenuItem value="TUNJA">TUNJA</MenuItem>
+<MenuItem value="URIBIA">URIBIA</MenuItem>
+<MenuItem value="VALLEDUPAR">VALLEDUPAR</MenuItem>
+<MenuItem value="VILLANUEVA">VILLANUEVA</MenuItem>
+<MenuItem value="VILLAVICENCIO">VILLAVICENCIO</MenuItem>
+<MenuItem value="VILLETA">VILLETA</MenuItem>
+<MenuItem value="YOPAL">YOPAL</MenuItem>
+<MenuItem value="ZIPAQUIRÁ">ZIPAQUIRÁ</MenuItem>
+<MenuItem value="TAURAMENA">TAURAMENA</MenuItem>
+<MenuItem value="CHAPARRAL">CHAPARRAL</MenuItem>
+<MenuItem value="CAMPOALEGRE">CAMPOALEGRE</MenuItem>
+<MenuItem value="MONTERREY">MONTERREY</MenuItem>
+<MenuItem value="PAZ DE ARIPORO">PAZ DE ARIPORO</MenuItem>
+<MenuItem value="USA">USA</MenuItem>
+<MenuItem value="MONGUA">MONGUA</MenuItem>
+<MenuItem value="GIGANTE">GIGANTE</MenuItem>
+<MenuItem value="SORA - CUCAITA">SORA - CUCAITA</MenuItem>
+<MenuItem value="TINJACA">TINJACA</MenuItem>
+<MenuItem value="JUNIN">JUNIN</MenuItem>
+<MenuItem value="NIMAIMA">NIMAIMA</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaExpedicionCedula"
+                        label="Fecha Expedición Cédula"
+                        type="date"
+                        value={formatDate(body.fechaExpedicionCedula)}
+                        onChange={e => onChange({ target: { name: 'fechaExpedicionCedula', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="cedula"
+    label="Cédula"
+    type="text"
+    value={body.cedula}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.cedula !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <TextField
+    name="nombreCandidato"
+    label="Nombre Candidato"
+    type="text"
+    value={body.nombreCandidato}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.nombreCandidato !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Cargo</InputLabel>
       <Select
@@ -426,7 +661,7 @@ const onDelete = async (id) => {
         onChange={onChange}
         fullWidth
       >
-       <MenuItem value="AUXILIAR ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</MenuItem>
+<MenuItem value="AUXILIAR ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</MenuItem>
 <MenuItem value="DIRECTORA EJECUTIVA">DIRECTORA EJECUTIVA</MenuItem>
 <MenuItem value="RECEPCIONISTA I">RECEPCIONISTA I</MenuItem>
 <MenuItem value="FONOAUDIOLOGO">FONOAUDIOLOGO</MenuItem>
@@ -2619,134 +2854,222 @@ const onDelete = async (id) => {
 <MenuItem value="ASESOR MEDICO JUNIOR">ASESOR MEDICO JUNIOR</MenuItem>
 <MenuItem value="ANALISTA PLANEACION DE LA DEMANDA">ANALISTA PLANEACION DE LA DEMANDA</MenuItem>
 <MenuItem value="GESTOR OPERATIVO DE VACUNACION">GESTOR OPERATIVO DE VACUNACION</MenuItem>
-
-
-          </Select>
-    </FormControl>
-  </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="posicion"
-                label="Posición"
-                type="number"
-                value={body.posicion}
-                onChange={onChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Tipo de Gasto</InputLabel>
-      <Select
-        name="tipoGasto"
-        value={body.tipoGasto}
-        onChange={e => onChange({ target: { name: 'tipoGasto', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="ADMINISTRATIVO">ADMINISTRATIVO</MenuItem>
-        <MenuItem value="ASISTENCIAL">ASISTENCIAL</MenuItem>
-        <MenuItem value="DOCENTE">DOCENTE</MenuItem>
-        <MenuItem value="VENTAS">VENTAS</MenuItem>
-
       </Select>
     </FormControl>
   </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="centroCosto"
-                label="Centro Costo"
-                value={body.centroCosto}
-                onChange={onChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+
+  <Grid item xs={12} sm={6}>
+  <TextField
+    name="correo"
+    label="Correo"
+    type="text"
+    value={body.correo}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.correo !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <TextField
+    name="celular"
+    label="Celular"
+    type="text"
+    value={body.celular}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.celular !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Tipo de Planta</InputLabel>
       <Select
         name="tipoPlanta"
         value={body.tipoPlanta}
-        onChange={e => onChange({ target: { name: 'tipoPlanta', value: e.target.value } })}
+        onChange={onChange}
         fullWidth
       >
-        <MenuItem value="APRENDIZ">APRENDIZ</MenuItem>
-        <MenuItem value="FIJA">FIJA</MenuItem>
-        <MenuItem value="TEMPORAL">TEMPORAL</MenuItem>
+<MenuItem value="PLANTA APRENDIZ">PLANTA APRENDIZ</MenuItem>
+<MenuItem value="PLANTA FIJA COL">PLANTA FIJA COL</MenuItem>
+<MenuItem value="PLANTA TEMPORAL">PLANTA TEMPORAL</MenuItem>
 
       </Select>
     </FormControl>
   </Grid>
+
   <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Tipo de Ingreso</InputLabel>
-      <Select
-        name="tipoIngreso"
-        value={body.tipoIngreso}
-        onChange={e => onChange({ target: { name: 'tipoIngreso', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="APRENDIZ LECTIVO">APRENDIZ LECTIVO</MenuItem>
-        <MenuItem value="NUEVO">NUEVO</MenuItem>
-        <MenuItem value="REINGRESO">REINGRESO</MenuItem>
-        <MenuItem value="MULTICONTRATO">MULTICONTRATO</MenuItem>
-        <MenuItem value="APRENDIZ PRODUCTIVO">APRENDIZ PRODUCTIVO</MenuItem>
-      </Select>
-    </FormControl>
-  </Grid>
-  <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Analista de Selección</InputLabel>
-      <Select
-        name="analistaSeleccion"
-        value={body.analistaSeleccion}
-        onChange={e => onChange({ target: { name: 'analistaSeleccion', value: e.target.value } })}
-        fullWidth
-      >
-<MenuItem value="ANA LORENA LOPEZ BAUTISTA">ANA LORENA LOPEZ BAUTISTA</MenuItem>
-<MenuItem value="ANA MARIA SUESCA">ANA MARIA SUESCA</MenuItem>
-<MenuItem value="ANDREA CRUZ">ANDREA CRUZ</MenuItem>
-<MenuItem value="BEATRIZ ELENA ARBOLEDA">BEATRIZ ELENA ARBOLEDA</MenuItem>
-<MenuItem value="DIANA MARCELA OLARTE">DIANA MARCELA OLARTE</MenuItem>
-<MenuItem value="DIANA PAOLA BARRAGAN">DIANA PAOLA BARRAGAN</MenuItem>
-<MenuItem value="ERIKA MARIA ROJAS GOMEZ">ERIKA MARIA ROJAS GOMEZ</MenuItem>
-<MenuItem value="ERIKA PAOLA OJEDA">ERIKA PAOLA OJEDA</MenuItem>
-<MenuItem value="FERNANDO PARRA PEREZ">FERNANDO PARRA PEREZ</MenuItem>
-<MenuItem value="GISELLA GUZMAN GORI">GISELLA GUZMAN GORI</MenuItem>
-<MenuItem value="JEIMMY ALEXANDRA ESPITIA">JEIMMY ALEXANDRA ESPITIA</MenuItem>
-<MenuItem value="JESSICA MORENO ALFONSO">JESSICA MORENO ALFONSO</MenuItem>
-<MenuItem value="JULIE PULIDO VELASCO">JULIE PULIDO VELASCO</MenuItem>
-<MenuItem value="LUISA FERNANDA RUEDA">LUISA FERNANDA RUEDA</MenuItem>
-<MenuItem value="LUZ HELENA BERMUDEZ">LUZ HELENA BERMUDEZ</MenuItem>
-<MenuItem value="MAYRA ALEJANDRA DUQUE">MAYRA ALEJANDRA DUQUE</MenuItem>
-<MenuItem value="NATALY JIMENEZ DIAZ">NATALY JIMENEZ DIAZ</MenuItem>
-<MenuItem value="NATHALIA PEÑA VANEGAS">NATHALIA PEÑA VANEGAS</MenuItem>
-<MenuItem value="PAOLA ANDREA MALDONADO">PAOLA ANDREA MALDONADO</MenuItem>
-<MenuItem value="PAULA ANDREA MORENO ARENAS">PAULA ANDREA MORENO ARENAS</MenuItem>
-<MenuItem value="ROSMERY MARTINEZ GIRAL">ROSMERY MARTINEZ GIRAL</MenuItem>
-<MenuItem value="TIBISAY DAYANNA PEREZ LIZCANO">TIBISAY DAYANNA PEREZ LIZCANO</MenuItem>
-<MenuItem value="KENYA GISELLA LOPEZ BAYONA">KENYA GISELLA LOPEZ BAYONA</MenuItem>
-<MenuItem value="NICOL CARDENAS">NICOL CARDENAS</MenuItem>
-<MenuItem value="MARCELA OLARTE">MARCELA OLARTE</MenuItem>
+  <TextField
+    name="tiempoContrato"
+    label="Tiempo de Contrato"
+    type="text"
+    value={body.tiempoContrato}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.tiempoContrato !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
 
-      </Select>
-    </FormControl>
-  </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Estado</InputLabel>
-                <Select
-                  name="estado"
-                  value={body.estado}
-                  onChange={onChange}
-                >
-                  <MenuItem value="ACTIVO">ACTIVO</MenuItem>
-                  <MenuItem value="TERMINADO">TERMINADO</MenuItem>
-
-                </Select>
-              </FormControl>
+<Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaEnvioDocumentos"
+                        label="Fecha Envio Documentos"
+                        type="date"
+                        value={formatDate(body.fechaEnvioDocumentos)}
+                        onChange={e => onChange({ target: { name: 'fechaEnvioDocumentos', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
             </Grid>
-          </Grid>
-        </DialogContent>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="recepcionDocumentosCandidato"
+                        label="Fecha de Envio de recepción de Documentos por parte del Candidato"
+                        type="date"
+                        value={formatDate(body.recepcionDocumentosCandidato)}
+                        onChange={e => onChange({ target: { name: 'recepcionDocumentosCandidato', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaProgramacionExamen"
+                        label="Fecha de Programacion del Examen Médico"
+                        type="date"
+                        value={formatDate(body.fechaProgramacionExamen)}
+                        onChange={e => onChange({ target: { name: 'fechaProgramacionExamen', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaConceptoExamen"
+                        label="Fecha de Concepto del Examen Médico"
+                        type="date"
+                        value={formatDate(body.fechaConceptoExamen)}
+                        onChange={e => onChange({ target: { name: 'fechaConceptoExamen', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaEnvioAYC"
+                        label="Fecha de envío AYC"
+                        type="date"
+                        value={formatDate(body.fechaEnvioAYC)}
+                        onChange={e => onChange({ target: { name: 'fechaEnvioAYC', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaConceptoEstudioSeguridad"
+                        label="Fecha de Concepto del Estudio de Seguridad"
+                        type="date"
+                        value={formatDate(body.fechaConceptoEstudioSeguridad)}
+                        onChange={e => onChange({ target: { name: 'fechaConceptoEstudioSeguridad', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                    <TextField
+                        name="fechaAsignacionAnalista"
+                        label="Fecha de Asignación Analista"
+                        type="date"
+                        value={formatDate(body.fechaAsignacionAnalista)}
+                        onChange={e => onChange({ target: { name: 'fechaAsignacionAnalista', value: e.target.value } })}
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                    />
+                </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Estado</InputLabel>
+      <Select
+        name="estado"
+        value={body.estado}
+        onChange={onChange}
+        fullWidth
+      >
+<MenuItem value="EN PROCESO">EN PROCESO</MenuItem>
+<MenuItem value="COMPLETADO">COMPLETADO</MenuItem>
+<MenuItem value="ENVIADO CON NOVEDADES">ENVIADO CON NOVEDADES</MenuItem>
+<MenuItem value="DESISTE">DESISTE</MenuItem>
+<MenuItem value="NO APRUEBA EXAMEN">NO APRUEBA EXAMEN</MenuItem>
+<MenuItem value="NO APRUEBA ESTUDIO">NO APRUEBA ESTUDIO</MenuItem>
+<MenuItem value="NO APRUEBA POR CIFIN">NO APRUEBA POR CIFIN</MenuItem>
+<MenuItem value="NO APRUEBA FAMILIARIDAD">NO APRUEBA FAMILIARIDAD</MenuItem>
+<MenuItem value="PENDIENTE POR CONTRATAR">PENDIENTE POR CONTRATAR</MenuItem>
+<MenuItem value="CANCELADO">CANCELADO</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Novedad Pendiente</InputLabel>
+      <Select
+        name="novedadPendiente"
+        value={body.novedadPendiente}
+        onChange={onChange}
+        fullWidth
+      >
+<MenuItem value="VALIDACION DE TITULOS">VALIDACION DE TITULOS</MenuItem>
+<MenuItem value="EXAMEN">EXAMEN</MenuItem>
+<MenuItem value="INDUCCION">INDUCCION</MenuItem>
+<MenuItem value="CIFIN">CIFIN</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+  <TextField
+    name="induccion"
+    label="Inducción"
+    type="text"
+    value={body.induccion}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.induccion !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
+        </Grid>
         <DialogActions>
           <Button onClick={handleDialog} color="primary">
             Cancelar
@@ -2755,12 +3078,14 @@ const onDelete = async (id) => {
             Guardar
           </Button>
         </DialogActions>
-      </Dialog>
+    </DialogContent>
+</Dialog>
+
     </div>
   );
 };
 
-export default ModificarDatosPersonales;
+export default ModificarDatosPersonalesGestion;
 
 
 

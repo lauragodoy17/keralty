@@ -3,26 +3,72 @@ import axios from 'axios';
 import { Table, TableContainer, TableHead, TableRow, TableCell, Paper, TableBody, Button, IconButton, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { format,parseISO } from 'date-fns';
 import { EditOutlined, DeleteForever as MdDeleteForever } from '@mui/icons-material';
-import './ModificarDatosPersonales.css';
 import swal from 'sweetalert';
 
-const ModificarDatosPersonales = () => {
+const ModificarDatosPersonalesPsicologos = () => {
   const initialState = {
-    auxiliarSeleccion: '',
-    documento: 0,
-    nombreCompleto: '',
-    fechaIngreso: '',
-    fechaTerminacion: '',
-    regional: '',
-    empresa: '',
-    cargo: '',
-    posicion: 0,
-    tipoGasto: '',
-    centroCosto: '',
-    tipoPlanta: '',
-    tipoIngreso: '',
-    analistaSeleccion: '',
-    estado: ''
+    fechaInicioProcesoAnalista: null,
+    idRequisicion: ' ',
+    fechaAsignacionConexionAuxOperativo: null,
+    tipoIngreso: ' ',
+    empresa: ' ',
+    servicio: ' ',
+    posicion: ' ',
+    nuevoReingreso: ' ',
+    ciudad: ' ',
+    teletrabajo: ' ',
+    fechaExpedicionCedula: ' ',
+    cedula: ' ',
+    nombreCandidato: ' ',
+    cargo: ' ',
+    correo: ' ',
+    celular: ' ',
+    tipoPlanta: ' ',
+    tiempoContrato: ' ',
+    fechaEnvioDocumentos: null,
+    solicitudExamenMedico: null,
+    fechaProgramacionExamenMedico: null,
+    fechaConceptoExamenMedico: null,
+    fechaProgramacionEstudioAYC: null,
+    fechaConceptoEstudioSeguridad: null,
+    fechaAsignacionAnalista: null,
+    hojaVidaKeralty: ' ',
+    cedulaPapel: ' ',
+    infolaft: ' ',
+    inhabilidades: ' ',
+    certificadoBancario: ' ',
+    certificadoEPS: ' ',
+    certificadoPension: ' ',
+    certificadoCesantias: ' ',
+    certificadosLaborales: ' ',
+    diplomaBachiller: ' ',
+    actaBachiller: ' ',
+    diplomaPregado: ' ',
+    actaPregado: ' ',
+    diplomaPosgrado: ' ',
+    actaPosgrado: ' ',
+    resolucionSecretariaSalud: ' ',
+    tarjetaProfesional: ' ',
+    rethus: ' ',
+    violenciaSexual: ' ',
+    gestionDuelo: ' ',
+    ataquesQuimicos: ' ',
+    donacionOrganos: ' ',
+    tomaMuestrasCitologia: ' ',
+    soporteVitalBasico: ' ',
+    soporteVitalAvanzado: ' ',
+    PALS: ' ',
+    NALS: ' ',
+    vacunasCovid: ' ',
+    vacunasHepatitis: ' ',
+    conceptoMedico: ' ',
+    conceptoInformeFinal: ' ',
+    sintesis: ' ',
+    certificadoInduccion: ' ',
+    cargaInhabilidades: ' ',
+    observacionesAuxOperativo: ' ',
+    fechaIngreso:null,
+    estado: ' '
   };
 
   const [userList, setUserList] = useState([]);
@@ -34,6 +80,7 @@ const ModificarDatosPersonales = () => {
   const [mensaje, setMensaje] = useState({ ident: null, message: null, type: null });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  
 
   const getUsers = async () => {
     try {
@@ -87,7 +134,7 @@ const ModificarDatosPersonales = () => {
   
       console.log('Sending data:', requestData);
   
-      const { data } = await axios.post('http://localhost:3080/Editar', requestData);
+      const { data } = await axios.post('http://localhost:3080/EditarPsicologos', requestData);
   
       setMensaje({
         ident: new Date().getTime(),
@@ -170,6 +217,7 @@ const onDelete = async (id) => {
     }
 };
 
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -185,19 +233,21 @@ const onDelete = async (id) => {
       <div className='Busqueda_Datos_Personal'>
         <h1>MODIFICACIÓN PARA DATOS PERSONALES Y ÚNICOS</h1>
         <div className="select-container">
-        <label className="estado">Selecciona el periodo *</label>
-<select
-    className='select'
-    value={selectedTable}
-    onChange={(e) => setSelectedTable(e.target.value)}
->
-    <option value="">Selecciona uno</option>
-    <option value="noviembre_diciembre_2023">Noviembre-Diciembre 2023</option>
-    <option value="enero_marzo_2024">Enero-Marzo 2024</option>
-    <option value="abril_junio">Abril-Junio 2024</option>
-    <option value="julio_septiembre">Julio-Septiembre 2024</option>
-</select>
+          <label className="estado">Selecciona el psicologo *</label>
+          <select
+            className='select'
+            value={selectedTable}
+            onChange={(e) => setSelectedTable(e.target.value)}
+          >
+                        <option value="">- Selecciona uno -</option>
 
+            <option value="TIBI">TIBI</option>
+            <option value="JESSI">JESSI</option>
+            <option value="ROS">ROS</option>
+            <option value="ALE">ALE DUQUE</option>
+            <option value="ANDRE">ANDRE</option>
+            <option value="ELE">ELE</option>
+          </select>
         </div>
         <div className="select-container">
           <label className="estado">Selecciona el campo para búsqueda *</label>
@@ -208,10 +258,9 @@ const onDelete = async (id) => {
             onChange={handleFilterChange}
           >
             <option value="">- Selecciona uno -</option>
-            <option value="documento">Búsqueda por cédula</option>
+            <option value="cedula">Búsqueda por cédula</option>
             <option value="empresa">Búsqueda por empresa</option>
-            <option value="regional">Búsqueda por regional</option>
-            <option value="posicion">Búsqueda por posición</option>
+
           </select>
         </div>
         <div className='input-container-filtro'>
@@ -226,48 +275,143 @@ const onDelete = async (id) => {
               <Table className="table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>AUXILIAR DE SELECCIÓN</TableCell>
-                    <TableCell>DOCUMENTO</TableCell>
-                    <TableCell>NOMBRE COMPLETO</TableCell>
-                    <TableCell>FECHA INGRESO</TableCell>
-                    <TableCell>FECHA TERMINACION</TableCell>
-                    <TableCell>REGIONAL</TableCell>
-                    <TableCell>EMPRESA</TableCell>
-                    <TableCell>CARGO</TableCell>
-                    <TableCell>POSICIÓN</TableCell>
-                    <TableCell>TIPO GASTO</TableCell>
-                    <TableCell>CENTRO COSTO</TableCell>
-                    <TableCell>TIPO PLANTA</TableCell>
-                    <TableCell>TIPO INGRESO</TableCell>
-                    <TableCell>ANALISTA SELECCIÓN</TableCell>
-                    <TableCell>ESTADO</TableCell>
+                  <TableCell>FECHA INICIO PROCESO ANALISTA</TableCell>
+                  <TableCell>ID REQUISICIÓN</TableCell>
+<TableCell>FECHA ASIGNACIÓN CONEXIÓN AUX OPERATIVO</TableCell>
+<TableCell>TIPO DE INGRESO</TableCell>
+<TableCell>EMPRESA</TableCell>
+<TableCell>SERVICIO</TableCell>
+<TableCell>POSICIÓN</TableCell>
+<TableCell>NUEVO/REINGRESO</TableCell>
+<TableCell>CIUDAD</TableCell>
+<TableCell>TELETRABAJO</TableCell>
+<TableCell>FECHA DE EXPEDICIÓN CÉDULA</TableCell>
+<TableCell>CÉDULA</TableCell>
+<TableCell>NOMBRE DEL CANDIDATO</TableCell>
+<TableCell>CARGO</TableCell>
+<TableCell>CORREO</TableCell>
+<TableCell>CELULAR</TableCell>
+<TableCell>TIPO DE PLANTA</TableCell>
+<TableCell>TIEMPO DE CONTRATO</TableCell>
+<TableCell>FECHA ENVÍO DE DOCUMENTOS</TableCell>
+<TableCell>SOLICITUD EXAMEN MÉDICO</TableCell>
+<TableCell>FECHA PROGRAMACIÓN EXAMEN MÉDICO</TableCell>
+<TableCell>FECHA CONCEPTO EXAMEN MÉDICO</TableCell>
+<TableCell>FECHA PROGRAMACIÓN ESTUDIO AYC</TableCell>
+<TableCell>FECHA CONCEPTO ESTUDIO SEGURIDAD</TableCell>
+<TableCell>FECHA ASIGNACIÓN ANALISTA</TableCell>
+<TableCell>HOJA DE VIDA KERALTY</TableCell>
+<TableCell>CÉDULA EN PAPEL</TableCell>
+<TableCell>INFOLAFT</TableCell>
+<TableCell>INHABILIDADES</TableCell>
+<TableCell>CERTIFICADO BANCARIO</TableCell>
+<TableCell>CERTIFICADO EPS</TableCell>
+<TableCell>CERTIFICADO PENSIÓN</TableCell>
+<TableCell>CERTIFICADO CESANTÍAS</TableCell>
+<TableCell>CERTIFICADOS LABORALES</TableCell>
+<TableCell>DIPLOMA DE BACHILLER</TableCell>
+<TableCell>ACTA DE BACHILLER</TableCell>
+<TableCell>DIPLOMA DE PREGRADO</TableCell>
+<TableCell>ACTA DE PREGRADO</TableCell>
+<TableCell>DIPLOMA DE POSGRADO</TableCell>
+<TableCell>ACTA DE POSGRADO</TableCell>
+<TableCell>RESOLUCIÓN SECRETARÍA DE SALUD</TableCell>
+<TableCell>TARJETA PROFESIONAL</TableCell>
+<TableCell>RETHUS</TableCell>
+<TableCell>VIOLENCIA SEXUAL</TableCell>
+<TableCell>GESTIÓN DE DUELO</TableCell>
+<TableCell>ATAQUES QUÍMICOS</TableCell>
+<TableCell>DONACIÓN DE ÓRGANOS</TableCell>
+<TableCell>TOMA DE MUESTRAS CITOLOGÍA</TableCell>
+<TableCell>SOPORTE VITAL BÁSICO</TableCell>
+<TableCell>SOPORTE VITAL AVANZADO</TableCell>
+<TableCell>PALS</TableCell>
+<TableCell>NALS</TableCell>
+<TableCell>VACUNAS COVID</TableCell>
+<TableCell>VACUNAS HEPATITIS</TableCell>
+<TableCell>CONCEPTO MÉDICO</TableCell>
+<TableCell>CONCEPTO INFORME FINAL</TableCell>
+<TableCell>SÍNTESIS</TableCell>
+<TableCell>CERTIFICADO INDUCCIÓN</TableCell>
+<TableCell>CARGA DE INHABILIDADES</TableCell>
+<TableCell>OBSERVACIONES AUX OPERATIVO</TableCell>
+<TableCell>FECHA DE INGRESO</TableCell>
+<TableCell>ESTADO</TableCell>
+
                     <TableCell>ACCIONES</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {filteredResults.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell>{user.auxiliarSeleccion}</TableCell>                      
-                      <TableCell>{user.documento}</TableCell>
-                      <TableCell>{user.nombreCompleto}</TableCell>
-                      <TableCell>{formatDate(user.fechaIngreso)}</TableCell>
-                      <TableCell>{formatDate(user.fechaTerminacion)}</TableCell>
-                      <TableCell>{user.regional}</TableCell>
-                      <TableCell>{user.empresa}</TableCell>
-                      <TableCell>{user.cargo}</TableCell>
-                      <TableCell>{user.posicion}</TableCell>
-                      <TableCell>{user.tipoGasto}</TableCell>
-                      <TableCell>{user.centroCosto}</TableCell>
-                      <TableCell>{user.tipoPlanta}</TableCell>
-                      <TableCell>{user.tipoIngreso}</TableCell>
-                      <TableCell>{user.analistaSeleccion}</TableCell>
-                      <TableCell>{user.estado}</TableCell>
+<TableCell>{formatDate(user.fechaInicioProcesoAnalista)}</TableCell>
+<TableCell>{user.idRequisicion}</TableCell>
+<TableCell>{formatDate(user.fechaAsignacionConexionAuxOperativo)}</TableCell>
+<TableCell>{user.tipoIngreso}</TableCell>
+<TableCell>{user.empresa}</TableCell>
+<TableCell>{user.servicio}</TableCell>
+<TableCell>{user.posicion}</TableCell>
+<TableCell>{user.nuevoReingreso}</TableCell>
+<TableCell>{user.ciudad}</TableCell>
+<TableCell>{user.teletrabajo}</TableCell>
+<TableCell>{formatDate(user.fechaExpedicionCedula)}</TableCell>
+<TableCell>{user.cedula}</TableCell>
+<TableCell>{user.nombreCandidato}</TableCell>
+<TableCell>{user.cargo}</TableCell>
+<TableCell>{user.correo}</TableCell>
+<TableCell>{user.celular}</TableCell>
+<TableCell>{user.tipoPlanta}</TableCell>
+<TableCell>{user.tiempoContrato}</TableCell>
+<TableCell>{formatDate(user.fechaEnvioDocumentos)}</TableCell>
+<TableCell>{formatDate(user.solicitudExamenMedico)}</TableCell>
+<TableCell>{formatDate(user.fechaProgramacionExamenMedico)}</TableCell>
+<TableCell>{formatDate(user.fechaConceptoExamenMedico)}</TableCell>
+<TableCell>{formatDate(user.fechaProgramacionEstudioAYC)}</TableCell>
+<TableCell>{formatDate(user.fechaConceptoEstudioSeguridad)}</TableCell>
+<TableCell>{formatDate(user.fechaAsignacionAnalista)}</TableCell>
+<TableCell>{user.hojaVidaKeralty}</TableCell>
+<TableCell>{user.cedulaPapel}</TableCell>
+<TableCell>{user.infolaft}</TableCell>
+<TableCell>{user.inhabilidades}</TableCell>
+<TableCell>{user.certificadoBancario}</TableCell>
+<TableCell>{user.certificadoEPS}</TableCell>
+<TableCell>{user.certificadoPension}</TableCell>
+<TableCell>{user.certificadoCesantias}</TableCell>
+<TableCell>{user.certificadosLaborales}</TableCell>
+<TableCell>{user.diplomaBachiller}</TableCell>
+<TableCell>{user.actaBachiller}</TableCell>
+<TableCell>{user.diplomaPregado}</TableCell>
+<TableCell>{user.actaPregado}</TableCell>
+<TableCell>{user.diplomaPosgrado}</TableCell>
+<TableCell>{user.actaPosgrado}</TableCell>
+<TableCell>{user.resolucionSecretariaSalud}</TableCell>
+<TableCell>{user.tarjetaProfesional}</TableCell>
+<TableCell>{user.rethus}</TableCell>
+<TableCell>{user.violenciaSexual}</TableCell>
+<TableCell>{user.gestionDuelo}</TableCell>
+<TableCell>{user.ataquesQuimicos}</TableCell>
+<TableCell>{user.donacionOrganos}</TableCell>
+<TableCell>{user.tomaMuestrasCitologia}</TableCell>
+<TableCell>{user.soporteVitalBasico}</TableCell>
+<TableCell>{user.soporteVitalAvanzado}</TableCell>
+<TableCell>{user.PALS}</TableCell>
+<TableCell>{user.NALS}</TableCell>
+<TableCell>{user.vacunasCovid}</TableCell>
+<TableCell>{user.vacunasHepatitis}</TableCell>
+<TableCell>{user.conceptoMedico}</TableCell>
+<TableCell>{user.conceptoInformeFinal}</TableCell>
+<TableCell>{user.sintesis}</TableCell>
+<TableCell>{user.certificadoInduccion}</TableCell>
+<TableCell>{user.cargaInhabilidades}</TableCell>
+<TableCell>{user.observacionesAuxOperativo}</TableCell>
+<TableCell>{formatDate(user.fechaIngreso)}</TableCell>
+<TableCell>{user.estado}</TableCell>
+
                       <TableCell>
                         <IconButton onClick={() => handleEditClick(user)}>
                           <EditOutlined />
                         </IconButton>
                         <IconButton onClick={() => handleDeleteClick(user.id)}>
-
                           <MdDeleteForever />
                         </IconButton>
                       </TableCell>
@@ -295,87 +439,47 @@ const onDelete = async (id) => {
           <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
-      <InputLabel>Auxiliar de Selección</InputLabel>
-      <Select
-        name="auxiliarSeleccion"
-        value={body.auxiliarSeleccion}
-        onChange={e => onChange({ target: { name: 'auxiliarSeleccion', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="ANA MARIA CESPEDES">ANA MARIA CESPEDES</MenuItem>
-        <MenuItem value="ANDREA PEÑA">ANDREA PEÑA</MenuItem>
-        <MenuItem value="JUAN ANDRES NOVA">JUAN ANDRES NOVA</MenuItem>
-        <MenuItem value="LAURA BELEÑO">LAURA BELEÑO</MenuItem>
-        <MenuItem value="DAYANA PINEDA">DAYANA PINEDA</MenuItem>
-        <MenuItem value="NINI YOJANA SILVA">NINI YOJANA SILVA</MenuItem>
-        <MenuItem value="REGIONAL BARRANQUILLA">REGIONAL BARRANQUILLA</MenuItem>
-        <MenuItem value="REGIONAL BUCARAMANGA">REGIONAL BUCARAMANGA</MenuItem>
-        <MenuItem value="REGIONAL CALI">REGIONAL CALI</MenuItem>
-        <MenuItem value="REGIONAL MEDELLIN">REGIONAL MEDELLIN</MenuItem>
-
-      </Select>
-    </FormControl>
-  </Grid>
-            <Grid item xs={12} sm={6}>
+      
+      
+    <Grid item xs={12} sm={30}>
               <TextField
-                name="documento"
-                label="Documento"
-                value={body.documento}
-                onChange={onChange}
-                fullWidth
-                
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="nombreCompleto"
-                label="Nombre Completo"
-                value={body.nombreCompleto}
-                onChange={onChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="fechaIngreso"
-                label="Fecha Ingreso"
+                name="fechaInicioProcesoAnalista"
+                label="Fecha Inicio Proceso Analista"
                 type="date"
-                value={formatDate(body.fechaIngreso)}
-                onChange={e => onChange({ target: { name: 'fechaIngreso', value: e.target.value } })}
+                value={formatDate(body.fechaInicioProcesoAnalista)}
+                onChange={e => onChange({ target: { name: 'fechaInicioProcesoAnalista', value: e.target.value } })}
                 fullWidth
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+    </FormControl>
+  </Grid>
+  <Grid item xs={12} sm={6}>
+  <TextField
+    name="idRequisicion"
+    label="idRequisicion"
+    type="text"
+    value={body.idRequisicion}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.idRequisicion !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+<Grid item xs={12} sm={30}>
               <TextField
-                name="fechaTerminacion"
-                label="Fecha Terminación"
+                name="fechaAsignacionConexionAuxOperativo"
+                label="Fecha Asignación Conexión Auxiliar Operativo"
                 type="date"
-                value={formatDate(body.fechaTerminacion)}
-                onChange={e => onChange({ target: { name: 'fechaTerminacion', value: e.target.value } })}
+                value={formatDate(body.fechaAsignacionConexionAuxOperativo)}
+                onChange={e => onChange({ target: { name: 'fechaAsignacionConexionAuxOperativo', value: e.target.value } })}
                 fullWidth
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Regional</InputLabel>
-      <Select
-        name="regional"
-        value={body.regional}
-        onChange={e => onChange({ target: { name: 'regional', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="REGIONAL BUCARAMANGA">REGIONAL BUCARAMANGA</MenuItem>
-        <MenuItem value="REGIONAL BOGOTA">REGIONAL BOGOTA</MenuItem>
-        <MenuItem value="REGIONAL CENTRO ORIENTE">REGIONAL CENTRO ORIENTE</MenuItem>
-        <MenuItem value="REGIONAL BARRANQUILLA">REGIONAL BARRANQUILLA</MenuItem>
-        <MenuItem value="REGIONAL CALI">REGIONAL CALI</MenuItem>
-        <MenuItem value="REGIONAL MEDELLIN">REGIONAL MEDELLIN</MenuItem>
 
-      </Select>
-    </FormControl>
-  </Grid>
+
   <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Empresa</InputLabel>
@@ -417,6 +521,232 @@ const onDelete = async (id) => {
       </Select>
     </FormControl>
   </Grid>
+
+  <Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+      <InputLabel>Servicio</InputLabel>
+      <Select
+        name="servicio"
+        value={body.servicio}
+        onChange={e => onChange({ target: { name: 'servicio', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="GINECOBSTETRICIA">GINECOBSTETRICIA</MenuItem>
+<MenuItem value="TRABAJO DE PARTO TPR">TRABAJO DE PARTO TPR</MenuItem>
+<MenuItem value="MATERNOFETAL">MATERNOFETAL</MenuItem>
+<MenuItem value="UNIDAD DE CUIDADO INTERMEDIO ADULTO">UNIDAD DE CUIDADO INTERMEDIO ADULTO</MenuItem>
+<MenuItem value="UNIDAD DE CUIDADO INTENSIVO ADULTO">UNIDAD DE CUIDADO INTENSIVO ADULTO</MenuItem>
+<MenuItem value="UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATA">UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATA</MenuItem>
+<MenuItem value="UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATAL">UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATAL</MenuItem>
+<MenuItem value="URGENCIAS">URGENCIAS</MenuItem>
+<MenuItem value="PREHOSPITALARIO - APH">PREHOSPITALARIO - APH</MenuItem>
+<MenuItem value="SALAS DE CIRUGIA">SALAS DE CIRUGIA</MenuItem>
+<MenuItem value="PEDIATRIA">PEDIATRIA</MenuItem>
+<MenuItem value="NEONATOS">NEONATOS</MenuItem>
+<MenuItem value="CUIDADO PALIATIVO">CUIDADO PALIATIVO</MenuItem>
+<MenuItem value="IMAGENES DIAGNOSTICAS">IMAGENES DIAGNOSTICAS</MenuItem>
+<MenuItem value="LABORATORIO">LABORATORIO</MenuItem>
+<MenuItem value="OPTOMETRAS">OPTOMETRAS</MenuItem>
+<MenuItem value="ADMINISTRATIVO">ADMINISTRATIVO</MenuItem>
+<MenuItem value="CONSULTA EXTERNA">CONSULTA EXTERNA</MenuItem>
+<MenuItem value="UNIDAD RENAL">UNIDAD RENAL</MenuItem>
+<MenuItem value="HOSPITALIZACION">HOSPITALIZACION</MenuItem>
+<MenuItem value="TERAPEUTICO">TERAPEUTICO</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+  <TextField
+    name="posicion"
+    label="Posición"
+    type="text"
+    value={body.posicion}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.posicion !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+      <InputLabel>Nuevo o Reingreso</InputLabel>
+      <Select
+        name="nuevoReingreso"
+        value={body.nuevoReingreso}
+        onChange={e => onChange({ target: { name: 'nuevoReingreso', value: e.target.value } })}
+        fullWidth
+      >
+        <MenuItem value="NUEVO "> NUEVO</MenuItem>
+        <MenuItem value=" REINGRESO">REINGRESO</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  
+  <Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+      <InputLabel>Ciudad</InputLabel>
+      <Select
+        name="ciudad"
+        value={body.ciudad}
+        onChange={e => onChange({ target: { name: 'ciudad', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="ACACÍAS">ACACÍAS</MenuItem>
+<MenuItem value="AGUACHICA">AGUACHICA</MenuItem>
+<MenuItem value="AGUAZUL">AGUAZUL</MenuItem>
+<MenuItem value="ALBANIA">ALBANIA</MenuItem>
+<MenuItem value="ALTO BAUDÓ">ALTO BAUDÓ</MenuItem>
+<MenuItem value="ARAUCA">ARAUCA</MenuItem>
+<MenuItem value="ARAUQUITA">ARAUQUITA</MenuItem>
+<MenuItem value="ATACO - TOLIMA">ATACO - TOLIMA</MenuItem>
+<MenuItem value="ARMENIA">ARMENIA</MenuItem>
+<MenuItem value="BARRANCABERMEJA">BARRANCABERMEJA</MenuItem>
+<MenuItem value="BARRANCAS">BARRANCAS</MenuItem>
+<MenuItem value="BARRANQUILLA">BARRANQUILLA</MenuItem>
+<MenuItem value="BOGOTÁ, D.C.">BOGOTÁ, D.C.</MenuItem>
+<MenuItem value="BUCARAMANGA">BUCARAMANGA</MenuItem>
+<MenuItem value="BUENAVENTURA">BUENAVENTURA</MenuItem>
+<MenuItem value="CAJICÁ">CAJICÁ</MenuItem>
+<MenuItem value="CALI">CALI</MenuItem>
+<MenuItem value="CARTAGENA">CARTAGENA</MenuItem>
+<MenuItem value="CARTAGO">CARTAGO</MenuItem>
+<MenuItem value="CHÍA">CHÍA</MenuItem>
+<MenuItem value="CHIQUINQUIRÁ">CHIQUINQUIRÁ</MenuItem>
+<MenuItem value="CHITAGÁ">CHITAGÁ</MenuItem>
+<MenuItem value="CÚCUTA">CÚCUTA</MenuItem>
+<MenuItem value="DIBULLA">DIBULLA</MenuItem>
+<MenuItem value="DUITAMA">DUITAMA</MenuItem>
+<MenuItem value="FACATATIVÁ">FACATATIVÁ</MenuItem>
+<MenuItem value="FLORENCIA">FLORENCIA</MenuItem>
+<MenuItem value="FONSECA">FONSECA</MenuItem>
+<MenuItem value="FORTUL">FORTUL</MenuItem>
+<MenuItem value="FUSAGASUGÁ">FUSAGASUGÁ</MenuItem>
+<MenuItem value="GARZÓN">GARZÓN</MenuItem>
+<MenuItem value="GIRARDOT">GIRARDOT</MenuItem>
+<MenuItem value="GUACA">GUACA</MenuItem>
+<MenuItem value="GUADALUPE">GUADALUPE</MenuItem>
+<MenuItem value="HONDA">HONDA</MenuItem>
+<MenuItem value="IBAGUÉ">IBAGUÉ</MenuItem>
+<MenuItem value="IPIALES">IPIALES</MenuItem>
+<MenuItem value="ISNOS">ISNOS</MenuItem>
+<MenuItem value="ISTMINA">ISTMINA</MenuItem>
+<MenuItem value="LA CALERA">LA CALERA</MenuItem>
+<MenuItem value="LA PLATA">LA PLATA</MenuItem>
+<MenuItem value="LETICIA">LETICIA</MenuItem>
+<MenuItem value="MAICAO">MAICAO</MenuItem>
+<MenuItem value="MÁLAGA">MÁLAGA</MenuItem>
+<MenuItem value="MANIZALES">MANIZALES</MenuItem>
+<MenuItem value="MEDELLÍN">MEDELLÍN</MenuItem>
+<MenuItem value="MONTELÍBANO">MONTELÍBANO</MenuItem>
+<MenuItem value="MONTERÍA">MONTERÍA</MenuItem>
+<MenuItem value="NEIVA">NEIVA</MenuItem>
+<MenuItem value="OCAÑA">OCAÑA</MenuItem>
+<MenuItem value="PALESTINA">PALESTINA</MenuItem>
+<MenuItem value="PALMIRA">PALMIRA</MenuItem>
+<MenuItem value="PASTO">PASTO</MenuItem>
+<MenuItem value="BOGOTÁ, D.C.">BOGOTÁ, D.C.</MenuItem>
+<MenuItem value="PEREIRA">PEREIRA</MenuItem>
+<MenuItem value="PIENDAMÓ">PIENDAMÓ</MenuItem>
+<MenuItem value="PITALITO">PITALITO</MenuItem>
+<MenuItem value="POPAYÁN">POPAYÁN</MenuItem>
+<MenuItem value="QUIBDÓ">QUIBDÓ</MenuItem>
+<MenuItem value="RIOHACHA">RIOHACHA</MenuItem>
+<MenuItem value="RIONEGRO">RIONEGRO</MenuItem>
+<MenuItem value="SAN ANDRÉS">SAN ANDRÉS</MenuItem>
+<MenuItem value="SAN GIL">SAN GIL</MenuItem>
+<MenuItem value="SAN JUAN DEL CESAR">SAN JUAN DEL CESAR</MenuItem>
+<MenuItem value="SANTA MARTA">SANTA MARTA</MenuItem>
+<MenuItem value="SANTANDER DE QUILICHAO">SANTANDER DE QUILICHAO</MenuItem>
+<MenuItem value="SARDINATA">SARDINATA</MenuItem>
+<MenuItem value="SINCELEJO">SINCELEJO</MenuItem>
+<MenuItem value="SOACHA">SOACHA</MenuItem>
+<MenuItem value="SOGAMOSO">SOGAMOSO</MenuItem>
+<MenuItem value="SOLEDAD">SOLEDAD</MenuItem>
+<MenuItem value="TAME">TAME</MenuItem>
+<MenuItem value="TULUÁ">TULUÁ</MenuItem>
+<MenuItem value="TUNJA">TUNJA</MenuItem>
+<MenuItem value="URIBIA">URIBIA</MenuItem>
+<MenuItem value="VALLEDUPAR">VALLEDUPAR</MenuItem>
+<MenuItem value="VILLANUEVA">VILLANUEVA</MenuItem>
+<MenuItem value="VILLAVICENCIO">VILLAVICENCIO</MenuItem>
+<MenuItem value="VILLETA">VILLETA</MenuItem>
+<MenuItem value="YOPAL">YOPAL</MenuItem>
+<MenuItem value="ZIPAQUIRÁ">ZIPAQUIRÁ</MenuItem>
+<MenuItem value="TAURAMENA">TAURAMENA</MenuItem>
+<MenuItem value="CHAPARRAL">CHAPARRAL</MenuItem>
+<MenuItem value="CAMPOALEGRE">CAMPOALEGRE</MenuItem>
+<MenuItem value="MONTERREY">MONTERREY</MenuItem>
+<MenuItem value="PAZ DE ARIPORO">PAZ DE ARIPORO</MenuItem>
+<MenuItem value="USA">USA</MenuItem>
+<MenuItem value="MONGUA">MONGUA</MenuItem>
+<MenuItem value="GIGANTE">GIGANTE</MenuItem>
+<MenuItem value="SORA - CUCAITA">SORA - CUCAITA</MenuItem>
+<MenuItem value="TINJACA">TINJACA</MenuItem>
+<MenuItem value="JUNIN">JUNIN</MenuItem>
+<MenuItem value="NIMAIMA">NIMAIMA</MenuItem>
+<MenuItem value="FLORIDABLANCA">FLORIDABLANCA</MenuItem>
+
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+      <InputLabel>Teletrabajo</InputLabel>
+      <Select
+        name="teletrabajo"
+        value={body.teletrabajo}
+        onChange={e => onChange({ target: { name: 'teletrabajo', value: e.target.value } })}
+        fullWidth
+      >
+        <MenuItem value="SÍ "> SÍ</MenuItem>
+        <MenuItem value=" NO">NO</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaExpedicionCedula"
+                label="Fecha Expedición Cédula"
+                type="date"
+                value={formatDate(body.fechaExpedicionCedula)}
+                onChange={e => onChange({ target: { name: 'fechaExpedicionCedula', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="cedula"
+    label="Cédula"
+    type="text"
+    value={body.cedula}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.cedula !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="nombreCandidato"
+                label="Nombre Candidato"
+                value={body.nombreCandidato}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            
   <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Cargo</InputLabel>
@@ -2620,48 +2950,34 @@ const onDelete = async (id) => {
 <MenuItem value="ANALISTA PLANEACION DE LA DEMANDA">ANALISTA PLANEACION DE LA DEMANDA</MenuItem>
 <MenuItem value="GESTOR OPERATIVO DE VACUNACION">GESTOR OPERATIVO DE VACUNACION</MenuItem>
 
-
           </Select>
     </FormControl>
   </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                name="posicion"
-                label="Posición"
-                type="number"
-                value={body.posicion}
-                onChange={onChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Tipo de Gasto</InputLabel>
-      <Select
-        name="tipoGasto"
-        value={body.tipoGasto}
-        onChange={e => onChange({ target: { name: 'tipoGasto', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="ADMINISTRATIVO">ADMINISTRATIVO</MenuItem>
-        <MenuItem value="ASISTENCIAL">ASISTENCIAL</MenuItem>
-        <MenuItem value="DOCENTE">DOCENTE</MenuItem>
-        <MenuItem value="VENTAS">VENTAS</MenuItem>
 
-      </Select>
-    </FormControl>
-  </Grid>
-            <Grid item xs={12} sm={6}>
+  <Grid item xs={12} sm={6}>
               <TextField
-                name="centroCosto"
-                label="Centro Costo"
-                value={body.centroCosto}
+                name="correo"
+                label="Correo"
+                type="text"
+                value={body.correo}
                 onChange={onChange}
                 fullWidth
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
+              <TextField
+                name="celular"
+                label="Celular"
+                type="text"
+                value={body.celular}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
       <InputLabel>Tipo de Planta</InputLabel>
       <Select
         name="tipoPlanta"
@@ -2669,82 +2985,735 @@ const onDelete = async (id) => {
         onChange={e => onChange({ target: { name: 'tipoPlanta', value: e.target.value } })}
         fullWidth
       >
-        <MenuItem value="APRENDIZ">APRENDIZ</MenuItem>
-        <MenuItem value="FIJA">FIJA</MenuItem>
-        <MenuItem value="TEMPORAL">TEMPORAL</MenuItem>
+ <MenuItem value="PLANTA APRENDIZ">PLANTA APRENDIZ</MenuItem>
+    <MenuItem value="PLANTA FIJA COL">PLANTA FIJA COL</MenuItem>
+    <MenuItem value="PLANTA TEMPORAL COL">PLANTA TEMPORAL COL</MenuItem>
 
       </Select>
     </FormControl>
   </Grid>
-  <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Tipo de Ingreso</InputLabel>
-      <Select
-        name="tipoIngreso"
-        value={body.tipoIngreso}
-        onChange={e => onChange({ target: { name: 'tipoIngreso', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="APRENDIZ LECTIVO">APRENDIZ LECTIVO</MenuItem>
-        <MenuItem value="NUEVO">NUEVO</MenuItem>
-        <MenuItem value="REINGRESO">REINGRESO</MenuItem>
-        <MenuItem value="MULTICONTRATO">MULTICONTRATO</MenuItem>
-        <MenuItem value="APRENDIZ PRODUCTIVO">APRENDIZ PRODUCTIVO</MenuItem>
-      </Select>
-    </FormControl>
-  </Grid>
-  <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Analista de Selección</InputLabel>
-      <Select
-        name="analistaSeleccion"
-        value={body.analistaSeleccion}
-        onChange={e => onChange({ target: { name: 'analistaSeleccion', value: e.target.value } })}
-        fullWidth
-      >
-<MenuItem value="ANA LORENA LOPEZ BAUTISTA">ANA LORENA LOPEZ BAUTISTA</MenuItem>
-<MenuItem value="ANA MARIA SUESCA">ANA MARIA SUESCA</MenuItem>
-<MenuItem value="ANDREA CRUZ">ANDREA CRUZ</MenuItem>
-<MenuItem value="BEATRIZ ELENA ARBOLEDA">BEATRIZ ELENA ARBOLEDA</MenuItem>
-<MenuItem value="DIANA MARCELA OLARTE">DIANA MARCELA OLARTE</MenuItem>
-<MenuItem value="DIANA PAOLA BARRAGAN">DIANA PAOLA BARRAGAN</MenuItem>
-<MenuItem value="ERIKA MARIA ROJAS GOMEZ">ERIKA MARIA ROJAS GOMEZ</MenuItem>
-<MenuItem value="ERIKA PAOLA OJEDA">ERIKA PAOLA OJEDA</MenuItem>
-<MenuItem value="FERNANDO PARRA PEREZ">FERNANDO PARRA PEREZ</MenuItem>
-<MenuItem value="GISELLA GUZMAN GORI">GISELLA GUZMAN GORI</MenuItem>
-<MenuItem value="JEIMMY ALEXANDRA ESPITIA">JEIMMY ALEXANDRA ESPITIA</MenuItem>
-<MenuItem value="JESSICA MORENO ALFONSO">JESSICA MORENO ALFONSO</MenuItem>
-<MenuItem value="JULIE PULIDO VELASCO">JULIE PULIDO VELASCO</MenuItem>
-<MenuItem value="LUISA FERNANDA RUEDA">LUISA FERNANDA RUEDA</MenuItem>
-<MenuItem value="LUZ HELENA BERMUDEZ">LUZ HELENA BERMUDEZ</MenuItem>
-<MenuItem value="MAYRA ALEJANDRA DUQUE">MAYRA ALEJANDRA DUQUE</MenuItem>
-<MenuItem value="NATALY JIMENEZ DIAZ">NATALY JIMENEZ DIAZ</MenuItem>
-<MenuItem value="NATHALIA PEÑA VANEGAS">NATHALIA PEÑA VANEGAS</MenuItem>
-<MenuItem value="PAOLA ANDREA MALDONADO">PAOLA ANDREA MALDONADO</MenuItem>
-<MenuItem value="PAULA ANDREA MORENO ARENAS">PAULA ANDREA MORENO ARENAS</MenuItem>
-<MenuItem value="ROSMERY MARTINEZ GIRAL">ROSMERY MARTINEZ GIRAL</MenuItem>
-<MenuItem value="TIBISAY DAYANNA PEREZ LIZCANO">TIBISAY DAYANNA PEREZ LIZCANO</MenuItem>
-<MenuItem value="KENYA GISELLA LOPEZ BAYONA">KENYA GISELLA LOPEZ BAYONA</MenuItem>
-<MenuItem value="NICOL CARDENAS">NICOL CARDENAS</MenuItem>
-<MenuItem value="MARCELA OLARTE">MARCELA OLARTE</MenuItem>
 
-      </Select>
-    </FormControl>
-  </Grid>
+  <Grid item xs={12} sm={6}>
+  <TextField
+    name="tiempoContrato"
+    label="Tiempo del contrato"
+    type="text"
+    value={body.tiempoContrato}
+    onChange={onChange}
+    fullWidth
+    InputLabelProps={{
+      shrink: body.tiempoContrato !== '', // El label se moverá solo cuando haya un valor
+    }}
+  />
+</Grid>
+
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Estado</InputLabel>
-                <Select
-                  name="estado"
-                  value={body.estado}
-                  onChange={onChange}
-                >
-                  <MenuItem value="ACTIVO">ACTIVO</MenuItem>
-                  <MenuItem value="TERMINADO">TERMINADO</MenuItem>
-
-                </Select>
-              </FormControl>
+              <TextField
+                name="fechaEnvioDocumentos"
+                label="Fecha Envio Documentos"
+                type="date"
+                value={formatDate(body.fechaEnvioDocumentos)}
+                onChange={e => onChange({ target: { name: 'fechaEnvioDocumentos', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="solicitudExamenMedico"
+                label="Solicitud Examén Médico"
+                type="date"
+                value={formatDate(body.solicitudExamenMedico)}
+                onChange={e => onChange({ target: { name: 'solicitudExamenMedico', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaProgramacionExamenMedico"
+                label="Fecha Programación Examén Médico"
+                type="date"
+                value={formatDate(body.fechaProgramacionExamenMedico)}
+                onChange={e => onChange({ target: { name: 'fechaProgramacionExamenMedico', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaConceptoExamenMedico"
+                label="Fecha Concepto Examén Médico"
+                type="date"
+                value={formatDate(body.fechaConceptoExamenMedico)}
+                onChange={e => onChange({ target: { name: 'fechaConceptoExamenMedico', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaProgramacionEstudioAYC"
+                label="Fecha Programaciónn Estudio AYC"
+                type="date"
+                value={formatDate(body.fechaProgramacionEstudioAYC)}
+                onChange={e => onChange({ target: { name: 'fechaProgramacionEstudioAYC', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaConceptoEstudioSeguridad"
+                label="Fecha Concepto Estudio Seguridad"
+                type="date"
+                value={formatDate(body.fechaConceptoEstudioSeguridad)}
+                onChange={e => onChange({ target: { name: 'fechaConceptoEstudioSeguridad', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaAsignacionAnalista"
+                label="Fecha Asignación Analista"
+                type="date"
+                value={formatDate(body.fechaAsignacionAnalista)}
+                onChange={e => onChange({ target: { name: 'fechaAsignacionAnalista', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+
+            <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Hoja de Vida Keralty</InputLabel>
+      <Select
+        name="hojaVidaKeralty"
+        value={body.hojaVidaKeralty}
+        onChange={e => onChange({ target: { name: 'hojaVidaKeralty', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+           
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Cédula</InputLabel>
+      <Select
+        name="cedulaPapel"
+        value={body.cedulaPapel}
+        onChange={e => onChange({ target: { name: 'cedulaPapel', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Infolaft</InputLabel>
+      <Select
+        name="infolaft"
+        value={body.infolaft}
+        onChange={e => onChange({ target: { name: 'infolaft', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Inhabilidades</InputLabel>
+      <Select
+        name="Inhabilidades"
+        value={body.inhabilidades}
+        onChange={e => onChange({ target: { name: 'inhabilidades', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Certificado Bancario</InputLabel>
+      <Select
+        name="certificadoBancario"
+        value={body.certificadoBancario}
+        onChange={e => onChange({ target: { name: 'certificadoBancario', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Certificado EPS</InputLabel>
+      <Select
+        name="certificadoEPS"
+        value={body.certificadoEPS}
+        onChange={e => onChange({ target: { name: 'certificadoEPS', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Certificado Pensión</InputLabel>
+      <Select
+        name="certificadoPension"
+        value={body.certificadoPension}
+        onChange={e => onChange({ target: { name: 'certificadoPension', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Certificado Cesantías</InputLabel>
+      <Select
+        name="certificadoCesantias"
+        value={body.certificadoCesantias}
+        onChange={e => onChange({ target: { name: 'certificadoCesantias', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Certificados Laborales</InputLabel>
+      <Select
+        name="certificadosLaborales"
+        value={body.certificadosLaborales}
+        onChange={e => onChange({ target: { name: 'certificadosLaborales', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Diploma Bachiller</InputLabel>
+      <Select
+        name="diplomaBachiller"
+        value={body.diplomaBachiller}
+        onChange={e => onChange({ target: { name: 'diplomaBachiller', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Acta Bachiller</InputLabel>
+      <Select
+        name="actaBachiller"
+        value={body.actaBachiller}
+        onChange={e => onChange({ target: { name: 'actaBachiller', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Diploma Pregado</InputLabel>
+      <Select
+        name="diplomaPregado"
+        value={body.actaBadiplomaPregadochiller}
+        onChange={e => onChange({ target: { name: 'diplomaPregado', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Acta Pregado</InputLabel>
+      <Select
+        name="actaPregado"
+        value={body.actaPregado}
+        onChange={e => onChange({ target: { name: 'actaPregado', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Diploma Posgrado</InputLabel>
+      <Select
+        name="diplomaPosgrado"
+        value={body.diplomaPosgrado}
+        onChange={e => onChange({ target: { name: 'diplomaPosgrado', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Acta Posgrado</InputLabel>
+      <Select
+        name="actaPosgrado"
+        value={body.actaPosgrado}
+        onChange={e => onChange({ target: { name: 'actaPosgrado', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Resolución de la Secretaria Salud</InputLabel>
+      <Select
+        name="resolucionSecretariaSalud"
+        value={body.resolucionSecretariaSalud}
+        onChange={e => onChange({ target: { name: 'resolucionSecretariaSalud', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Tarjeta Profesional</InputLabel>
+      <Select
+        name="tarjetaProfesional"
+        value={body.tarjetaProfesional}
+        onChange={e => onChange({ target: { name: 'tarjetaProfesional', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Rethus</InputLabel>
+      <Select
+        name="rethus"
+        value={body.rethus}
+        onChange={e => onChange({ target: { name: 'rethus', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Violencia Sexual</InputLabel>
+      <Select
+        name="violenciaSexual"
+        value={body.violenciaSexual}
+        onChange={e => onChange({ target: { name: 'violenciaSexual', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Gestión Duelo</InputLabel>
+      <Select
+        name="gestionDuelo"
+        value={body.gestionDuelo}
+        onChange={e => onChange({ target: { name: 'gestionDuelo', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Ataques Químicos</InputLabel>
+      <Select
+        name="ataquesQuimicos"
+        value={body.ataquesQuimicos}
+        onChange={e => onChange({ target: { name: 'ataquesQuimicos', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Donación Organos</InputLabel>
+      <Select
+        name="donacionOrganos"
+        value={body.donacionOrganos}
+        onChange={e => onChange({ target: { name: 'donacionOrganos', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Toma de muestras/ toma citología</InputLabel>
+      <Select
+        name="tomaMuestrasCitologia"
+        value={body.tomaMuestrasCitologia}
+        onChange={e => onChange({ target: { name: 'tomaMuestrasCitologia', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Soporte Vital Básico</InputLabel>
+      <Select
+        name="soporteVitalBasico"
+        value={body.soporteVitalBasico}
+        onChange={e => onChange({ target: { name: 'soporteVitalBasico', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Soporte Vital Avanzado</InputLabel>
+      <Select
+        name="soporteVitalAvanzado"
+        value={body.soporteVitalAvanzado}
+        onChange={e => onChange({ target: { name: 'soporteVitalAvanzado', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>PALS</InputLabel>
+      <Select
+        name="PALS"
+        value={body.PALS}
+        onChange={e => onChange({ target: { name: 'PALS', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>NALS</InputLabel>
+      <Select
+        name="NALS"
+        value={body.NALS}
+        onChange={e => onChange({ target: { name: 'NALS', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Vacunas Covid</InputLabel>
+      <Select
+        name="vacunasCovid"
+        value={body.vacunasCovid}
+        onChange={e => onChange({ target: { name: 'vacunasCovid', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Vacunas Hepatitis</InputLabel>
+      <Select
+        name="vacunasHepatitis"
+        value={body.vacunasHepatitis}
+        onChange={e => onChange({ target: { name: 'vacunasHepatitis', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Concepto Médico</InputLabel>
+      <Select
+        name="conceptoMedico"
+        value={body.conceptoMedico}
+        onChange={e => onChange({ target: { name: 'conceptoMedico', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid> 
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Concepto Informe Final/ Validación de títulos AYC</InputLabel>
+      <Select
+        name="conceptoInformeFinal"
+        value={body.conceptoInformeFinal}
+        onChange={e => onChange({ target: { name: 'conceptoInformeFinal', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Sintesis</InputLabel>
+      <Select
+        name="sintesis"
+        value={body.sintesis}
+        onChange={e => onChange({ target: { name: 'sintesis', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Certificado Inducción</InputLabel>
+      <Select
+        name="certificadoInduccion"
+        value={body.certificadoInduccion}
+        onChange={e => onChange({ target: { name: 'certificadoInduccion', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Carga Inhabilidades</InputLabel>
+      <Select
+        name="cargaInhabilidades"
+        value={body.cargaInhabilidades}
+        onChange={e => onChange({ target: { name: 'cargaInhabilidades', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+<MenuItem value="PRELIMINAR">PRELIMINAR</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
+              <TextField
+                name="observacionesAuxOperativo"
+                label="Observaciones Auxiliar Operativo"
+                type="text"
+                value={body.observacionesAuxOperativo}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaIngreso"
+                label="Fecha Ingreso"
+                type="date"
+                value={formatDate(body.fechaIngreso)}
+                onChange={e => onChange({ target: { name: 'fechaIngreso', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Estado</InputLabel>
+      <Select
+        name="estado"
+        value={body.estado}
+        onChange={e => onChange({ target: { name: 'estado', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="EN PROCESO">EN PROCESO</MenuItem>
+<MenuItem value="COMPLETADO">COMPLETADO</MenuItem>
+<MenuItem value="ENVIADO CON NOVEDADES">ENVIADO CON NOVEDADES</MenuItem>
+<MenuItem value="NO PASA FASE DEL PROCESO">NO PASA FASE DEL PROCESO</MenuItem>
+<MenuItem value="DESISTE">DESISTE</MenuItem>
+
+      </Select>
+    </FormControl>
+  </Grid>
+
+
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -2760,7 +3729,7 @@ const onDelete = async (id) => {
   );
 };
 
-export default ModificarDatosPersonales;
+export default ModificarDatosPersonalesPsicologos;
 
 
 

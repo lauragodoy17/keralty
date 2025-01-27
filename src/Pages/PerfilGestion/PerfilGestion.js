@@ -7,10 +7,10 @@ import ingreso from '../../Assets/ingreso4-removebg-preview.png'
 import busqueda_imagen from '../../Assets/busqueda_imagen.png'
 
 import modificar from '../../Assets/modificar_imagen.png'
-import './PerfilContratador.css'
+import './PerfilGestion.css'
 
 
-export default function PerfilContratador() {
+export default function PerfilGestion() {
     const [auth,setAuth]= useState(false);
     const [message, setMessage]=useState('')
     const [cedula, setCedula]= useState(' ')
@@ -49,13 +49,13 @@ export default function PerfilContratador() {
 
     
       const handleCardClickRegistrar = () => {
-        navigate('/IngresoContratador');
+        navigate('/IngresoGestion');
       };
       const handleCardClick = () => {
-        navigate('/BusquedaContratacion');
+        navigate('/BusquedaGestion');
       };
       const handleCardClickModificar = () => {
-        navigate('/ModificarContratador');
+        navigate('/ModificarGestion');
       };
     
   return (
@@ -83,21 +83,21 @@ export default function PerfilContratador() {
       <div className='Carta_ingreso' onClick={handleCardClickRegistrar}>
         <img src={ingreso}className='Imagen-perfil'/>
         <div className='NombrePerfil'>
-          Ingreso Personas, contratador
+          Ingreso Personas, Auxiliares Operativos
         </div>
       </div>
 
       <div className='Carta_modificar' onClick={handleCardClickModificar}>
         <img src={modificar}className='Imagen-perfil'/>
         <div className='NombrePerfil'>
-          Modificar Usuarios, contratador
+          Modificar Usuarios, Auxiliares Operativos
         </div>
       </div>
 
       <div className='Cartas' onClick={handleCardClick}>
         <img src={busqueda_imagen}className='Imagen-perfil'/>
         <div className='NombrePerfil'>
-          Busqueda Personas, contratador
+          Busqueda Personas, Auxiliares Operativos
         </div>
       </div>
 
@@ -107,5 +107,3 @@ export default function PerfilContratador() {
 </div>
      )
 }
-
- 

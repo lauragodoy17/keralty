@@ -3,26 +3,112 @@ import axios from 'axios';
 import { Table, TableContainer, TableHead, TableRow, TableCell, Paper, TableBody, Button, IconButton, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { format,parseISO } from 'date-fns';
 import { EditOutlined, DeleteForever as MdDeleteForever } from '@mui/icons-material';
-import './ModificarDatosPersonales.css';
 import swal from 'sweetalert';
+import './ModificarDatosPersonalesContratador.css'
 
-const ModificarDatosPersonales = () => {
+const ModificarDatosPersonalesContratador = () => {
   const initialState = {
-    auxiliarSeleccion: '',
-    documento: 0,
-    nombreCompleto: '',
-    fechaIngreso: '',
-    fechaTerminacion: '',
-    regional: '',
-    empresa: '',
-    cargo: '',
-    posicion: 0,
-    tipoGasto: '',
-    centroCosto: '',
-    tipoPlanta: '',
-    tipoIngreso: '',
+    fechaAsignacion: null,
+    contratador: '',
     analistaSeleccion: '',
-    estado: ''
+    auxiliarSeleccion: '',
+    tipoDocumento: '',
+    docTrabajador: '',
+    nombreEmpleado: '',
+    fechaIngreso: null,
+    fechaTermina: null,
+    nombreEmpresa: '',
+    prioridad: '',
+    nombreCargo: '',
+    posicion: '',
+    ciudades: '',
+    regional: '',
+    porcentajeSalario: '',
+    salario: '',
+    jornada: '',
+    tipoPlanta: '',
+    motivo: '',
+    fuente: '',
+    observacionSeleccion: '',
+    responsableSeleccion: '',
+    estado: '',
+    telefono: '',
+    correo: '',
+    estadoCivil: '',
+    fechaNacimiento: null,
+    direccion: '',
+    idIdentidad: '',
+    clausulaAdicional: '',
+    retefuente: '',
+    gen: '',
+    pa40EPS: '',
+    pa40ARP: '',
+    pa40AFP: '',
+    pa40CCF: '',
+    pa40AFC: '',
+    fechaEntregaGestionDocumental: null,
+    estadoProceso: '',
+    causalDevolucion: '',
+    fechaRevision: null,
+    estadoRevision: '',
+    revisadoEnviado: '',
+    fechaContratoEnvioFirmar: '',
+    contratoEnvioFirmar: '',
+    fechaContratoRecibidoFirmado: null,
+    contratoRecibidoFirmado: '',
+    fechaClausulaEnvioFirmar: null,
+    clausulaEnvioFirmar: '',
+    fechaRecibidoClausulaFirmada: null,
+    fechaRecibidoClausulaFirmada: null,
+    fechaPrimerSeguimiento: null,
+    primerSeguimiento: '',
+    fechaSegundoSegumiento: null,
+    segundoSegumiento: '',
+    envioInformeOnboarding: '',
+    fechaPorletRepositorio: null,
+    porletRepositorio: '',
+    recuperadoPor: '',
+    observacionRecuperacionContrato: '',
+    inconsistenciaCuadro: '',
+    tipoFirma: '',
+    fechaRadicadoEPS: null,
+    radicadoEPS: '',
+    fechaRecibidoEPS: null,
+    recibidoEPS: '',
+    fechaRepositorio: null, 
+    repositorio: '',
+    fechaPorlet: null,
+    porlet: '',
+    inconsistencia: '',
+    fechaCambioEPS: null, 
+    cambioEPS:'',
+    nuevaFechaIngresoEPS: null, 
+    fechaRadicadoARL: null, 
+    afiliacionARL: '',
+    fechaRepositorio1: null,
+    repositorio1:'', 
+    porlet1: '',
+    inconsistencia1: '',
+    fechaCambioARL: null,
+    cambioARL: '',
+    nuevaFechaIngresoARL: null,
+    fechaRadicadoCCF: null,
+    afiliacionCCF: '',
+    fechaRecibidoCCF: null, 
+    recibidoCCF: '',
+    fechaRepositorio2: null,
+    repositorio2: '',
+    fechaPorlet2: null,
+    porlet2: '',
+    inconsistencia2: '',
+    fechaCambioCaja: null,
+    cambioCaja: '',
+    nuevaFechaIngresoCaja: null,
+    afiliacionPensionesCesantias: '',
+    fechaPorletRepositorio2: null,
+    porletRepositorio2: '',
+    erroresPA40Contratacion: '',
+    inconsistenciaCuadro2: ''
   };
 
   const [userList, setUserList] = useState([]);
@@ -34,6 +120,8 @@ const ModificarDatosPersonales = () => {
   const [mensaje, setMensaje] = useState({ ident: null, message: null, type: null });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [values, setValues] = useState(initialState);
+
 
   const getUsers = async () => {
     try {
@@ -63,9 +151,30 @@ const ModificarDatosPersonales = () => {
     
     if (isNaN(date.getTime())) return '';
 
-    return format(date, 'yyyy-MM-dd'); // format to match <TextField> date format
+    return format(parseISO(dateString), 'yyyy-MM-dd');
+ // format to match <TextField> date format
   };
 
+  const formatDateTime = (dateString, time = null) => {
+    if (!dateString) return '';
+  
+    const date = parseISO(dateString);
+  
+    if (isNaN(date.getTime())) return '';
+  
+    if (time) {
+      const [hours, minutes, seconds] = time.split(':').map(Number);
+      if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59) {
+        date.setHours(hours, minutes, seconds);
+      } else {
+        return 'Invalid time format';
+      }
+    }
+  
+    return format(date, 'yyyy-MM-dd HH:mm:ss'); // Formato con fecha y hora
+  };
+  
+  
   const handleDialog = () => {
     setOpenDialog(prev => !prev);
   };
@@ -87,7 +196,7 @@ const ModificarDatosPersonales = () => {
   
       console.log('Sending data:', requestData);
   
-      const { data } = await axios.post('http://localhost:3080/Editar', requestData);
+      const { data } = await axios.post('http://localhost:3080/EditarContratador', requestData);
   
       setMensaje({
         ident: new Date().getTime(),
@@ -192,10 +301,12 @@ const onDelete = async (id) => {
     onChange={(e) => setSelectedTable(e.target.value)}
 >
     <option value="">Selecciona uno</option>
-    <option value="noviembre_diciembre_2023">Noviembre-Diciembre 2023</option>
-    <option value="enero_marzo_2024">Enero-Marzo 2024</option>
-    <option value="abril_junio">Abril-Junio 2024</option>
-    <option value="julio_septiembre">Julio-Septiembre 2024</option>
+    <option value="JULIO">JULIO 2024</option>
+    <option value="AGOSTO">AGOSTO 2024</option>
+    <option value="SEPTIEMBRE">SEPTIEMBRE 2024</option>
+    <option value="OCTUBRE">OCTUBRE 2024</option>
+    <option value="NOVIEMBRE">NOVIEMBRE 2024</option>
+
 </select>
 
         </div>
@@ -208,8 +319,8 @@ const onDelete = async (id) => {
             onChange={handleFilterChange}
           >
             <option value="">- Selecciona uno -</option>
-            <option value="documento">Búsqueda por cédula</option>
-            <option value="empresa">Búsqueda por empresa</option>
+            <option value="docTrabajador">Búsqueda por cédula</option>
+            <option value="nombreEmpresa">Búsqueda por empresa</option>
             <option value="regional">Búsqueda por regional</option>
             <option value="posicion">Búsqueda por posición</option>
           </select>
@@ -222,55 +333,228 @@ const onDelete = async (id) => {
             placeholder='Ingresa el dato a buscar'
           />
           {search && (
-            <TableContainer component={Paper} elevation={5} className="table-container">
-              <Table className="table">
+            <TableContainer component={Paper} elevation={5} className="table-container" style={{ overflowX: 'auto' }}>
+
+  <Table className="table" size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell>AUXILIAR DE SELECCIÓN</TableCell>
-                    <TableCell>DOCUMENTO</TableCell>
-                    <TableCell>NOMBRE COMPLETO</TableCell>
-                    <TableCell>FECHA INGRESO</TableCell>
-                    <TableCell>FECHA TERMINACION</TableCell>
-                    <TableCell>REGIONAL</TableCell>
-                    <TableCell>EMPRESA</TableCell>
-                    <TableCell>CARGO</TableCell>
-                    <TableCell>POSICIÓN</TableCell>
-                    <TableCell>TIPO GASTO</TableCell>
-                    <TableCell>CENTRO COSTO</TableCell>
-                    <TableCell>TIPO PLANTA</TableCell>
-                    <TableCell>TIPO INGRESO</TableCell>
-                    <TableCell>ANALISTA SELECCIÓN</TableCell>
-                    <TableCell>ESTADO</TableCell>
-                    <TableCell>ACCIONES</TableCell>
-                  </TableRow>
+                  <TableCell>FECHA DE ASIGNACIÓN</TableCell>
+<TableCell>CONTRATADOR</TableCell>
+<TableCell>ANALISTA DE SELECCIÓN</TableCell>
+<TableCell>AUXILIAR DE SELECCIÓN</TableCell>
+<TableCell>TIPO DE DOCUMENTO</TableCell>
+<TableCell>DOCUMENTO DEL TRABAJADOR</TableCell>
+<TableCell>NOMBRE DEL EMPLEADO</TableCell>
+<TableCell>FECHA DE INGRESO</TableCell>
+<TableCell>FECHA DE TERMINACIÓN</TableCell>
+<TableCell>NOMBRE DE LA EMPRESA</TableCell>
+<TableCell>PRIORIDAD</TableCell>
+<TableCell>NOMBRE DEL CARGO</TableCell>
+<TableCell>POSICIÓN</TableCell>
+<TableCell>CIUDADES</TableCell>
+<TableCell>REGIONAL</TableCell>
+<TableCell>PORCENTAJE DE SALARIO</TableCell>
+<TableCell>SALARIO</TableCell>
+<TableCell>JORNADA</TableCell>
+<TableCell>TIPO DE PLANTA</TableCell>
+<TableCell>MOTIVO</TableCell>
+<TableCell>FUENTE</TableCell>
+<TableCell>OBSERVACIÓN DE SELECCIÓN</TableCell>
+<TableCell>RESPONSABLE DE SELECCIÓN</TableCell>
+<TableCell>ESTADO</TableCell>
+<TableCell>TELÉFONO</TableCell>
+<TableCell>CORREO</TableCell>
+<TableCell>ESTADO CIVIL</TableCell>
+<TableCell>FECHA DE NACIMIENTO</TableCell>
+<TableCell>DIRECCIÓN</TableCell>
+<TableCell>ID DE IDENTIDAD</TableCell>
+<TableCell>CLÁUSULA ADICIONAL</TableCell>
+<TableCell>RETEFUENTE</TableCell>
+<TableCell>GÉNERO</TableCell>
+<TableCell>PA40 EPS</TableCell>
+<TableCell>PA40 ARP</TableCell>
+<TableCell>PA40 AFP</TableCell>
+<TableCell>PA40 CCF</TableCell>
+<TableCell>PA40 AFC</TableCell>
+<TableCell>FECHA DE ENTREGA A GESTIÓN DOCUMENTAL</TableCell>
+<TableCell>ESTADO DEL PROCESO</TableCell>
+<TableCell>CAUSAL DE DEVOLUCIÓN</TableCell>
+<TableCell>FECHA DE REVISIÓN</TableCell>
+<TableCell>ESTADO DE REVISIÓN</TableCell>
+<TableCell>REVISADO Y ENVIADO</TableCell>
+<TableCell>FECHA DE ENVÍO DEL CONTRATO A FIRMAR</TableCell>
+<TableCell>CONTRATO ENVIADO A FIRMAR</TableCell>
+<TableCell>FECHA DE RECIBIDO DEL CONTRATO FIRMADO</TableCell>
+<TableCell>CONTRATO RECIBIDO FIRMADO</TableCell>
+<TableCell>FECHA DE ENVÍO DE LA CLÁUSULA A FIRMAR</TableCell>
+<TableCell>CLÁUSULA ENVIADA A FIRMAR</TableCell>
+<TableCell>FECHA DE RECIBIDO DE LA CLÁUSULA FIRMADA</TableCell>
+<TableCell>FECHA DE PRIMER SEGUIMIENTO</TableCell>
+<TableCell>PRIMER SEGUIMIENTO</TableCell>
+<TableCell>FECHA DE SEGUNDO SEGUIMIENTO</TableCell>
+<TableCell>SEGUNDO SEGUIMIENTO</TableCell>
+<TableCell>ENVÍO DE INFORME DE ONBOARDING</TableCell>
+<TableCell>FECHA DEL PORLET EN REPOSITORIO</TableCell>
+<TableCell>PORLET EN REPOSITORIO</TableCell>
+<TableCell>RECUPERADO POR</TableCell>
+<TableCell>OBSERVACIÓN DE RECUPERACIÓN DEL CONTRATO</TableCell>
+<TableCell>INCONSISTENCIA EN EL CUADRO</TableCell>
+<TableCell className="table-cell">TIPO DE FIRMA</TableCell>
+{(selectedTable  === 'OCTUBRE' || selectedTable === 'NOVIEMBRE'|| selectedTable === 'SEPTIEMBRE') && (
+<>
+<TableCell>FECHA DE RADICADO EPS</TableCell>
+<TableCell>RADICADO EPS</TableCell>
+<TableCell>FECHA DE RECIBIDO EPS</TableCell>
+<TableCell>RECIBIDO EPS</TableCell>
+<TableCell>FECHA DE REPOSITORIO</TableCell>
+<TableCell>REPOSITORIO</TableCell>
+<TableCell>FECHA DEL PORLET</TableCell>
+<TableCell>PORLET</TableCell>
+<TableCell>INCONSISTENCIA</TableCell>
+<TableCell>FECHA DE CAMBIO DE EPS</TableCell>
+<TableCell>CAMBIO DE EPS</TableCell>
+<TableCell>NUEVA FECHA DE INGRESO EPS</TableCell>
+<TableCell>FECHA DE RADICADO ARL</TableCell>
+<TableCell>AFILIACIÓN ARL</TableCell>
+<TableCell>FECHA DE REPOSITORIO 1</TableCell>
+<TableCell>REPOSITORIO 1</TableCell>
+<TableCell>PORLET 1</TableCell>
+<TableCell>INCONSISTENCIA 1</TableCell>
+<TableCell>FECHA DE CAMBIO ARL</TableCell>
+<TableCell>CAMBIO ARL</TableCell>
+<TableCell>NUEVA FECHA DE INGRESO ARL</TableCell>
+<TableCell>FECHA DE RADICADO CCF</TableCell>
+<TableCell>AFILIACIÓN CCF</TableCell>
+<TableCell>FECHA DE RECIBIDO CCF</TableCell>
+<TableCell>RECIBIDO CCF</TableCell>
+<TableCell>FECHA DE REPOSITORIO 2</TableCell>
+<TableCell>REPOSITORIO 2</TableCell>
+<TableCell>FECHA DEL PORLET 2</TableCell>
+<TableCell>PORLET 2</TableCell>
+<TableCell>INCONSISTENCIA 2</TableCell>
+<TableCell>FECHA DE CAMBIO CAJA</TableCell>
+<TableCell>CAMBIO CAJA</TableCell>
+<TableCell>NUEVA FECHA DE INGRESO CAJA</TableCell>
+<TableCell>AFILIACIÓN PENSIONES Y CESANTÍAS</TableCell>
+<TableCell>FECHA DEL PORLET EN REPOSITORIO 2</TableCell>
+<TableCell>PORLET EN REPOSITORIO 2</TableCell>
+<TableCell>ERRORES PA40 EN CONTRATACIÓN</TableCell>
+<TableCell>INCONSISTENCIA EN EL CUADRO 2</TableCell>
+</>
+)}
+<TableCell>Acciones</TableCell> 
+
+</TableRow>
+
                 </TableHead>
                 <TableBody>
                   {filteredResults.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell>{user.auxiliarSeleccion}</TableCell>                      
-                      <TableCell>{user.documento}</TableCell>
-                      <TableCell>{user.nombreCompleto}</TableCell>
-                      <TableCell>{formatDate(user.fechaIngreso)}</TableCell>
-                      <TableCell>{formatDate(user.fechaTerminacion)}</TableCell>
-                      <TableCell>{user.regional}</TableCell>
-                      <TableCell>{user.empresa}</TableCell>
-                      <TableCell>{user.cargo}</TableCell>
-                      <TableCell>{user.posicion}</TableCell>
-                      <TableCell>{user.tipoGasto}</TableCell>
-                      <TableCell>{user.centroCosto}</TableCell>
-                      <TableCell>{user.tipoPlanta}</TableCell>
-                      <TableCell>{user.tipoIngreso}</TableCell>
-                      <TableCell>{user.analistaSeleccion}</TableCell>
-                      <TableCell>{user.estado}</TableCell>
-                      <TableCell>
-                        <IconButton onClick={() => handleEditClick(user)}>
-                          <EditOutlined />
-                        </IconButton>
-                        <IconButton onClick={() => handleDeleteClick(user.id)}>
-
-                          <MdDeleteForever />
-                        </IconButton>
-                      </TableCell>
+<TableCell>{formatDate(user.fechaAsignacion)}</TableCell>
+<TableCell>{user.contratador}</TableCell>
+<TableCell>{user.analistaSeleccion}</TableCell>
+<TableCell>{user.auxiliarSeleccion}</TableCell>
+<TableCell>{user.tipoDocumento}</TableCell>
+<TableCell>{user.docTrabajador}</TableCell>
+<TableCell>{user.nombreEmpleado}</TableCell>
+<TableCell>{formatDate(user.fechaIngreso)}</TableCell>
+<TableCell>{formatDate(user.fechaTermina)}</TableCell>
+<TableCell>{user.nombreEmpresa}</TableCell>
+<TableCell>{user.prioridad}</TableCell>
+<TableCell>{user.nombreCargo}</TableCell>
+<TableCell>{user.posicion}</TableCell>
+<TableCell>{user.ciudades}</TableCell>
+<TableCell>{user.regional}</TableCell>
+<TableCell>{user.porcentajeSalario}</TableCell>
+<TableCell>{user.salario}</TableCell>
+<TableCell>{user.jornada}</TableCell>
+<TableCell>{user.tipoPlanta}</TableCell>
+<TableCell>{user.motivo}</TableCell>
+<TableCell>{user.fuente}</TableCell>
+<TableCell>{user.observacionSeleccion}</TableCell>
+<TableCell>{user.responsableSeleccion}</TableCell>
+<TableCell>{user.estado}</TableCell>
+<TableCell>{user.telefono}</TableCell>
+<TableCell>{user.correo}</TableCell>
+<TableCell>{user.estadoCivil}</TableCell>
+<TableCell>{formatDate(user.fechaNacimiento)}</TableCell>
+<TableCell>{user.direccion}</TableCell>
+<TableCell>{user.idIdentidad}</TableCell>
+<TableCell>{user.clausulaAdicional}</TableCell>
+<TableCell>{user.retefuente}</TableCell>
+<TableCell>{user.gen}</TableCell>
+<TableCell>{user.pa40EPS}</TableCell>
+<TableCell>{user.pa40ARP}</TableCell>
+<TableCell>{user.pa40AFP}</TableCell>
+<TableCell>{user.pa40CCF}</TableCell>
+<TableCell>{user.pa40AFC}</TableCell>
+<TableCell>{formatDateTime(user.fechaEntregaGestionDocumental)}</TableCell>
+<TableCell>{user.estadoProceso}</TableCell>
+<TableCell>{user.causalDevolucion}</TableCell>
+<TableCell>{formatDateTime(user.fechaRevision)}</TableCell>
+<TableCell>{user.estadoRevision}</TableCell>
+<TableCell>{user.revisadoEnviado}</TableCell>
+<TableCell>{formatDateTime(user.fechaContratoEnvioFirmar)}</TableCell>
+<TableCell>{user.contratoEnvioFirmar}</TableCell>
+<TableCell>{formatDateTime(user.fechaContratoRecibidoFirmado)}</TableCell>
+<TableCell>{user.contratoRecibidoFirmado}</TableCell>
+<TableCell>{formatDateTime(user.fechaClausulaEnvioFirmar)}</TableCell>
+<TableCell>{user.clausulaEnvioFirmar}</TableCell>
+<TableCell>{formatDateTime(user.fechaRecibidoClausulaFirmada)}</TableCell>
+<TableCell>{formatDateTime(user.fechaPrimerSeguimiento)}</TableCell>
+<TableCell>{user.primerSeguimiento}</TableCell>
+<TableCell>{formatDateTime(user.fechaSegundoSegumiento)}</TableCell>
+<TableCell>{user.segundoSegumiento}</TableCell>
+<TableCell>{user.envioInformeOnboarding}</TableCell>
+<TableCell>{formatDateTime(user.fechaPorletRepositorio)}</TableCell>
+<TableCell>{user.porletRepositorio}</TableCell>
+<TableCell>{user.recuperadoPor}</TableCell>
+<TableCell>{user.observacionRecuperacionContrato}</TableCell>
+<TableCell>{user.inconsistenciaCuadro}</TableCell>
+<TableCell>{user.tipoFirma}</TableCell>
+{(selectedTable  === 'OCTUBRE' || selectedTable === 'NOVIEMBRE'|| selectedTable === 'SEPTIEMBRE') && (
+  <>
+<TableCell>{formatDateTime(user.fechaRadicadoEPS)}</TableCell>
+<TableCell>{user.radicadoEPS}</TableCell>
+<TableCell>{formatDate(user.fechaRecibidoEPS)}</TableCell>
+<TableCell>{user.recibidoEPS}</TableCell>
+<TableCell>{formatDateTime(user.fechaRepositorio)}</TableCell>
+<TableCell>{user.repositorio}</TableCell>
+<TableCell>{formatDateTime(user.fechaPorlet)}</TableCell>
+<TableCell>{user.porlet}</TableCell>
+<TableCell>{user.inconsistencia}</TableCell>
+<TableCell>{formatDateTime(user.fechaCambioEPS)}</TableCell>
+<TableCell>{user.cambioEPS}</TableCell>
+<TableCell>{formatDateTime(user.nuevaFechaIngresoEPS)}</TableCell>
+<TableCell>{formatDateTime(user.fechaRadicadoARL)}</TableCell>
+<TableCell>{user.afiliacionARL}</TableCell>
+<TableCell>{formatDateTime(user.fechaRepositorio1)}</TableCell>
+<TableCell>{user.repositorio1}</TableCell>
+<TableCell>{user.porlet1}</TableCell>
+<TableCell>{user.inconsistencia1}</TableCell>
+<TableCell>{formatDateTime(user.fechaCambioARL)}</TableCell>
+<TableCell>{user.cambioARL}</TableCell>
+<TableCell>{formatDateTime(user.nuevaFechaIngresoARL)}</TableCell>
+<TableCell>{formatDateTime(user.fechaRadicadoCCF)}</TableCell>
+<TableCell>{user.afiliacionCCF}</TableCell>
+<TableCell>{formatDateTime(user.fechaRecibidoCCF)}</TableCell>
+<TableCell>{user.recibidoCCF}</TableCell>
+<TableCell>{formatDateTime(user.fechaRepositorio2)}</TableCell>
+<TableCell>{user.repositorio2}</TableCell>
+<TableCell>{formatDateTime(user.fechaPorlet2)}</TableCell>
+<TableCell>{user.porlet2}</TableCell>
+<TableCell>{user.inconsistencia2}</TableCell>
+<TableCell>{formatDateTime(user.fechaCambioCaja)}</TableCell>
+<TableCell>{user.cambioCaja}</TableCell>
+<TableCell>{formatDate(user.nuevaFechaIngresoCaja)}</TableCell>
+<TableCell>{user.afiliacionPensionesCesantias}</TableCell>
+<TableCell>{formatDateTime(user.fechaPorletRepositorio2)}</TableCell>
+<TableCell>{user.porletRepositorio2}</TableCell>
+<TableCell>{user.erroresPA40Contratacion}</TableCell>
+<TableCell>{user.inconsistenciaCuadro2}</TableCell>
+</>
+)}
+<TableCell> <IconButton onClick={() => handleEditClick(user)}> <EditOutlined /> </IconButton> <IconButton onClick={() => handleDeleteClick(user.id)}> <MdDeleteForever /> </IconButton> </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -294,33 +578,131 @@ const onDelete = async (id) => {
         <DialogContent>
           <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Auxiliar de Selección</InputLabel>
-      <Select
-        name="auxiliarSeleccion"
-        value={body.auxiliarSeleccion}
-        onChange={e => onChange({ target: { name: 'auxiliarSeleccion', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="ANA MARIA CESPEDES">ANA MARIA CESPEDES</MenuItem>
-        <MenuItem value="ANDREA PEÑA">ANDREA PEÑA</MenuItem>
-        <MenuItem value="JUAN ANDRES NOVA">JUAN ANDRES NOVA</MenuItem>
-        <MenuItem value="LAURA BELEÑO">LAURA BELEÑO</MenuItem>
-        <MenuItem value="DAYANA PINEDA">DAYANA PINEDA</MenuItem>
-        <MenuItem value="NINI YOJANA SILVA">NINI YOJANA SILVA</MenuItem>
-        <MenuItem value="REGIONAL BARRANQUILLA">REGIONAL BARRANQUILLA</MenuItem>
-        <MenuItem value="REGIONAL BUCARAMANGA">REGIONAL BUCARAMANGA</MenuItem>
-        <MenuItem value="REGIONAL CALI">REGIONAL CALI</MenuItem>
-        <MenuItem value="REGIONAL MEDELLIN">REGIONAL MEDELLIN</MenuItem>
+  <TextField
+    name="fechaIngreso"
+    label="Fecha y Hora de Ingreso"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaIngreso', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
 
-      </Select>
-    </FormControl>
-  </Grid>
+<Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+    <InputLabel>Contratador</InputLabel>
+    <Select
+      name="contratador"
+      value={body.contratador}
+      onChange={e => onChange({ target: { name: 'contratador', value: e.target.value } })}
+      fullWidth
+    >
+      <MenuItem value="">- Selecciona uno -</MenuItem>
+      <MenuItem value="NATALIA BERMUDEZ">NATALIA BERMUDEZ</MenuItem>
+      <MenuItem value="YURI SUAREZ">YURI SUAREZ</MenuItem>
+      <MenuItem value="GREIDY GUILLEN">GREIDY GUILLEN</MenuItem>
+      <MenuItem value="CRISTIAN RAMIREZ">CRISTIAN RAMIREZ</MenuItem>
+      <MenuItem value="CAMILO CONTRERAS">CAMILO CONTRERAS</MenuItem>
+      <MenuItem value="VALENTINA SANCHEZ">VALENTINA SANCHEZ</MenuItem>
+      <MenuItem value="ELKIN DIAZ">ELKIN DIAZ</MenuItem>
+    </Select>
+  </FormControl>
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+    <InputLabel>Analista de Selección</InputLabel>
+    <Select
+      name="analistaSeleccion"
+      value={body.analistaSeleccion}
+      onChange={e => onChange({ target: { name: 'analistaSeleccion', value: e.target.value } })}
+      fullWidth
+    >
+      <MenuItem value="">- Selecciona uno -</MenuItem>
+      <MenuItem value="ANDREA CRUZ">ANDREA CRUZ</MenuItem>
+<MenuItem value="BEATRIZ ELENA ARBOLEDA">BEATRIZ ELENA ARBOLEDA</MenuItem>
+<MenuItem value="CINDY ALEXANDRA URRUTIA">CINDY ALEXANDRA URRUTIA</MenuItem>
+<MenuItem value="DIANA PAOLA BARRAGAN">DIANA PAOLA BARRAGAN</MenuItem>
+<MenuItem value="DIANA MARCELA OLARTE">DIANA MARCELA OLARTE</MenuItem>
+<MenuItem value="ERIKA PAOLA OJEDA">ERIKA PAOLA OJEDA</MenuItem>
+<MenuItem value="JEIMMY ALEXANDRA ESPITIA">JEIMMY ALEXANDRA ESPITIA</MenuItem>
+<MenuItem value="LUISA FERNANDA RUEDA">LUISA FERNANDA RUEDA</MenuItem>
+<MenuItem value="LUZ HELENA BERMUDEZ">LUZ HELENA BERMUDEZ</MenuItem>
+<MenuItem value="PAOLA ANDREA MALDONADO">PAOLA ANDREA MALDONADO</MenuItem>
+<MenuItem value="ANA LORENA LOPEZ BAUTISTA">ANA LORENA LOPEZ BAUTISTA</MenuItem>
+<MenuItem value="FRANCIA ELENA TOBON TABORDA">FRANCIA ELENA TOBON TABORDA</MenuItem>
+<MenuItem value="DIANA CAROLINA LONDOÑO MESA">DIANA CAROLINA LONDOÑO MESA</MenuItem>
+<MenuItem value="FERNANDO PARRA PEREZ">FERNANDO PARRA PEREZ</MenuItem>
+<MenuItem value="GINA MARGARITA VIANA ZAMBRANO">GINA MARGARITA VIANA ZAMBRANO</MenuItem>
+<MenuItem value="GISELLA GUZMAN GORI">GISELLA GUZMAN GORI</MenuItem>
+<MenuItem value="PAULA ANDREA MORENO ARENAS">PAULA ANDREA MORENO ARENAS</MenuItem>
+<MenuItem value="JULIE PULIDO VELASCO">JULIE PULIDO VELASCO</MenuItem>
+<MenuItem value="KENYA GISELLA LOPEZ BAYONA">KENYA GISELLA LOPEZ BAYONA</MenuItem>
+<MenuItem value="JESSICA MORENO ALFONSO">JESSICA MORENO ALFONSO</MenuItem>
+<MenuItem value="TIBISAY DAYANNA PEREZ LIZCANO">TIBISAY DAYANNA PEREZ LIZCANO</MenuItem>
+<MenuItem value="DIANA CASTAÑO DIAZ">DIANA CASTAÑO DIAZ</MenuItem>
+<MenuItem value="NATALY JIMENEZ DIAZ">NATALY JIMENEZ DIAZ</MenuItem>
+<MenuItem value="NATHALIA PEÑA VANEGAS">NATHALIA PEÑA VANEGAS</MenuItem>
+<MenuItem value="ROSMERY MARTINEZ GIRAL">ROSMERY MARTINEZ GIRAL</MenuItem>
+<MenuItem value="DEICY YADIRA BOLIVAR CUBILLOS">DEICY YADIRA BOLIVAR CUBILLOS</MenuItem>
+<MenuItem value="ANA MARIA SUESCA">ANA MARIA SUESCA</MenuItem>
+<MenuItem value="MAYRA ALEJANDRA DUQUE">MAYRA ALEJANDRA DUQUE</MenuItem>
+<MenuItem value="NICOL DANIELA CARDENAS">NICOL DANIELA CARDENAS</MenuItem>
+<MenuItem value="MADELIN AGUDELO PATINO">MADELIN AGUDELO PATINO</MenuItem>
+<MenuItem value="BELCY YUDID ROBLES AMAYA">BELCY YUDID ROBLES AMAYA</MenuItem>
+    </Select>
+  </FormControl>
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+    <InputLabel>Auxiliar de Selección</InputLabel>
+    <Select
+      name="auxiliarSeleccion"
+      value={body.auxiliarSeleccion}
+      onChange={e => onChange({ target: { name: 'auxiliarSeleccion', value: e.target.value } })}
+      fullWidth
+    >
+      <MenuItem value="">- Selecciona uno -</MenuItem>
+      <MenuItem value="ANA MARIA CESPEDES">ANA MARIA CESPEDES</MenuItem>
+<MenuItem value="ANDREA PEÑA">ANDREA PEÑA</MenuItem>
+<MenuItem value="JUAN ANDRES NOVA">JUAN ANDRES NOVA</MenuItem>
+<MenuItem value="LAURA BELEÑO">LAURA BELEÑO</MenuItem>
+<MenuItem value="DAYANA PINEDA">DAYANA PINEDA</MenuItem>
+<MenuItem value="NINI SILVA">NINI SILVA</MenuItem>
+<MenuItem value="GINA VINA">GINA VINA</MenuItem>
+<MenuItem value="FRANCIA TOBON">FRANCIA TOBON</MenuItem>
+<MenuItem value="FERNANDO PARRA">FERNANDO PARRA</MenuItem>
+<MenuItem value="DIANA LONDOÑO">DIANA LONDOÑO</MenuItem>
+<MenuItem value="MADELIN AGUDELO">MADELIN AGUDELO</MenuItem>
+    </Select>
+  </FormControl>
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+    <InputLabel>Tipo de Documento</InputLabel>
+    <Select
+      name="tipoDocumento"
+      value={body.tipoDocumento}
+      onChange={e => onChange({ target: { name: 'tipoDocumento', value: e.target.value } })}
+      fullWidth
+    >
+      <MenuItem value="">- Selecciona uno -</MenuItem>
+      <MenuItem value="CC">CC</MenuItem>
+<MenuItem value="TI">TI</MenuItem>
+<MenuItem value="PA">PA</MenuItem>
+<MenuItem value="CE">CE</MenuItem>
+    </Select>
+  </FormControl>
+</Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
-                name="documento"
-                label="Documento"
-                value={body.documento}
+                name="docTrabajador"
+                label="Documento Trabajador"
+                value={body.docTrabajador}
                 onChange={onChange}
                 fullWidth
                 
@@ -328,9 +710,9 @@ const onDelete = async (id) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                name="nombreCompleto"
+                name="nombreEmpleado"
                 label="Nombre Completo"
-                value={body.nombreCompleto}
+                value={body.nombreEmpleado}
                 onChange={onChange}
                 fullWidth
               />
@@ -348,43 +730,26 @@ const onDelete = async (id) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                name="fechaTerminacion"
+                name="fechaTermina"
                 label="Fecha Terminación"
                 type="date"
-                value={formatDate(body.fechaTerminacion)}
-                onChange={e => onChange({ target: { name: 'fechaTerminacion', value: e.target.value } })}
+                value={formatDate(body.fechaTermina)}
+                onChange={e => onChange({ target: { name: 'fechaTermina', value: e.target.value } })}
                 fullWidth
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Regional</InputLabel>
-      <Select
-        name="regional"
-        value={body.regional}
-        onChange={e => onChange({ target: { name: 'regional', value: e.target.value } })}
-        fullWidth
-      >
-        <MenuItem value="REGIONAL BUCARAMANGA">REGIONAL BUCARAMANGA</MenuItem>
-        <MenuItem value="REGIONAL BOGOTA">REGIONAL BOGOTA</MenuItem>
-        <MenuItem value="REGIONAL CENTRO ORIENTE">REGIONAL CENTRO ORIENTE</MenuItem>
-        <MenuItem value="REGIONAL BARRANQUILLA">REGIONAL BARRANQUILLA</MenuItem>
-        <MenuItem value="REGIONAL CALI">REGIONAL CALI</MenuItem>
-        <MenuItem value="REGIONAL MEDELLIN">REGIONAL MEDELLIN</MenuItem>
 
-      </Select>
-    </FormControl>
-  </Grid>
   <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Empresa</InputLabel>
       <Select
-        name="empresa"
-        value={body.empresa}
+        name="nombreEmpresa"
+        value={body.nombreEmpresa}
         onChange={onChange}
         fullWidth
       >
+              <MenuItem value="">- Selecciona uno -</MenuItem>
         <MenuItem value="CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S">CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S</MenuItem>
         <MenuItem value="CENTROS MEDICOS COLSANITAS SAS">CENTROS MEDICOS COLSANITAS SAS</MenuItem>
         <MenuItem value="CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.">CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.</MenuItem>
@@ -417,12 +782,29 @@ const onDelete = async (id) => {
       </Select>
     </FormControl>
   </Grid>
+
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Prioridad</InputLabel>
+      <Select
+        name="prioridad"
+        value={body.prioridad}
+        onChange={onChange}
+        fullWidth
+      >
+              <MenuItem value="">- Selecciona uno -</MenuItem>
+        <MenuItem value="ALTA">ALTA</MenuItem>
+<MenuItem value="NORMAL">NORMAL</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
   <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Cargo</InputLabel>
       <Select
-        name="cargo"
-        value={body.cargo}
+        name="nombreCargo"
+        value={body.nombreCargo}
         onChange={onChange}
         fullWidth
       >
@@ -2619,8 +3001,6 @@ const onDelete = async (id) => {
 <MenuItem value="ASESOR MEDICO JUNIOR">ASESOR MEDICO JUNIOR</MenuItem>
 <MenuItem value="ANALISTA PLANEACION DE LA DEMANDA">ANALISTA PLANEACION DE LA DEMANDA</MenuItem>
 <MenuItem value="GESTOR OPERATIVO DE VACUNACION">GESTOR OPERATIVO DE VACUNACION</MenuItem>
-
-
           </Select>
     </FormControl>
   </Grid>
@@ -2634,33 +3014,177 @@ const onDelete = async (id) => {
                 fullWidth
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
-      <InputLabel>Tipo de Gasto</InputLabel>
+      <InputLabel>Ciudades</InputLabel>
       <Select
-        name="tipoGasto"
-        value={body.tipoGasto}
-        onChange={e => onChange({ target: { name: 'tipoGasto', value: e.target.value } })}
+        name="ciudades"
+        value={body.ciudades}
+        onChange={e => onChange({ target: { name: 'ciudades', value: e.target.value } })}
         fullWidth
       >
-        <MenuItem value="ADMINISTRATIVO">ADMINISTRATIVO</MenuItem>
-        <MenuItem value="ASISTENCIAL">ASISTENCIAL</MenuItem>
-        <MenuItem value="DOCENTE">DOCENTE</MenuItem>
-        <MenuItem value="VENTAS">VENTAS</MenuItem>
+<MenuItem value="">- Selecciona una ciudad -</MenuItem>
+<MenuItem value="ARAUCA">ARAUCA</MenuItem>
+<MenuItem value="ARMENIA">ARMENIA</MenuItem>
+<MenuItem value="BARRANQUILLA">BARRANQUILLA</MenuItem>
+<MenuItem value="Bogotá, D.C.">Bogotá, D.C.</MenuItem>
+<MenuItem value="BUCARAMANGA">BUCARAMANGA</MenuItem>
+<MenuItem value="CALI">CALI</MenuItem>
+<MenuItem value="CARTAGENA">CARTAGENA</MenuItem>
+<MenuItem value="Cúcuta">Cúcuta</MenuItem>
+<MenuItem value="PASTO">PASTO</MenuItem>
+<MenuItem value="PEREIRA">PEREIRA</MenuItem>
+<MenuItem value="Popayán">Popayán</MenuItem>
+<MenuItem value="URIBIA">URIBIA</MenuItem>
+<MenuItem value="ALBANIA">ALBANIA</MenuItem>
+<MenuItem value="VALLEDUPAR">VALLEDUPAR</MenuItem>
+<MenuItem value="VILLAVICENCIO">VILLAVICENCIO</MenuItem>
+<MenuItem value="YOPAL">YOPAL</MenuItem>
+<MenuItem value="CHOCO">CHOCO</MenuItem>
+<MenuItem value="GIRARDOT">GIRARDOT</MenuItem>
+<MenuItem value="ARAUQUITA">ARAUQUITA</MenuItem>
+<MenuItem value="Quibdó">Quibdó</MenuItem>
+<MenuItem value="AGUACHICA">AGUACHICA</MenuItem>
+<MenuItem value="SINCELEJO">SINCELEJO</MenuItem>
+<MenuItem value="PROVIDENCIA">PROVIDENCIA</MenuItem>
+<MenuItem value="PALMIRA">PALMIRA</MenuItem>
+<MenuItem value="CAJICA">CAJICA</MenuItem>
+<MenuItem value="SOLEDAD">SOLEDAD</MenuItem>
+<MenuItem value="CHITAGA">CHITAGA</MenuItem>
+<MenuItem value="PASTO">PASTO</MenuItem>
+<MenuItem value="SOGAMOSO">SOGAMOSO</MenuItem>
+<MenuItem value="LETICIA">LETICIA</MenuItem>
+<MenuItem value="TULUA">TULUA</MenuItem>
+<MenuItem value="OCAÑA">OCAÑA</MenuItem>
+<MenuItem value="TAME">TAME</MenuItem>
+<MenuItem value="Málaga">Málaga</MenuItem>
+<MenuItem value="BARRANCABERMEJA">BARRANCABERMEJA</MenuItem>
+<MenuItem value="BARRANCAS">BARRANCAS</MenuItem>
+<MenuItem value="SOACHA">SOACHA</MenuItem>
+<MenuItem value="OCAÑA">OCAÑA</MenuItem>
+<MenuItem value="SARDINATA">SARDINATA</MenuItem>
+<MenuItem value="HONDA">HONDA</MenuItem>
+<MenuItem value="IPIALES">IPIALES</MenuItem>
+<MenuItem value="MINGUEO">MINGUEO</MenuItem>
+<MenuItem value="GUACA">GUACA</MenuItem>
+<MenuItem value="SAN ANDRES SANTANDER">SAN ANDRES SANTANDER</MenuItem>
+<MenuItem value="DIBULLA">DIBULLA</MenuItem>
+<MenuItem value="NEIVA">NEIVA</MenuItem>
+<MenuItem value="SARDINATA">SARDINATA</MenuItem>
+<MenuItem value="APRENDIZ">APRENDIZ</MenuItem>
+<MenuItem value="FLORENCIA">FLORENCIA</MenuItem>
+<MenuItem value="Montelíbano">Montelíbano</MenuItem>
+<MenuItem value="Tuluá">Tuluá</MenuItem>
+<MenuItem value="TAURAMENA">TAURAMENA</MenuItem>
+<MenuItem value="San Andrés">San Andrés</MenuItem>
+<MenuItem value="Floridablanca">Floridablanca</MenuItem>
+<MenuItem value="Pamplona">Pamplona</MenuItem>
+<MenuItem value="Málaga">Málaga</MenuItem>
+<MenuItem value="Uribe">Uribe</MenuItem>
+<MenuItem value="Villagarzón">Villagarzón</MenuItem>
+<MenuItem value="Pitalito">Pitalito</MenuItem>
+<MenuItem value="Santander de Quilichao">Santander de Quilichao</MenuItem>
+<MenuItem value="Chiquinquirá">Chiquinquirá</MenuItem>
+<MenuItem value="PUERTO BOLIVAR">PUERTO BOLIVAR</MenuItem>
+<MenuItem value="Medellín">Medellín</MenuItem>
+<MenuItem value="SAN ANDRES">SAN ANDRES</MenuItem>
+<MenuItem value="DUITAMA">DUITAMA</MenuItem>
+<MenuItem value="Chía">Chía</MenuItem>
+<MenuItem value="MANIZALES">MANIZALES</MenuItem>
+<MenuItem value="Garzón">Garzón</MenuItem>
+<MenuItem value="TUNJA">TUNJA</MenuItem>
+<MenuItem value="Montería">Montería</MenuItem>
+<MenuItem value="SANTA MARTA">SANTA MARTA</MenuItem>
+<MenuItem value="SAN GIL">SAN GIL</MenuItem>
+<MenuItem value="RIOHACHA">RIOHACHA</MenuItem>
+<MenuItem value="Ibagué">Ibagué</MenuItem>
+<MenuItem value="Santafé de Antioquia">Santafé de Antioquia</MenuItem>
+<MenuItem value="SANTA MARTA">SANTA MARTA</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+            <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Regional</InputLabel>
+      <Select
+        name="regional"
+        value={body.regional}
+        onChange={e => onChange({ target: { name: 'regional', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="">- Selecciona una regional -</MenuItem>
+<MenuItem value="Regional Barranquilla">Regional Barranquilla</MenuItem>
+<MenuItem value="Regional Bucaramanga">Regional Bucaramanga</MenuItem>
+<MenuItem value="Regional Bogotá">Regional Bogotá</MenuItem>
+<MenuItem value="Regional Cali">Regional Cali</MenuItem>
+<MenuItem value="Regional Centro Oriente">Regional Centro Oriente</MenuItem>
+<MenuItem value="Regional Medellín">Regional Medellín</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
 
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Porcentaje Salario</InputLabel>
+      <Select
+        name="porcentajeSalario"
+        value={body.porcentajeSalario}
+        onChange={e => onChange({ target: { name: 'porcentajeSalario', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="">- Selecciona un Porcentaje -</MenuItem>
+<MenuItem value="80%">80%</MenuItem>
+<MenuItem value="100%">100%</MenuItem>
       </Select>
     </FormControl>
   </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                name="centroCosto"
-                label="Centro Costo"
-                value={body.centroCosto}
+                name="salario"
+                label="Salario"
+                value={body.salario}
                 onChange={onChange}
                 fullWidth
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Jornada</InputLabel>
+      <Select
+        name="jornada"
+        value={body.jornada}
+        onChange={e => onChange({ target: { name: 'jornada', value: e.target.value } })}
+        fullWidth
+      >
+<MenuItem value="">- Selecciona una jornada -</MenuItem>
+<MenuItem value="34_140HORAS_STRD">34_140HORAS_STRD</MenuItem>
+<MenuItem value="02_180HORAS_STRD">02_180HORAS_STRD</MenuItem>
+<MenuItem value="03_120HORAS_STRD">03_120HORAS_STRD</MenuItem>
+<MenuItem value="05_150HORAS_STRD">05_150HORAS_STRD</MenuItem>
+<MenuItem value="06_90HORAS_STRD">06_90HORAS_STRD</MenuItem>
+<MenuItem value="07_100HORAS_STRD">07_100HORAS_STRD</MenuItem>
+<MenuItem value="08_210HORAS_STRD">08_210HORAS_STRD</MenuItem>
+<MenuItem value="09_60HORAS_STRD">09_60HORAS_STRD</MenuItem>
+<MenuItem value="19_135HORAS_STRD">19_135HORAS_STRD</MenuItem>
+<MenuItem value="20_75HORAS_STRD">20_75HORAS_STRD</MenuItem>
+<MenuItem value="21_30HORAS_STRD">21_30HORAS_STRD</MenuItem>
+<MenuItem value="25_32HORAS_STRD">25_32HORAS_STRD</MenuItem>
+<MenuItem value="28_35HORAS_STRD">28_35HORAS_STRD</MenuItem>
+<MenuItem value="39_110HORAS_STRD">39_110HORAS_STRD</MenuItem>
+<MenuItem value="40_195HORAS_STRD">40_195HORAS_STRD</MenuItem>
+<MenuItem value="41_225HORAS_STRD">41_225HORAS_STRD</MenuItem>
+<MenuItem value="42_190HORAS_STRD">42_190HORAS_STRD</MenuItem>
+<MenuItem value="43_220HORAS_STRD">43_220HORAS_STRD</MenuItem>
+<MenuItem value="44_148HORAS_STRD">44_148HORAS_STRD</MenuItem>
+<MenuItem value="51_230HORAS_STRD">51_230HORAS_STRD</MenuItem>
+<MenuItem value="38_200HORAS_STRD">38_200HORAS_STRD</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+  <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
       <InputLabel>Tipo de Planta</InputLabel>
       <Select
@@ -2669,68 +3193,109 @@ const onDelete = async (id) => {
         onChange={e => onChange({ target: { name: 'tipoPlanta', value: e.target.value } })}
         fullWidth
       >
-        <MenuItem value="APRENDIZ">APRENDIZ</MenuItem>
-        <MenuItem value="FIJA">FIJA</MenuItem>
-        <MenuItem value="TEMPORAL">TEMPORAL</MenuItem>
-
+<MenuItem value="">- Selecciona una planta -</MenuItem>
+<MenuItem value="PLANTA FIJA COL">PLANTA FIJA COL</MenuItem>
+<MenuItem value="PLANTA TEMPORAL COL">PLANTA TEMPORAL COL</MenuItem>
+<MenuItem value="PLANTA APRENDIZ">PLANTA APRENDIZ</MenuItem>
       </Select>
     </FormControl>
   </Grid>
+
   <Grid item xs={12} sm={6}>
     <FormControl fullWidth>
-      <InputLabel>Tipo de Ingreso</InputLabel>
+      <InputLabel>Motivo</InputLabel>
       <Select
-        name="tipoIngreso"
-        value={body.tipoIngreso}
-        onChange={e => onChange({ target: { name: 'tipoIngreso', value: e.target.value } })}
+        name="motivo"
+        value={body.motivo}
+        onChange={e => onChange({ target: { name: 'motivo', value: e.target.value } })}
         fullWidth
       >
-        <MenuItem value="APRENDIZ LECTIVO">APRENDIZ LECTIVO</MenuItem>
-        <MenuItem value="NUEVO">NUEVO</MenuItem>
-        <MenuItem value="REINGRESO">REINGRESO</MenuItem>
-        <MenuItem value="MULTICONTRATO">MULTICONTRATO</MenuItem>
-        <MenuItem value="APRENDIZ PRODUCTIVO">APRENDIZ PRODUCTIVO</MenuItem>
+<MenuItem value="">- Selecciona un motivo -</MenuItem>
+<MenuItem value="REMPLAZO VACANTE">REMPLAZO VACANTE</MenuItem>
+<MenuItem value="CUBRIMIENTO POSICION NUEVA">CUBRIMIENTO POSICION NUEVA</MenuItem>
+<MenuItem value="POR VACACIONES">POR VACACIONES</MenuItem>
+<MenuItem value="POR INCAPACIDAD">POR INCAPACIDAD</MenuItem>
+<MenuItem value="POR LIC DE MATERNIDAD">POR LIC DE MATERNIDAD</MenuItem>
+<MenuItem value="POR RECOMENDACIONES LABORALES">POR RECOMENDACIONES LABORALES</MenuItem>
+<MenuItem value="POR PICO RESPIRATORIO">POR PICO RESPIRATORIO</MenuItem>
+<MenuItem value="APRENDIZ LECTIVO">APRENDIZ LECTIVO</MenuItem>
+<MenuItem value="APRENDIZ PRODUCTIVO">APRENDIZ PRODUCTIVO</MenuItem>
+<MenuItem value="INCREMENTO EN LA OPERACIÓN">INCREMENTO EN LA OPERACIÓN</MenuItem>
       </Select>
     </FormControl>
   </Grid>
-  <Grid item xs={12} sm={6}>
-    <FormControl fullWidth>
-      <InputLabel>Analista de Selección</InputLabel>
-      <Select
-        name="analistaSeleccion"
-        value={body.analistaSeleccion}
-        onChange={e => onChange({ target: { name: 'analistaSeleccion', value: e.target.value } })}
-        fullWidth
-      >
-<MenuItem value="ANA LORENA LOPEZ BAUTISTA">ANA LORENA LOPEZ BAUTISTA</MenuItem>
-<MenuItem value="ANA MARIA SUESCA">ANA MARIA SUESCA</MenuItem>
-<MenuItem value="ANDREA CRUZ">ANDREA CRUZ</MenuItem>
-<MenuItem value="BEATRIZ ELENA ARBOLEDA">BEATRIZ ELENA ARBOLEDA</MenuItem>
-<MenuItem value="DIANA MARCELA OLARTE">DIANA MARCELA OLARTE</MenuItem>
-<MenuItem value="DIANA PAOLA BARRAGAN">DIANA PAOLA BARRAGAN</MenuItem>
-<MenuItem value="ERIKA MARIA ROJAS GOMEZ">ERIKA MARIA ROJAS GOMEZ</MenuItem>
-<MenuItem value="ERIKA PAOLA OJEDA">ERIKA PAOLA OJEDA</MenuItem>
-<MenuItem value="FERNANDO PARRA PEREZ">FERNANDO PARRA PEREZ</MenuItem>
-<MenuItem value="GISELLA GUZMAN GORI">GISELLA GUZMAN GORI</MenuItem>
-<MenuItem value="JEIMMY ALEXANDRA ESPITIA">JEIMMY ALEXANDRA ESPITIA</MenuItem>
-<MenuItem value="JESSICA MORENO ALFONSO">JESSICA MORENO ALFONSO</MenuItem>
-<MenuItem value="JULIE PULIDO VELASCO">JULIE PULIDO VELASCO</MenuItem>
-<MenuItem value="LUISA FERNANDA RUEDA">LUISA FERNANDA RUEDA</MenuItem>
-<MenuItem value="LUZ HELENA BERMUDEZ">LUZ HELENA BERMUDEZ</MenuItem>
-<MenuItem value="MAYRA ALEJANDRA DUQUE">MAYRA ALEJANDRA DUQUE</MenuItem>
-<MenuItem value="NATALY JIMENEZ DIAZ">NATALY JIMENEZ DIAZ</MenuItem>
-<MenuItem value="NATHALIA PEÑA VANEGAS">NATHALIA PEÑA VANEGAS</MenuItem>
-<MenuItem value="PAOLA ANDREA MALDONADO">PAOLA ANDREA MALDONADO</MenuItem>
-<MenuItem value="PAULA ANDREA MORENO ARENAS">PAULA ANDREA MORENO ARENAS</MenuItem>
-<MenuItem value="ROSMERY MARTINEZ GIRAL">ROSMERY MARTINEZ GIRAL</MenuItem>
-<MenuItem value="TIBISAY DAYANNA PEREZ LIZCANO">TIBISAY DAYANNA PEREZ LIZCANO</MenuItem>
-<MenuItem value="KENYA GISELLA LOPEZ BAYONA">KENYA GISELLA LOPEZ BAYONA</MenuItem>
-<MenuItem value="NICOL CARDENAS">NICOL CARDENAS</MenuItem>
-<MenuItem value="MARCELA OLARTE">MARCELA OLARTE</MenuItem>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Fuente</InputLabel>
+                <Select
+                  name="fuente"
+                  value={body.fuente}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona uno -</MenuItem>
+<MenuItem value="MANUAL">MANUAL</MenuItem>
+<MenuItem value="ONBOARDING">ONBOARDING</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
-      </Select>
-    </FormControl>
-  </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Observaciones Selección</InputLabel>
+                <Select
+                  name="observacionSeleccion"
+                  value={body.observacionSeleccion}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona uno -</MenuItem>
+<MenuItem value="ACTIVO INDEPENDIENTE SIN VOBO">ACTIVO INDEPENDIENTE SIN VOBO</MenuItem>
+<MenuItem value="CERTIFICADO SS ERRADO O PENDIENTE">CERTIFICADO SS ERRADO O PENDIENTE</MenuItem>
+<MenuItem value="DOC DE IDENTIDAD NO PERMITIDO O CON INCONSISTENCIA">DOC DE IDENTIDAD NO PERMITIDO O CON INCONSISTENCIA</MenuItem>
+<MenuItem value="FALTA APROBACIÓN">FALTA APROBACIÓN</MenuItem>
+<MenuItem value="MARCADO COMO NO ADECUADO PARA RECONTRATAR">MARCADO COMO NO ADECUADO PARA RECONTRATAR</MenuItem>
+<MenuItem value="FALTA CARTA DEL INSTITUTO">FALTA CARTA DEL INSTITUTO</MenuItem>
+<MenuItem value="FALTA CONSULTA DE INHABILIDAD">FALTA CONSULTA DE INHABILIDAD</MenuItem>
+<MenuItem value="FALTA O INCOMPLETO INFOLAFT">FALTA O INCOMPLETO INFOLAFT</MenuItem>
+<MenuItem value="PENDIENTE RETIRO COLABORADOR(A)">PENDIENTE RETIRO COLABORADOR(A)</MenuItem>
+<MenuItem value="FALTA DOCUMENTO DE IDENTIDAD">FALTA DOCUMENTO DE IDENTIDAD</MenuItem>
+<MenuItem value="FALTA REQUISICIÓN">FALTA REQUISICIÓN</MenuItem>
+<MenuItem value="FALTA SOPORTE DE INCAPACIDAD">FALTA SOPORTE DE INCAPACIDAD</MenuItem>
+<MenuItem value="FALTA O INCONSISTENCIA CAPRENDIZAJE">FALTA O INCONSISTENCIA CAPRENDIZAJE</MenuItem>
+<MenuItem value="FALTA SOPORTE DE LICENCIA DE MATERNIDAD">FALTA SOPORTE DE LICENCIA DE MATERNIDAD</MenuItem>
+<MenuItem value="FALTA CONFLICTO DE INTERES">FALTA CONFLICTO DE INTERES</MenuItem>
+<MenuItem value="HOJA DE VIDA INCOMPLETA">HOJA DE VIDA INCOMPLETA</MenuItem>
+<MenuItem value="CARPETA NO CREADA">CARPETA NO CREADA</MenuItem>
+<MenuItem value="POSICIÓN NO APARECE O ERRÓNEA">POSICIÓN NO APARECE O ERRÓNEA</MenuItem>
+<MenuItem value="POSICIÓN OCUPADA O NO VACANTE">POSICIÓN OCUPADA O NO VACANTE</MenuItem>
+<MenuItem value="REQUISICIÓN ERRADA">REQUISICIÓN ERRADA</MenuItem>
+<MenuItem value="PERFIL DEL CARGO ERRADO">PERFIL DEL CARGO ERRADO</MenuItem>
+<MenuItem value="SIN VACÍO LABORAL">SIN VACÍO LABORAL</MenuItem>
+<MenuItem value="SIN PERFIL DE CARGO">SIN PERFIL DE CARGO</MenuItem>
+<MenuItem value="DOC INCOMPLETOS O CON INCONSISTENCIA">DOC INCOMPLETOS O CON INCONSISTENCIA</MenuItem>
+<MenuItem value="FALTA LA HOJA DE VIDA">FALTA LA HOJA DE VIDA</MenuItem>
+<MenuItem value="CARPETA MAL CREADA">CARPETA MAL CREADA</MenuItem>
+<MenuItem value="CERTIFICADO BANCARIO VENCIDO O ERRADO">CERTIFICADO BANCARIO VENCIDO O ERRADO</MenuItem>
+<MenuItem value="ACTIVO SIN NOVEDAD DE RENUNCIA">ACTIVO SIN NOVEDAD DE RENUNCIA</MenuItem>
+<MenuItem value="OK">OK</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Responsable Selección</InputLabel>
+                <Select
+                  name="responsableSeleccion"
+                  value={body.responsableSeleccion}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona uno -</MenuItem>
+<MenuItem value="ANALISTA DE SELECCION">ANALISTA DE SELECCION</MenuItem>
+<MenuItem value="AUXILIAR DE SELECCION">AUXILIAR DE SELECCION</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Estado</InputLabel>
@@ -2739,12 +3304,1203 @@ const onDelete = async (id) => {
                   value={body.estado}
                   onChange={onChange}
                 >
-                  <MenuItem value="ACTIVO">ACTIVO</MenuItem>
-                  <MenuItem value="TERMINADO">TERMINADO</MenuItem>
-
+<MenuItem value="">- Selecciona uno -</MenuItem>
+<MenuItem value="ASIGNADO">ASIGNADO</MenuItem>
+<MenuItem value="RECHAZADO">RECHAZADO</MenuItem>
+<MenuItem value="DEVUELTO POR GESTOR">DEVUELTO POR GESTOR</MenuItem>
+<MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="telefono"
+                label="Teléfono"
+                value={body.telefono}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="correo"
+                label="Correo"
+                value={body.correo}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Estado civil</InputLabel>
+                <Select
+                  name="estadoCivil"
+                  value={body.estadoCivil}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona uno -</MenuItem>
+<MenuItem value="SOLTERO/A">SOLTERO/A</MenuItem>
+<MenuItem value="CASADO/A">CASADO/A</MenuItem>
+<MenuItem value="UNION LIBRE">UNION LIBRE</MenuItem>
+<MenuItem value="VIUDO/A">VIUDO/A</MenuItem>
+<MenuItem value="SEPARADO/A">SEPARADO/A</MenuItem>
+<MenuItem value="DIVORCIADO/A">DIVORCIADO/A</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="fechaNacimiento"
+                label="Fecha Nacimiento"
+                type="date"
+                value={formatDate(body.fechaNacimiento)}
+                onChange={e => onChange({ target: { name: 'fechaNacimiento', value: e.target.value } })}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="direccion"
+                label="Dirección"
+                value={body.direccion}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="idIdentidad"
+                label="ID"
+                value={body.idIdentidad}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Clausula Adicional</InputLabel>
+                <Select
+                  name="clausulaAdicional"
+                  value={body.clausulaAdicional}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona uno -</MenuItem>
+<MenuItem value="GASTO DE TRANSPORTE">GASTO DE TRANSPORTE</MenuItem>
+<MenuItem value="PRIMA DE LOCALIZACION">PRIMA DE LOCALIZACION</MenuItem>
+<MenuItem value="AUXILIO DE RODAMIENTO">AUXILIO DE RODAMIENTO</MenuItem>
+<MenuItem value="GARANTIZADO">GARANTIZADO</MenuItem>
+<MenuItem value="INCENTIVO">INCENTIVO</MenuItem>
+<MenuItem value="VENTAS">VENTAS</MenuItem>
+<MenuItem value="DISPONIBILIDAD">DISPONIBILIDAD</MenuItem>
+<MenuItem value="COMISIONES">COMISIONES</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Retefuente</InputLabel>
+                <Select
+                  name="retefuente"
+                  value={body.retefuente}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Gen</InputLabel>
+                <Select
+                  name="gen"
+                  value={body.gen}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="OK">OK</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>pa40EPS</InputLabel>
+                <Select
+                  name="pa40EPS"
+                  value={body.pa40EPS}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SURA">SURA</MenuItem>
+<MenuItem value="ADRES">ADRES</MenuItem>
+<MenuItem value="PIJAOS">PIJAOS</MenuItem>
+<MenuItem value="AMBUQ">AMBUQ</MenuItem>
+<MenuItem value="SANITAS">SANITAS</MenuItem>
+<MenuItem value="CONVIDA">CONVIDA</MenuItem>
+<MenuItem value="FAMILIAR DEL CHOCO">FAMILIAR DEL CHOCO</MenuItem>
+<MenuItem value="CAJACOPI">CAJACOPI</MenuItem>
+<MenuItem value="MEDIMAS">MEDIMAS</MenuItem>
+<MenuItem value="COOMEVA">COOMEVA</MenuItem>
+<MenuItem value="COOSALUD">COOSALUD</MenuItem>
+<MenuItem value="ECOOPSOS">ECOOPSOS</MenuItem>
+<MenuItem value="EMSSANAR">EMSSANAR</MenuItem>
+<MenuItem value="DUSAKAWI">DUSAKAWI</MenuItem>
+<MenuItem value="NUEVA EPS">NUEVA EPS</MenuItem>
+<MenuItem value="SALUD BOLÍVAR">SALUD BOLÍVAR</MenuItem>
+<MenuItem value="SALUD MIA">SALUD MIA</MenuItem>
+<MenuItem value="COMPARTA">COMPARTA</MenuItem>
+<MenuItem value="MALLAMAS">MALLAMAS</MenuItem>
+<MenuItem value="CAPRESOCA">CAPRESOCA</MenuItem>
+<MenuItem value="SALUD VIDA">SALUD VIDA</MenuItem>
+<MenuItem value="FAMISANAR">FAMISANAR</MenuItem>
+<MenuItem value="ALIANSALUD">ALIANSALUD</MenuItem>
+<MenuItem value="COMPENSAR">COMPENSAR</MenuItem>
+<MenuItem value="SAVIA SALUD">SAVIA SALUD</MenuItem>
+<MenuItem value="MUTUAL SER">MUTUAL SER</MenuItem>
+<MenuItem value="INDÍGENA ANAS WAYUU EPSI">INDÍGENA ANAS WAYUU EPSI</MenuItem>
+<MenuItem value="SALUD TOTAL">SALUD TOTAL</MenuItem>
+<MenuItem value="COMFAGUAJIRA">COMFAGUAJIRA</MenuItem>
+<MenuItem value="COMFAORIENTE">COMFAORIENTE</MenuItem>
+<MenuItem value="ASMET SALUD">ASMET SALUD</MenuItem>
+<MenuItem value="CAPITAL SALUD">CAPITAL SALUD</MenuItem>
+<MenuItem value="COMFAMILIAR HUILA">COMFAMILIAR HUILA</MenuItem>
+<MenuItem value="COMFENALCO VALLE">COMFENALCO VALLE</MenuItem>
+<MenuItem value="FAMILIAR DE COLOMBIA S.A.S">FAMILIAR DE COLOMBIA S.A.S</MenuItem>
+<MenuItem value="COMFACHOCO">COMFACHOCO</MenuItem>
+<MenuItem value="ASOCIACIÓN INDIGENA DEL CAUCA">ASOCIACIÓN INDIGENA DEL CAUCA</MenuItem>
+<MenuItem value="DUSAKAWI EPS">DUSAKAWI EPS</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>pa40AFP</InputLabel>
+                <Select
+                  name="pa40AFP"
+                  value={body.pa40AFP}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="COLPENSIONES">COLPENSIONES</MenuItem>
+<MenuItem value="PORVENIR">PORVENIR</MenuItem>
+<MenuItem value="PROTECCION">PROTECCION</MenuItem>
+<MenuItem value="SKANDIA">SKANDIA</MenuItem>
+<MenuItem value="COLFONDOS">COLFONDOS</MenuItem>
+<MenuItem value="NA">NA</MenuItem>
+<MenuItem value="NUEVO PORVENIR">NUEVO PORVENIR</MenuItem>
+<MenuItem value="NUEVO PROTECCION">NUEVO PROTECCION</MenuItem>
+<MenuItem value="NUEVO SKANDIA">NUEVO SKANDIA</MenuItem>
+<MenuItem value="NUEVO COLFONDOS">NUEVO COLFONDOS</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                name="pa40CCF"
+                label="pa40CCF"
+                value={body.pa40CCF}
+                onChange={onChange}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>pa40AFC</InputLabel>
+                <Select
+                  name="pa40AFC"
+                  value={body.pa40AFC}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="PORVENIR">PORVENIR</MenuItem>
+<MenuItem value="PROTECCION">PROTECCION</MenuItem>
+<MenuItem value="SKANDIA">SKANDIA</MenuItem>
+<MenuItem value="COLFONDOS">COLFONDOS</MenuItem>
+<MenuItem value="FNA">FNA</MenuItem>
+<MenuItem value="NA">NA</MenuItem>
+<MenuItem value="NUEVO PORVENIR">NUEVO PORVENIR</MenuItem>
+<MenuItem value="NUEVO PROTECCION">NUEVO PROTECCION</MenuItem>
+<MenuItem value="NUEVO SKANDIA">NUEVO SKANDIA</MenuItem>
+<MenuItem value="NUEVO COLFONDOS">NUEVO COLFONDOS</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaEntregaGestionDocumental"
+    label="Fecha Entrega Gestión Documental"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaEntregaGestionDocumental', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Estado Proceso</InputLabel>
+                <Select
+                  name="estadoProceso"
+                  value={body.estadoProceso}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Causal Devolución</InputLabel>
+                <Select
+                  name="causalDevolucion"
+                  value={body.causalDevolucion}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona uno -</MenuItem>
+<MenuItem value="ERROR EN EMPRESA">ERROR EN EMPRESA</MenuItem>
+<MenuItem value="ERROR FECHA DE NACIMIENTO">ERROR FECHA DE NACIMIENTO</MenuItem>
+<MenuItem value="ERROR FECHA DE INGRESO">ERROR FECHA DE INGRESO</MenuItem>
+<MenuItem value="ERROR FECHA TERMINACIÓN">ERROR FECHA TERMINACIÓN</MenuItem>
+<MenuItem value="ERROR FECHA DE CAMBIO ETAPA">ERROR FECHA DE CAMBIO ETAPA</MenuItem>
+<MenuItem value="FALTA O CON INCONCISTENCIA INFOLAFT">FALTA O CON INCONCISTENCIA INFOLAFT</MenuItem>
+<MenuItem value="FALTA O CON INCONCISTENCIA INHABILIDADES">FALTA O CON INCONCISTENCIA INHABILIDADES</MenuItem>
+<MenuItem value="CERTIFICADO BANCARIO VENCIDO">CERTIFICADO BANCARIO VENCIDO</MenuItem>
+<MenuItem value="ERROR SEGURIDAD SOCIAL">ERROR SEGURIDAD SOCIAL</MenuItem>
+<MenuItem value="ERROR BANCO, NÚMERO Y/O TIPO DE CUENTA">ERROR BANCO, NÚMERO Y/O TIPO DE CUENTA</MenuItem>
+<MenuItem value="ERROR INFORMACIÓN PERSONAL Y DE CONTACTO">ERROR INFORMACIÓN PERSONAL Y DE CONTACTO</MenuItem>
+<MenuItem value="CONDICIONES LABORALES, NO COINCIDEN CON PLANTA Y/O APROBACIONES">
+  CONDICIONES LABORALES, NO COINCIDEN CON PLANTA Y/O APROBACIONES
+</MenuItem>
+<MenuItem value="ERROR TIPO DE MINUTA">ERROR TIPO DE MINUTA</MenuItem>
+<MenuItem value="FALTA DOCUMENTO">FALTA DOCUMENTO</MenuItem>
+<MenuItem value="CONTRATO MAL PRESENTADO">CONTRATO MAL PRESENTADO</MenuItem>
+<MenuItem value="CONTRATO O DOCUMENTOS NO CORRESPONDEN">CONTRATO O DOCUMENTOS NO CORRESPONDEN</MenuItem>
+<MenuItem value="ERROR INFORMACIÓN INSTITUTO Y/O PROGRAMA">ERROR INFORMACIÓN INSTITUTO Y/O PROGRAMA</MenuItem>
+<MenuItem value="FALTA CLÁUSULA ADICIONAL">FALTA CLÁUSULA ADICIONAL</MenuItem>
+<MenuItem value="ERROR CARTA SS">ERROR CARTA SS</MenuItem>
+<MenuItem value="NO MARCACION DE CLAUSULA EN EL CUADRO">NO MARCACION DE CLAUSULA EN EL CUADRO</MenuItem>
+<MenuItem value="FALTA O MAL GRABADA LA PA40">FALTA O MAL GRABADA LA PA40</MenuItem>
+<MenuItem value="FECHA DE CAMBIO O TERMINACION MAL GRABADA">FECHA DE CAMBIO O TERMINACION MAL GRABADA</MenuItem>
+<MenuItem value="SIN NIVELACION O TERMINACION EN CH">SIN NIVELACION O TERMINACION EN CH</MenuItem>
+<MenuItem value="ERROR FECHA DE PREAVISO">ERROR FECHA DE PREAVISO</MenuItem>
+<MenuItem value="SIN PERFIL DEL CARGO">SIN PERFIL DEL CARGO</MenuItem>
+<MenuItem value="NIT DE EMPRESA ERRADO">NIT DE EMPRESA ERRADO</MenuItem>
+<MenuItem value="FALTA PREAVISO">FALTA PREAVISO</MenuItem>
+<MenuItem value="NO ENVIA EL INGRESO POR ONBASE">NO ENVIA EL INGRESO POR ONBASE</MenuItem>
+<MenuItem value="NO ADJUNTA CONTRATO POR ONBASE">NO ADJUNTA CONTRATO POR ONBASE</MenuItem>
+<MenuItem value="NO ADJUNTA CONTRATO EN DRIVE">NO ADJUNTA CONTRATO EN DRIVE</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRevision"
+    label="Fecha Revisión"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRevision', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Estado Revisión</InputLabel>
+                <Select
+                  name="estadoRevision"
+                  value={body.estadoRevision}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona un estado -</MenuItem>
+        <MenuItem value="DEVUELTO">DEVUELTO</MenuItem>
+        <MenuItem value="RECIBIDO">RECIBIDO</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Revisado enviado por:</InputLabel>
+                <Select
+                  name="revisadoEnviado"
+                  value={body.revisadoEnviado}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona un estado -</MenuItem>
+        <MenuItem value="STEFANY MORENO">STEFANY MORENO</MenuItem>
+        <MenuItem value="CAROLINA BONILLA">CAROLINA BONILLA</MenuItem>
+        <MenuItem value="XIMENA RIAÑO">XIMENA RIAÑO</MenuItem>
+        <MenuItem value="MARILYN GUAQUETA">MARILYN GUAQUETA</MenuItem>
+        <MenuItem value="CAREN MACIAS">CAREN MACIAS</MenuItem>
+        <MenuItem value="GESTION ANDRES">GESTION ANDRES</MenuItem>
+        <MenuItem value="MAGNOLIA ALFONSO">MAGNOLIA ALFONSO</MenuItem>
+        <MenuItem value="NATALIA ROJAS">NATALIA ROJAS</MenuItem>
+        <MenuItem value="STEPHANYA GAITAN">STEPHANYA GAITAN</MenuItem>
+        <MenuItem value="CRISTIAN RAMIREZ">CRISTIAN RAMIREZ</MenuItem>
+        <MenuItem value="FABIOLA CUEVAS">FABIOLA CUEVAS</MenuItem>
+        <MenuItem value="VALENTINA SANCHEZ">VALENTINA SANCHEZ</MenuItem>
+        <MenuItem value="NATALIA BARRETO">NATALIA BARRETO</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaContratoEnvioFirmar"
+    label="Fecha Contrato Envio Firmar"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaContratoEnvioFirmar', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Contrato Envio Firma</InputLabel>
+                <Select
+                  name="contratoEnvioFirmar"
+                  value={body.contratoEnvioFirmar}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaContratoRecibidoFirmado"
+    label="Fecha Contrato Recibido Firmado"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaContratoRecibidoFirmado', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Contrato Recibido Firmado</InputLabel>
+                <Select
+                  name="contratoRecibidoFirmado"
+                  value={body.contratoRecibidoFirmado}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaClausulaEnvioFirmar"
+    label="Fecha Clausula Envio Firmar"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaClausulaEnvioFirmar', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Clausula Envio Firma</InputLabel>
+                <Select
+                  name="clausulaEnvioFirmar"
+                  value={body.clausulaEnvioFirmar}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRecibidoClausulaFirmada"
+    label="Fecha Recibido Clausula Firmada"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRecibidoClausulaFirmada', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Recibido Clausula Firmada</InputLabel>
+                <Select
+                  name="recibidoClausulaFirmada"
+                  value={body.recibidoClausulaFirmada}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaPrimerSeguimiento"
+    label="Fecha Primer Seguimiento"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaPrimerSeguimiento', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Primer Seguimiento</InputLabel>
+                <Select
+                  name="primerSeguimiento"
+                  value={body.primerSeguimiento}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaSegundoSeguimiento"
+    label="Fecha Segundo Seguimiento"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaSegundoSeguimiento', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Segundo Seguimiento</InputLabel>
+                <Select
+                  name="segundoSeguimiento"
+                  value={body.segundoSeguimiento}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Envio Informe Onboarding</InputLabel>
+                <Select
+                  name="envioInformeOnboarding"
+                  value={body.envioInformeOnboarding}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona un estado -</MenuItem>
+<MenuItem value="ENVIADO">ENVIADO</MenuItem>
+<MenuItem value="NO APLICA">NO APLICA</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaPorletRepositorio"
+    label="Fecha Porlet Repositorio"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaIngreso)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaPorletRepositorio', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Porlet Repositorio</InputLabel>
+                <Select
+                  name="porletRepositorio"
+                  value={body.porletRepositorio}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Recuperado Por</InputLabel>
+                <Select
+                  name="recuperadoPor"
+                  value={body.recuperadoPor}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona un estado -</MenuItem>
+<MenuItem value="STEFANY">STEFANY</MenuItem>
+<MenuItem value="CAROLINA">CAROLINA</MenuItem>
+<MenuItem value="STPHEPANYA">STPHEPANYA</MenuItem>
+<MenuItem value="FABIOLA">FABIOLA</MenuItem>
+<MenuItem value="MARIA JOSE">MARIA JOSE</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Observación Recuperación Contrato</InputLabel>
+                <Select
+                  name="observacionRecuperacionContrato"
+                  value={body.observacionRecuperacionContrato}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona un estado -</MenuItem>
+<MenuItem value="FALTAN FIRMAS">FALTAN FIRMAS</MenuItem>
+<MenuItem value="CONTRATO INCOMPLETO">CONTRATO INCOMPLETO</MenuItem>
+<MenuItem value="MODIFICO FORMATO">MODIFICO FORMATO</MenuItem>
+<MenuItem value="DESISTIO DEL PROCESO">DESISTIO DEL PROCESO</MenuItem>
+<MenuItem value="RENUNCIO">RENUNCIO</MenuItem>
+<MenuItem value="SIN PERFIL DEL CARGO">SIN PERFIL DEL CARGO</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6} sx={{ marginBottom: 1.5 }}>
+            <FormControl fullWidth>
+                <InputLabel>Inconsistencia Cuadro</InputLabel>
+                <Select
+                  name="inconsistenciaCuadro"
+                  value={body.inconsistenciaCuadro}
+                  onChange={onChange}
+                >
+<MenuItem value="">- Selecciona un estado -</MenuItem>
+<MenuItem value="INFORMACION PERSONAL MAL">INFORMACION PERSONAL MAL</MenuItem>
+<MenuItem value="INFORMACION LABORAL MAL">INFORMACION LABORAL MAL</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6} sx={{ marginBottom: 1.5 }}>
+            <FormControl fullWidth>
+      <InputLabel>Tipo Firma</InputLabel>
+      <Select
+        name="tipoFirma"
+        value={body.tipoFirma}
+        onChange={onChange}
+      >
+        <MenuItem value="">- Selecciona un estado -</MenuItem>
+        <MenuItem value="VIRTUAL">VIRTUAL</MenuItem>
+        <MenuItem value="PRESENCIAL">PRESENCIAL</MenuItem>
+      </Select>
+    </FormControl>
+  </Grid>
+
+            {(selectedTable  === 'OCTUBRE' || selectedTable === 'NOVIEMBRE'|| selectedTable === 'SEPTIEMBRE') && (
+
+           
+<Grid container spacing={3}>
+<Grid item xs={12} sm={6}>
+      <TextField
+        name="fechaRadicadoEPS"
+        label="Fecha Radicado EPS"
+        type="datetime-local"
+        value={formatDateTime(body.fechaRadicadoEPS)} 
+        onChange={e => onChange({ target: { name: 'fechaRadicadoEPS', value: e.target.value } })}
+        fullWidth
+        InputLabelProps={{ shrink: true }}
+      />
+    </Grid>
+
+<Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Radicado EPS</InputLabel>
+      <Select
+        name="radicadoEPS"
+        value={body.radicadoEPS || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRecibidoEPS"
+    label="Fecha Recibido EPS"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaRecibidoEPS)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRecibidoEPS', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Recibido EPS</InputLabel>
+      <Select
+        name="recibidoEPS"
+        value={body.recibidoEPS || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRepositorio"
+    label="Fecha Repositorio"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaRepositorio)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRepositorio', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Repositorio</InputLabel>
+      <Select
+        name="repositorio2"
+        value={body.repositorio2 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaPorlet2"
+    label="Fecha Porlet"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaPorlet2)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaPorlet2', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Porlet</InputLabel>
+      <Select
+        name="porlet2"
+        value={body.porlet2 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Inconsistencia</InputLabel>
+      <Select
+        name="inconsistencia2"
+        value={body.inconsistencia2 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="FECHA_DE_NACIMIENTO">FECHA DE NACIMIENTO</MenuItem>
+<MenuItem value="RETROACTIVO">RETROACTIVO</MenuItem>
+<MenuItem value="EMPRESA_ERRADA">EMPRESA ERRADA</MenuItem>
+<MenuItem value="RIESGO_ERRADO">RIESGO ERRADO</MenuItem>
+<MenuItem value="FECHA_DE_INGRESO_ERRADA">FECHA DE INGRESO ERRADA</MenuItem>
+<MenuItem value="DATOS_PERSONALES_ERRADOS">DATOS PERSONALES ERRADOS</MenuItem>
+<MenuItem value="MAL_CARGADO_PORTLET">MAL CARGADO PORTLET</MenuItem>
+<MenuItem value="DOCUMENTO_NO_CARGADO_EN_CONEXION">DOCUMENTO NO CARGADO EN CONEXIÓN</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaCambioEPS"
+    label="Fecha cambio EPS"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaCambioEPS)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaCambioEPS', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Cambio EPS</InputLabel>
+      <Select
+        name="cambioEPS"
+        value={body.cambioEPS || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="CAMBIO DE FECHA DE INGRESO">CAMBIO DE FECHA DE INGRESO</MenuItem>
+<MenuItem value="CAMBIO DE SALARIO">CAMBIO DE SALARIO</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="nuevaFechaIngresoEPS"
+    label="Nueva Fecha Ingreso EPS"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.nuevaFechaIngresoEPS)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'nuevaFechaIngresoEPS', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRadicadoARL"
+    label="Fecha Radicado ARL"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaRadicadoARL)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRadicadoARL', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Afiliación ARL</InputLabel>
+      <Select
+        name="afiliacionARL"
+        value={body.afiliacionARL || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRepositorio1"
+    label="Fecha Repositorio"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaRepositorio1)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRepositorio1', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Repositorio</InputLabel>
+      <Select
+        name="repositorio"
+        value={body.repositorio || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaPorlet"
+    label="Fecha Porlet"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaPorlet)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaPorlet', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Porlet</InputLabel>
+      <Select
+        name="porlet"
+        value={body.porlet || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Inconsistencia</InputLabel>
+      <Select
+        name="inconsistencia1"
+        value={body.inconsistencia1 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="FECHA_INGRESO_ERRADA">FECHA DE INGRESO ERRADA</MenuItem>
+<MenuItem value="EMPRESA_ERRADA">EMPRESA ERRADA</MenuItem>
+<MenuItem value="SALARIO_ERRADO">SALARIO ERRADO</MenuItem>
+<MenuItem value="DATOS_PERSONALES_ERRADOS">DATOS PERSONALES ERRADOS</MenuItem>
+<MenuItem value="EPS_ERRADA">EPS ERRADA</MenuItem>
+<MenuItem value="TRASLADO_AGENDADO">TRASLADO AGENDADO</MenuItem>
+<MenuItem value="MAL_CARGADO_PORTLET">MAL CARGADO PORTLET</MenuItem>
+<MenuItem value="DOCUMENTO_NO_CARGADO_CONEXION_HUMANA">DOCUMENTO NO CARGADO EN CONEXIÓN HUMANA</MenuItem>
+<MenuItem value="EMPRESA_NO_CREADA">EMPRESA NO CREADA</MenuItem>
+<MenuItem value="RETIRO_PENDIENTE">RETIRO PENDIENTE</MenuItem>
+<MenuItem value="SIN_FECHA_DE_NOVEDAD">SIN FECHA DE NOVEDAD</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaCambioARL"
+    label="Fecha Cambio ARL"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaCambioARL)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaCambioARL', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Cambio ARL</InputLabel>
+      <Select
+        name="cambioARL"
+        value={body.cambioARL || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="ACTUALIZACION_DE_RIESGO">ACTUALIZACIÓN DE RIESGO</MenuItem>
+<MenuItem value="CAMBIO_DE_SALARIO">CAMBIO DE SALARIO</MenuItem>
+<MenuItem value="CAMBIO_DE_FECHA_DE_INGRESO">CAMBIO DE FECHA DE INGRESO</MenuItem>
+<MenuItem value="CAMBIO_DE_EMPRESA">CAMBIO DE EMPRESA</MenuItem>
+<MenuItem value="SOLICITUD_DE_RETIRO">SOLICITUD DE RETIRO</MenuItem>
+<MenuItem value="CAMBIO_DE_TIPO_DE_DOCUMENTO">CAMBIO DE TIPO DE DOCUMENTO</MenuItem>
+<MenuItem value="AJUSTE_DATOS_PERSONALES">AJUSTE DATOS PERSONALES</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="nuevaFechaIngresoARL"
+    label="Nueva Fecha Ingreso ARL"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.nuevaFechaIngresoARL)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'nuevaFechaIngresoARL', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRadicadoCCF"
+    label="Fecha Radicado CCF"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaRadicadoCCF)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRadicadoCCF', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Afiliación CCF</InputLabel>
+      <Select
+        name="afiliacionCCF"
+        value={body.afiliacionCCF || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRecibidoCCF"
+    label="Fecha Recibido CCF"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaRecibidoCCF)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRecibidoCCF', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaRepositorio2"
+    label="Fecha Repositorio"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaRepositorio2)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaRepositorio2', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Repositorio</InputLabel>
+      <Select
+        name="repositorio3"
+        value={body.repositorio3 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaPorlet3"
+    label="Fecha Porlet"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaPorlet3)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaPorlet3', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Porlet</InputLabel>
+      <Select
+        name="porlet3"
+        value={body.porlet3 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Inconsistencia</InputLabel>
+      <Select
+        name="inconsistencia3"
+        value={body.inconsistencia3 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="CAJA_ERRADA">CAJA ERRADA</MenuItem>
+<MenuItem value="SALARIO_ERRADO">SALARIO ERRADO</MenuItem>
+<MenuItem value="FECHA_DE_INGRESO_ERRADA">FECHA DE INGRESO ERRADA</MenuItem>
+<MenuItem value="EMPRESA_ERRADA">EMPRESA ERRADA</MenuItem>
+<MenuItem value="JORNADA_LABORAL">JORNADA LABORAL</MenuItem>
+<MenuItem value="MAL_CARGADO_PORTLET">MAL CARGADO PORTLET</MenuItem>
+<MenuItem value="EMPRESA_NO_CREADA">EMPRESA NO CREADA</MenuItem>
+<MenuItem value="RETIRO_PENDIENTE">RETIRO PENDIENTE</MenuItem>
+<MenuItem value="ERROR_PLATAFORMA_USUARIO">ERROR PLATAFORMA(USUARIO)</MenuItem>
+<MenuItem value="REPORTADO_DESPUES_DE_LA_FI">REPORTADO DESPUES DE LA FI</MenuItem>
+<MenuItem value="FECHA_DE_AFILIACION">FECHA DE AFILIACIÓN</MenuItem>
+<MenuItem value="DOCUMENTO_NO_CARGADO_EN_CONEXION">DOCUMENTO NO CARGADO EN CONEXIÓN</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaCambioCaja"
+    label="Fecha cambio Caja"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaCambioCaja)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaCambioCaja', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Cambio Caja</InputLabel>
+      <Select
+        name="cambioCaja"
+        value={body.cambioCaja || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="CAMBIO_DE_FECHA_DE_INGRESO">CAMBIO DE FECHA DE INGRESO</MenuItem>
+<MenuItem value="CAMBIO_DE_SALARIO">CAMBIO DE SALARIO</MenuItem>
+<MenuItem value="CAMBIO_DE_EMPRESA">CAMBIO DE EMPRESA</MenuItem>
+<MenuItem value="EMPRESA_NO_CREADA">EMPRESA NO CREADA</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="nuevaFechaIngresoCaja"
+    label="Nueva Fecha Ingreso Caja"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.nuevaFechaIngresoCaja)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'nuevaFechaIngresoCaja', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Afiliación Pensiones y Cesantías</InputLabel>
+      <Select
+        name="afiliacionPensionesCesantias"
+        value={body.afiliacionPensionesCesantias || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="AFILIACION NUEVA">AFILIACION NUEVA</MenuItem>
+<MenuItem value="AFILIADO ANTIGUO">AFILIADO ANTIGUO</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+  <TextField
+    name="fechaPorletRepositorio2"
+    label="Fecha PORLET Y REPOSITORIO"
+    type="datetime-local"  // Cambiado de 'date' a 'datetime-local'
+    value={formatDateTime(body.fechaPorletRepositorio2)}  // Asegúrate de que la función formatee con fecha y hora
+    onChange={e => onChange({ target: { name: 'fechaPorletRepositorio2', value: e.target.value } })}
+    fullWidth
+    InputLabelProps={{ shrink: true }}
+  />
+</Grid>
+
+<Grid item xs={12} sm={6}>
+<FormControl fullWidth>
+      <InputLabel>Porlet y repositorio</InputLabel>
+      <Select
+        name="porletRepositorio2"
+        value={body.porletRepositorio2 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="SI">SI</MenuItem>
+<MenuItem value="NO ">NO </MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Errores PA40 Contratación</InputLabel>
+      <Select
+        name="erroresPA40Contratacion"
+        value={body.erroresPA40Contratacion || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="RIESGO_MAL_GRABADO">RIESGO MAL GRABADO</MenuItem>
+<MenuItem value="ENTIDAD_NO_CORRESPONDE">ENTIDAD NO CORRESPONDE</MenuItem>
+<MenuItem value="REGIMEN_ESPECIAL_SIN_AUTORIZACION">REGIMEN ESPECIAL SIN AUTORIZACION</MenuItem>
+<MenuItem value="MAS_DE_1_DIAS_SIN_PA40">MAS DE 1 DIAS SIN PA40</MenuItem>
+<MenuItem value="NOMBRE_O_DOCUMENTO_MAL_EN_CH">NOMBRE O DOCUMENTO MAL EN CH</MenuItem>
+<MenuItem value="PENSION_SIN_PORCENTAJE">PENSION SIN %</MenuItem>
+      </Select>
+    </FormControl>
+    </Grid>
+
+    <Grid item xs={12} sm={6}>
+    <FormControl fullWidth>
+      <InputLabel>Inconsistencia Cuadro</InputLabel>
+      <Select
+        name="inconsistenciaCuadro2"
+        value={body.inconsistenciaCuadro2 || ""}
+        onChange={onChange}
+      >
+<MenuItem value="">- Selecciona -</MenuItem>
+<MenuItem value="INFORMACION PERSONAL MAL">INFORMACION PERSONAL MAL</MenuItem>
+<MenuItem value="INFORMACION LABORAL MAL">INFORMACION LABORAL MAL</MenuItem>
+      </Select>
+    </FormControl>
+        </Grid>
+
+  </Grid>
+
+)}
+
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -2760,13 +4516,4 @@ const onDelete = async (id) => {
   );
 };
 
-export default ModificarDatosPersonales;
-
-
-
-
-
-
-
-
-
+export default ModificarDatosPersonalesContratador;

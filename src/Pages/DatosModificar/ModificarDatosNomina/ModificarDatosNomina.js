@@ -272,11 +272,8 @@ function ModificarDatosNomina() {
             value={body.cartaPersonalRetirado}
             onChange={e => onChange({ target: { name: 'cartaPersonalRetirado', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -290,11 +287,8 @@ function ModificarDatosNomina() {
             value={body.cartaExamenMedicoEgreso}
             onChange={e => onChange({ target: { name: 'cartaExamenMedicoEgreso', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -308,11 +302,8 @@ function ModificarDatosNomina() {
             value={body.cartaEntregaSoportesPagosSGSS}
             onChange={e => onChange({ target: { name: 'cartaEntregaSoportesPagosSGSS', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -326,11 +317,8 @@ function ModificarDatosNomina() {
             value={body.cartaRetiroCesantias}
             onChange={e => onChange({ target: { name: 'cartaRetiroCesantias', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -344,11 +332,8 @@ function ModificarDatosNomina() {
             value={body.cartaAceptacionRenuncia}
             onChange={e => onChange({ target: { name: 'cartaAceptacionRenuncia', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -362,11 +347,8 @@ function ModificarDatosNomina() {
             value={body.cartaFaseFinal}
             onChange={e => onChange({ target: { name: 'cartaFaseFinal', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -380,11 +362,8 @@ function ModificarDatosNomina() {
             value={body.certificadoAporteTresMeses}
             onChange={e => onChange({ target: { name: 'certificadoAporteTresMeses', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -398,11 +377,8 @@ function ModificarDatosNomina() {
             value={body.liquidacion}
             onChange={e => onChange({ target: { name: 'liquidacion', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>

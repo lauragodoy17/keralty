@@ -18,11 +18,6 @@ export default function PerfilSeleccion() {
     axios.defaults.withCredentials=true; 
     const [selectedOption, setSelectedOption]= React.useState(null)
 
-    const buttons={
-        'Datos personales y únicos': <p/>,
-
-
-    }
 
     useEffect(() => {
         axios.get(`${api}`)
@@ -59,6 +54,9 @@ export default function PerfilSeleccion() {
       const handleCardClick = () => {
         navigate('/BusquedaPsicologos');
       };
+      const handleCardClickModificar = () => {
+        navigate('/ModificarPsicologos');
+      };
     
   return (
     <div className='main-wrapper'>
@@ -85,16 +83,25 @@ export default function PerfilSeleccion() {
       <div className='Carta_ingreso' onClick={handleCardClickRegistrar}>
         <img src={ingreso}className='Imagen-perfil'/>
         <div className='NombrePerfil'>
-          Ingreso Personas, psicologo
+          Ingreso Personas, psicólogo
+        </div>
+      </div>
+
+      <div className='Carta_modificar' onClick={handleCardClickModificar}>
+        <img src={modificar}className='Imagen-perfil'/>
+        <div className='NombrePerfil'>
+          Modificar Usuarios, psicólogo
         </div>
       </div>
 
       <div className='Cartas' onClick={handleCardClick}>
         <img src={busqueda_imagen}className='Imagen-perfil'/>
         <div className='NombrePerfil'>
-          Busqueda Personas, psicologo
+          Busqueda Personas, psicólogo
         </div>
       </div>
+
+      
 
       </div>
 </div>

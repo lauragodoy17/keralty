@@ -442,6 +442,8 @@ function ModificarDatosPersonal() {
     >
       <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
       <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
+      <MenuItem value="NO COTIZA">NO COTIZA</MenuItem>
+
     </Select>
   </FormControl>
 </Grid>
@@ -468,7 +470,7 @@ function ModificarDatosPersonal() {
     >
       <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
       <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-      <MenuItem value="NO APLICA">NO APLICA</MenuItem>
+      <MenuItem value="NO COTIZA">NO COTIZA</MenuItem>
     </Select>
   </FormControl>
 </Grid>
@@ -495,7 +497,7 @@ function ModificarDatosPersonal() {
     >
       <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
       <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-      <MenuItem value="NO APLICA">NO APLICA</MenuItem>
+      <MenuItem value="NO COTIZA">NO COTIZA</MenuItem>
     </Select>
   </FormControl>
 </Grid>

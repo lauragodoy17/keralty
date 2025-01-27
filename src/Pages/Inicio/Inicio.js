@@ -54,6 +54,9 @@ export default function Inicio() {
         else if(role==10){
           navigate('/PerfilSeleccion')
         }
+        else if(role==11){
+          navigate('/PerfilGestion')
+        }
         else if(role === 0){
           navigate('/noAutorizado')
         }

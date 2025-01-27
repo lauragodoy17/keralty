@@ -85,31 +85,34 @@ function DatosRegistroPersonales() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formErrors = validateForm();    
-    if (Object.keys(formErrors).length === 0) {
-      axios.post(`${api}/Registrar`, values)
-        .then(res => {
-          if (res.data.Status === "Success") {
-            swal({
-              title: "Bien hecho!",
-              text: "Tu registro fue guardado exitosamente",
-              icon: "success",
-              buttons: ["","Aceptar"]
-            }).then(respuesta => {
-              if (respuesta) {
-                window.location.reload();
-              }
-            });
-          } else {
-            setMessage("Error en el registro.");
-          }
-        })
-        .catch(err => {
-          console.log(err);
-          setMessage("Error en el servidor.");
-        });
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);  // Mostrar errores si los hay
+      return; // Salir si hay errores
     }
-    
+  
+    axios.post(`${api}/Registrar`, values)
+      .then(res => {
+        if (res.data.Status === "Success") {
+          swal({
+            title: "Bien hecho!",
+            text: "Tu registro fue guardado exitosamente",
+            icon: "success",
+            buttons: ["", "Aceptar"]
+          }).then(respuesta => {
+            if (respuesta) {
+              window.location.reload();
+            }
+          });
+        } else {
+          setMessage("Error en el registro.");
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        setMessage("Error en el servidor.");
+      });
   };
+  
 
   return (
     <div>
@@ -2565,23 +2568,18 @@ function DatosRegistroPersonales() {
           >
             <option value="">- Selecciona un analista -</option>
             <option value="ANA LORENA LOPEZ BAUTISTA">ANA LORENA LOPEZ BAUTISTA</option>
-              <option value="ANA MARIA PERAZA">ANA MARIA PERAZA</option>
               <option value="ANA MARIA SUESCA">ANA MARIA SUESCA</option>
               <option value="ANDREA CRUZ">ANDREA CRUZ</option>
               <option value="BEATRIZ ELENA ARBOLEDA">BEATRIZ ELENA ARBOLEDA</option>
               <option value="DIANA MARCELA OLARTE">DIANA MARCELA OLARTE</option>
               <option value="DIANA PAOLA BARRAGAN">DIANA PAOLA BARRAGAN</option>
-              <option value="EDNA ROCIO VARGAS PENAGOS">EDNA ROCIO VARGAS PENAGOS</option>
               <option value="ERIKA MARIA ROJAS GOMEZ">ERIKA MARIA ROJAS GOMEZ</option>
               <option value="ERIKA PAOLA OJEDA">ERIKA PAOLA OJEDA</option>
               <option value="FERNANDO PARRA PEREZ">FERNANDO PARRA PEREZ</option>
-              <option value="FRANCIA ELENA TOBON TABORDA">FRANCIA ELENA TOBON TABORDA</option>
-              <option value="GINA MARGARITA VIANA ZAMBRANO">GINA MARGARITA VIANA ZAMBRANO</option>
               <option value="GISELLA GUZMAN GORI">GISELLA GUZMAN GORI</option>
               <option value="JEIMMY ALEXANDRA ESPITIA">JEIMMY ALEXANDRA ESPITIA</option>
               <option value="JESSICA MORENO ALFONSO">JESSICA MORENO ALFONSO</option>
               <option value="JULIE PULIDO VELASCO">JULIE PULIDO VELASCO</option>
-              <option value="LEONARDO LEON">LEONARDO LEON</option>
               <option value="LUISA FERNANDA RUEDA">LUISA FERNANDA RUEDA</option>
               <option value="LUZ HELENA BERMUDEZ">LUZ HELENA BERMUDEZ</option>
               <option value="MAYRA ALEJANDRA DUQUE">MAYRA ALEJANDRA DUQUE</option>
@@ -2592,8 +2590,7 @@ function DatosRegistroPersonales() {
               <option value="ROSMERY MARTINEZ GIRAL">ROSMERY MARTINEZ GIRAL</option>
               <option value="TIBISAY DAYANNA PEREZ LIZCANO">TIBISAY DAYANNA PEREZ LIZCANO</option>
               <option value="KENYA GISELLA LOPEZ BAYONA">KENYA GISELLA LOPEZ BAYONA</option>
-              <option value="DIANA LONDOÑO">DIANA LONDOÑO</option>
-              <option value="NICOL DANIELA CARDENAS">NICOL DANIELA CARDENAS</option>
+              <option value="NICOL CARDENAS">NICOL CARDENAS</option>
               <option value="MARCELA OLARTE">MARCELA OLARTE</option>
 
           </select>
@@ -2611,7 +2608,7 @@ function DatosRegistroPersonales() {
           >
             <option value="">- Selecciona un estado -</option>
             <option value="ACTIVO">ACTIVO</option>
-            <option value="INACTIVO">INACTIVO</option>
+            <option value="TERMINADO">TERMINADO</option>
 
           </select>
           {errors.estado && <p className="error">{errors.estado}</p>}

@@ -5,76 +5,114 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import { format,parseISO } from 'date-fns';
-import './DatosPersonalesSeleccion.css'
+import './DatosPersonalesContratador.css'
 
 import api from '../../Utils/Api';
 
-function DatosPersonalesSeleccion() {
+function DatosPersonalesContratador() {
   const initialValues = {
-    fechaInicioProcesoAnalista: null,
-    idRequisicion: '',
-    fechaAsignacionConexionAuxOperativo: null,
-    tipoIngreso: '',
-    empresa: '',
-    servicio: '',
-    posicion: '',
-    nuevoReingreso: '',
-    ciudad: '',
-    teletrabajo: '',
-    fechaExpedicionCedula: null,
-    cedula: '',
-    nombreCandidato: '',
-    cargo: '',
-    correo: '',
-    celular: '',
-    tipoPlanta: '',
-    tiempoContrato: '',
-    fechaEnvioDocumentos: null,
-    solicitudExamenMedico: '',
-    fechaProgramacionExamenMedico: null,
-    fechaConceptoExamenMedico: null,
-    fechaProgramacionEstudioAYC: null,
-    fechaConceptoEstudioSeguridad: null,
-    fechaAsignacionAnalista: null,
-    hojaVidaKeralty: '',
-    cedulaPapel: '',
-    infolaft: '',
-    inhabilidades: '',
-    certificadoBancario: '',
-    certificadoEPS: '',
-    certificadoPension: '',
-    certificadoCesantias: '',
-    certificadosLaborales: '',
-    diplomaBachiller: '',
-    actaBachiller: '',
-    diplomaPregado: '',
-    actaPregado: '',
-    diplomaPosgrado: '',
-    actaPosgrado: '',
-    resolucionSecretariaSalud: '',
-    tarjetaProfesional: '',
-    rethus: '',
-    violenciaSexual: '',
-    gestionDuelo: '',
-    ataquesQuimicos: '',
-    donacionOrganos: '',
-    tomaMuestrasCitologia: '',
-    soporteVitalBasico: '',
-    soporteVitalAvanzado: '',
-    PALS: '',
-    NALS: '',
-    vacunasCovid: '',
-    vacunasHepatitis: '',
-    conceptoMedico: '',
-    conceptoInformeFinal: '',
-    sintesis: '',
-    certificadoInduccion: '',
-    cargaInhabilidades: '',
-    observacionesAuxOperativo: '',
+    fechaAsignacion: null,
+    contratador: '',
+    analistaSeleccion: '',
+    auxiliarSeleccion: '',
+    tipoDocumento: '',
+    docTrabajador: '',
+    nombreEmpleado: '',
     fechaIngreso: null,
-    estado: ''
+    fechaTermina: null,
+    nombreEmpresa: '',
+    prioridad: '',
+    nombreCargo: '',
+    posicion: '',
+    ciudades: '',
+    regional: '',
+    porcentajeSalario: '',
+    salario: '',
+    jornada: '',
+    tipoPlanta: '',
+    motivo: '',
+    fuente: '',
+    observacionSeleccion: '',
+    responsableSeleccion: '',
+    estado: '',
+    telefono: '',
+    correo: '',
+    estadoCivil: '',
+    fechaNacimiento: null,
+    direccion: '',
+    idIdentidad: '',
+    clausulaAdicional: '',
+    retefuente: '',
+    gen: '',
+    pa40EPS: '',
+    pa40ARP: '',
+    pa40AFP: '',
+    pa40CCF: '',
+    pa40AFC: '',
+    fechaEntregaGestionDocumental: null,
+    estadoProceso: '',
+    causalDevolucion: '',
+    fechaRevision: null,
+    estadoRevision: '',
+    revisadoEnviado: '',
+    fechaContratoEnvioFirmar: '',
+    contratoEnvioFirmar: '',
+    fechaContratoRecibidoFirmado: null,
+    contratoRecibidoFirmado: '',
+    fechaClausulaEnvioFirmar: null,
+    clausulaEnvioFirmar: '',
+    fechaRecibidoClausulaFirmada: null,
+    fechaRecibidoClausulaFirmada: null,
+    fechaPrimerSeguimiento: null,
+    primerSeguimiento: '',
+    fechaSegundoSegumiento: null,
+    segundoSegumiento: '',
+    envioInformeOnboarding: '',
+    fechaPorletRepositorio: null,
+    porletRepositorio: '',
+    recuperadoPor: '',
+    observacionRecuperacionContrato: '',
+    inconsistenciaCuadro: '',
+    tipoFirma: '',
+    fechaRadicadoEPS: null,
+    radicadoEPS: '',
+    fechaRecibidoEPS: null,
+    recibidoEPS: '',
+    fechaRepositorio: null, 
+    repositorio: '',
+    fechaPorlet: null,
+    porlet: '',
+    inconsistencia: '',
+    fechaCambioEPS: null, 
+    cambioEPS:'',
+    nuevaFechaIngresoEPS: null, 
+    fechaRadicadoARL: null, 
+    afiliacionARL: '',
+    fechaRepositorio1: null,
+    repositorio1:'', 
+    porlet1: '',
+    inconsistencia1: '',
+    fechaCambioARL: null,
+    cambioARL: '',
+    nuevaFechaIngresoARL: null,
+    fechaRadicadoCCF: null,
+    afiliacionCCF: '',
+    fechaRecibidoCCF: null, 
+    recibidoCCF: '',
+    fechaRepositorio2: null,
+    repositorio2: '',
+    fechaPorlet2: null,
+    porlet2: '',
+    inconsistencia2: '',
+    fechaCambioCaja: null,
+    cambioCaja: '',
+    nuevaFechaIngresoCaja: null,
+    afiliacionPensionesCesantias: '',
+    fechaPorletRepositorio2: null,
+    porletRepositorio2: '',
+    erroresPA40Contratacion: '',
+    inconsistenciaCuadro2: ''
   };
-  
   
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
@@ -107,11 +145,11 @@ function DatosPersonalesSeleccion() {
 
   const validateForm = () => {
     let formErrors = {};
-    if (values.cedula) {
-      if (isNaN(values.cedula)) {
-        formErrors.cedula = 'El documento debe ser un número';
-      } else if (values.cedula.toString().length < 6) {
-        formErrors.cedula = 'La cédula debe tener al menos 6 dígitos';
+    if (values.docTrabajador) {
+      if (isNaN(values.docTrabajador)) {
+        formErrors.docTrabajador = 'El documento debe ser un número';
+      } else if (values.docTrabajador.toString().length < 6) {
+        formErrors.docTrabajador = 'La cédula debe tener al menos 6 dígitos';
       }
     }
 
@@ -140,7 +178,7 @@ function DatosPersonalesSeleccion() {
     
     // Si no hay errores, hacemos la petición POST
     if (Object.keys(formErrors).length === 0) {
-      axios.post(`${api}/RegistrarSeleccion`, values)
+      axios.post(`${api}/RegistrarContratador`, values)
         .then(res => {
           if (res.data.Status === "Success") {
             // Mostramos mensaje de éxito con SweetAlert
@@ -167,377 +205,281 @@ function DatosPersonalesSeleccion() {
         });
     }
   };
-  
+  const marginTop = values.periodo === 'OCTUBRE' || values.periodo === 'NOVIEMBRE' || values.periodo === 'SEPTIEMBRE' ? '6700px' : '0px';
+
 
   return (
     <div>
-      <div className="Registro_Datos_Seleccion">
+      <div className="Registro_Datos_Contratacion">
+      <div style={{ marginTop }}>
+      </div>
         <h1>REGISTRO DE DATOS PERSONALES Y ÚNICOS</h1>
       </div>
 
       <form onSubmit={handleSubmit}>
         {/* Campo auxiliarSeleccion con opciones específicas */}
         <div className="select-container">
-  <label htmlFor="psicologos">Psicólogos</label>
+  <label htmlFor="periodo">Período</label>
   <select
-    name="psicologos"
-    id="psicologos"
-    value={values.psicologos}
-    onChange={(e) => handleChange(e, 'psicologos')}
+    name="periodo"
+    id="periodo"
+    value={values.periodo}
+    onChange={(e) => handleChange(e, 'periodo')}
   >
     <option value="">- Selecciona uno -</option>
-    <option value="TIBI">TIBI</option>
-    <option value="JESSI">JESSI</option>
-    <option value="ROS">ROS</option>
-    <option value="ALE DUQUE">ALE DUQUE</option>
-    <option value="ANDRE">ANDRE</option>
-    <option value="ELE">ELE</option>
+    <option value="JULIO">JULIO</option>
+    <option value="AGOSTO">AGOSTO</option>
+    <option value="SEPTIEMBRE">SEPTIEMBRE</option>
+    <option value="OCTUBRE">OCTUBRE</option>
+    <option value="NOVIEMBRE">NOVIEMBRE</option>
+
   </select>
-  {errors.psicologos && <p className="error">{errors.psicologos}</p>}
+  {errors.periodo && <p className="error">{errors.periodo}</p>}
+</div>
+
+
+<div className="select-container">
+  <label htmlFor="fechaAsignacion">Fecha y Hora de Asignación</label>
+  <DatePicker
+    selected={values.fechaAsignacion}
+    onChange={(date) => handleDateChange(date, 'fechaAsignacion')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha y hora de asignación"
+    className="date-picker-input"
+  />
+  {errors.fechaAsignacion && <p className="error">{errors.fechaAsignacion}</p>}
 </div>
 
 
         <div className="select-container">
-          <label htmlFor="fechaInicioProcesoAnalista">Fecha de Inicio de proceso Analista</label>
-          <DatePicker
-            selected={values.fechaInicioProcesoAnalista}
-            onChange={(date) => handleDateChange(date, 'fechaInicioProcesoAnalista')}
+          <label htmlFor="contratador">Contratador</label>
+          <select
+            name="contratador"
+            id="contratador"
+            value={values.contratador}
+            onChange={(e) => handleChange(e, 'contratador')}
+          >
+                        <option value="">- Selecciona uno -</option>
 
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la fecha de inicio de proceso analista"
-            className="date-picker-input"
+<option value="NATALIA BERMUDEZ">NATALIA BERMUDEZ</option>
+<option value="YURI SUAREZ">YURI SUAREZ</option>
+<option value="GREIDY GUILLEN">GREIDY GUILLEN</option>
+<option value="CRISTIAN RAMIREZ">CRISTIAN RAMIREZ</option>
+<option value="CAMILO CONTRERAS">CAMILO CONTRERAS</option>
+<option value="VALENTINA SANCHEZ">VALENTINA SANCHEZ</option>
+<option value="ELKIN DIAZ">ELKIN DIAZ</option>
+          </select>
+          {errors.contratador && <p className="error">{errors.contratador}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="analistaSeleccion">Analista de Selección</label>
+          <select
+            name="analistaSeleccion"
+            id="analistaSeleccion"
+            value={values.analistaSeleccion}
+            onChange={(e) => handleChange(e, 'analistaSeleccion')}
+          >
+            <option value="">- Selecciona uno -</option>
+            <option value="ANDREA CRUZ">ANDREA CRUZ</option>
+<option value="BEATRIZ ELENA ARBOLEDA">BEATRIZ ELENA ARBOLEDA</option>
+<option value="CINDY ALEXANDRA URRUTIA">CINDY ALEXANDRA URRUTIA</option>
+<option value="DIANA PAOLA BARRAGAN">DIANA PAOLA BARRAGAN</option>
+<option value="DIANA MARCELA OLARTE">DIANA MARCELA OLARTE</option>
+<option value="ERIKA PAOLA OJEDA">ERIKA PAOLA OJEDA</option>
+<option value="JEIMMY ALEXANDRA ESPITIA">JEIMMY ALEXANDRA ESPITIA</option>
+<option value="LUISA FERNANDA RUEDA">LUISA FERNANDA RUEDA</option>
+<option value="LUZ HELENA BERMUDEZ">LUZ HELENA BERMUDEZ</option>
+<option value="PAOLA ANDREA MALDONADO">PAOLA ANDREA MALDONADO</option>
+<option value="ANA LORENA LOPEZ BAUTISTA">ANA LORENA LOPEZ BAUTISTA</option>
+<option value="FRANCIA ELENA TOBON TABORDA">FRANCIA ELENA TOBON TABORDA</option>
+<option value="DIANA CAROLINA LONDOÑO MESA">DIANA CAROLINA LONDOÑO MESA</option>
+<option value="FERNANDO PARRA PEREZ">FERNANDO PARRA PEREZ</option>
+<option value="GINA MARGARITA VIANA ZAMBRANO">GINA MARGARITA VIANA ZAMBRANO</option>
+<option value="GISELLA GUZMAN GORI">GISELLA GUZMAN GORI</option>
+<option value="PAULA ANDREA MORENO ARENAS">PAULA ANDREA MORENO ARENAS</option>
+<option value="JULIE PULIDO VELASCO">JULIE PULIDO VELASCO</option>
+<option value="KENYA GISELLA LOPEZ BAYONA">KENYA GISELLA LOPEZ BAYONA</option>
+<option value="JESSICA MORENO ALFONSO">JESSICA MORENO ALFONSO</option>
+<option value="TIBISAY DAYANNA PEREZ LIZCANO">TIBISAY DAYANNA PEREZ LIZCANO</option>
+<option value="DIANA CASTAÑO DIAZ">DIANA CASTAÑO DIAZ</option>
+<option value="NATALY JIMENEZ DIAZ">NATALY JIMENEZ DIAZ</option>
+<option value="NATHALIA PEÑA VANEGAS">NATHALIA PEÑA VANEGAS</option>
+<option value="ROSMERY MARTINEZ GIRAL">ROSMERY MARTINEZ GIRAL</option>
+<option value="DEICY YADIRA BOLIVAR CUBILLOS">DEICY YADIRA BOLIVAR CUBILLOS</option>
+<option value="ANA MARIA SUESCA">ANA MARIA SUESCA</option>
+<option value="MAYRA ALEJANDRA DUQUE">MAYRA ALEJANDRA DUQUE</option>
+<option value="NICOL DANIELA CARDENAS">NICOL DANIELA CARDENAS</option>
+<option value="MADELIN AGUDELO PATINO">MADELIN AGUDELO PATINO</option>
+<option value="BELCY YUDID ROBLES AMAYA">BELCY YUDID ROBLES AMAYA</option>
+          </select>
+          {errors.analistaSeleccion && <p className="error">{errors.analistaSeleccion}</p>}
+        </div>
+
+
+        <div className="select-container">
+          <label htmlFor="auxiliarSeleccion">Auxiliar Selección</label>
+          <select
+            name="auxiliarSeleccion"
+            id="auxiliarSeleccion"
+            value={values.auxiliarSeleccion}
+            onChange={(e) => handleChange(e, 'auxiliarSeleccion')}
+          >
+            <option value="">- Selecciona uno -</option>
+            <option value="ANA MARIA CESPEDES">ANA MARIA CESPEDES</option>
+<option value="ANDREA PEÑA">ANDREA PEÑA</option>
+<option value="JUAN ANDRES NOVA">JUAN ANDRES NOVA</option>
+<option value="LAURA BELEÑO">LAURA BELEÑO</option>
+<option value="DAYANA PINEDA">DAYANA PINEDA</option>
+<option value="NINI SILVA">NINI SILVA</option>
+<option value="GINA VINA">GINA VINA</option>
+<option value="FRANCIA TOBON">FRANCIA TOBON</option>
+<option value="FERNANDO PARRA">FERNANDO PARRA</option>
+<option value="DIANA LONDOÑO">DIANA LONDOÑO</option>
+<option value="MADELIN AGUDELO">MADELIN AGUDELO</option>
+          </select>
+          {errors.auxiliarSeleccion && <p className="error">{errors.auxiliarSeleccion}</p>}
+        </div>
+
+
+        <div className="select-container">
+          <label htmlFor="tipoDocumento">Tipo de Documento</label>
+          <select
+            name="tipoDocumento"
+            id="tipoDocumento"
+            value={values.tipoDocumento}
+            onChange={(e) => handleChange(e, 'tipoDocumento')}
+          >
+            <option value="">- Selecciona uno -</option>
+            <option value="CC">CC</option>
+<option value="TI">TI</option>
+<option value="PA">PA</option>
+<option value="CE">CE</option>
+          </select>
+          {errors.tipoDocumento && <p className="error">{errors.tipoDocumento}</p>}
+        </div>
+
+
+        <div className="input-container">
+          <label htmlFor="docTrabajador">Documento Trabajador</label>
+          <input
+            type="text"
+            id="docTrabajador"
+            name="docTrabajador"
+            placeholder="Documento Trabajador"
+            value={values.docTrabajador}
+            onChange={(e) => handleChange(e, 'docTrabajador')}
           />
-          {errors.fechaInicioProcesoAnalista && <p className="error">{errors.fechaInicioProcesoAnalista}</p>}
+          {errors.docTrabajador && <p className="error">{errors.docTrabajador}</p>}
         </div>
 
         <div className="input-container">
-          <label htmlFor="idRequisicion">ID</label>
+          <label htmlFor="nombreEmpleado">Nombre Trabajador</label>
           <input
             type="text"
-            id="idRequisicion"
-            name="idRequisicion"
-            placeholder='idRequisicion'
-            value={values.idRequisicion}
-            onChange={(e) => handleChange(e, 'idRequisicion')}
+            id="nombreEmpleado"
+            name="nombreEmpleado"
+            placeholder="Nombre Trabajador"
+            value={values.nombreEmpleado}
+            onChange={(e) => handleChange(e, 'nombreEmpleado')}
           />
-          {errors.idRequisicion && <p className="error">{errors.idRequisicion}</p>}
+          {errors.nombreEmpleado && <p className="error">{errors.nombreEmpleado}</p>}
         </div>
 
         <div className="select-container">
-          <label htmlFor="fechaAsignacionConexionAuxOperativo">Fecha de Asignación en conexión aux operativo</label>
+          <label htmlFor="fechaIngreso">Fecha de Ingreso</label>
           <DatePicker
-            selected={values.fechaAsignacionConexionAuxOperativo}
-            onChange={(date) => handleDateChange(date, 'fechaAsignacionConexionAuxOperativo')}
+            selected={values.fechaIngreso}
+            onChange={(date) => handleDateChange(date, 'fechaIngreso')}
 
             dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la fecha de Asignación en conexión aux operativo"
+            placeholderText="Selecciona la fecha de Ingreso"
             className="date-picker-input"
           />
-          {errors.fechaAsignacionConexionAuxOperativo && <p className="error">{errors.fechaAsignacionConexionAuxOperativo}</p>}
+          {errors.fechaIngreso && <p className="error">{errors.fechaIngreso}</p>}
         </div>
 
         <div className="select-container">
-          <label htmlFor="tipoIngreso">Tipo de ingreso</label>
-          <select
-            name="tipoIngreso"
-            id="tipoIngreso"
-            value={values.tipoIngreso}
-            onChange={(e) => handleChange(e, 'tipoIngreso')}
-          >
-            <option value="">- Selecciona uno -</option>
-            <option value="MANUAL">MANUAL</option>
-            <option value="CONEXION HUMANA">CONEXION HUMANA</option>
+          <label htmlFor="fechaTermina">Fecha de Terminación</label>
+          <DatePicker
+            selected={values.fechaTermina}
+            onChange={(date) => handleDateChange(date, 'fechaTermina')}
 
-          </select>
-          {errors.tipoIngreso && <p className="error">{errors.tipoIngreso}</p>}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Selecciona la fecha de Terminación"
+            className="date-picker-input"
+          />
+          {errors.fechaTermina && <p className="error">{errors.fechaTermina}</p>}
         </div>
 
+
         <div className="select-container">
-          <label htmlFor="empresa">Empresa</label>
+          <label htmlFor="nombreEmpresa">Nombre Empresa</label>
           <select
-            name="empresa"
-            id="empresa"
-            value={values.empresa}
-            onChange={(e) => handleChange(e, 'empresa')}
+            name="nombreEmpresa"
+            id="nombreEmpresa"
+            value={values.nombreEmpresa}
+            onChange={(e) => handleChange(e, 'nombreEmpresa')}
           >
             <option value="">- Selecciona una empresa -</option>
             <option value="CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S">CENTRO DE CIRUGIA MINIMA INVASIVA S.A.S</option>
-            <option value="CENTROS MEDICOS COLSANITAS SAS">CENTROS MEDICOS COLSANITAS SAS</option>
-            <option value="CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.">CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.</option>
-            <option value="CLINICA COLSANITAS S.A.">CLINICA COLSANITAS S.A.</option>
-            <option value="CLINICA DENTAL KERALTY SAS">CLINICA DENTAL KERALTY SAS</option>
-            <option value="COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.">COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.</option>
-            <option value="COMPAÑIA DE SEGUROS COLSANITAS S.A.">COMPAÑIA DE SEGUROS COLSANITAS S.A.</option>
-            <option value="OFTALMOSANITAS SAS">OFTALMOSANITAS SAS</option>
-            <option value="CORPORACION SOCIAL MEDICA SANITAS">CORPORACION SOCIAL MEDICA SANITAS</option>
-            <option value="EDITORIAL BIENESTAR S A S">EDITORIAL BIENESTAR S A S</option>
-            <option value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.</option>
-            <option value="FUNDACION KERALTY">FUNDACION KERALTY</option>
-            <option value="FUNDACION UNIVERSITARIA SANITAS">FUNDACION UNIVERSITARIA SANITAS</option>
-            <option value="KERALTY S.A.S">KERALTY S.A.S</option>
-            <option value="LAZOS HUMANOS SAS">LAZOS HUMANOS SAS</option>
-            <option value="MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL">MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL</option>
-            <option value="MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA">MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA</option>
-            <option value="OFTALMOSANITAS CALI SAS">OFTALMOSANITAS CALI SAS</option>
-            <option value="OPTICA COLSANITAS SAS">OPTICA COLSANITAS SAS</option>
-            <option value="PROMOTORA INMOBILIARIA SANITAS LTDA.">PROMOTORA INMOBILIARIA SANITAS LTDA.</option>
-            <option value="SALUD OCUPACIONAL SANITAS SAS">SALUD OCUPACIONAL SANITAS SAS</option>
-            <option value="SOCIEDAD CLINICA IBEROAMERICA S.A.S">SOCIEDAD CLINICA IBEROAMERICA S.A.S</option>
-            <option value="UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS">UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS</option>
-            <option value="VERSANIA PRIMERA INFANCIA SAS">VERSANIA PRIMERA INFANCIA SAS</option>
-            <option value="VERSANIA PSICOSOCIAL ITA S.A.S.">VERSANIA PSICOSOCIAL ITA S.A.S.</option>
-            <option value="ASOCIACION DE USUARIOS DE SANITAS">ASOCIACION DE USUARIOS DE SANITAS</option>
-            <option value="UNIDAD DE IMAGENES AVANZADAS SAS">UNIDAD DE IMAGENES AVANZADAS SAS</option>
-            <option value="VERSANIA SENIOR S.A.S">VERSANIA SENIOR S.A.S</option>
+<option value="CENTROS MEDICOS COLSANITAS SAS">CENTROS MEDICOS COLSANITAS SAS</option>
+<option value="CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.">CLINICA CAMPO ABIERTO ORGANIZACION SANITAS INTER.</option>
+<option value="CLINICA COLSANITAS S.A.">CLINICA COLSANITAS S.A.</option>
+<option value="CLINICA DENTAL KERALTY SAS">CLINICA DENTAL KERALTY SAS</option>
+<option value="COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.">COMPAÑIA DE MEDICINA PREPAGADA COLSANITAS S.A.</option>
+<option value="COMPAÑIA DE SEGUROS COLSANITAS S.A.">COMPAÑIA DE SEGUROS COLSANITAS S.A.</option>
+<option value="ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.">ENTIDAD PROMOTORA DE SALUD SANITAS S.A.S.</option>
+<option value="EDITORIAL BIENESTAR">EDITORIAL BIENESTAR</option>
+<option value="KERALTY S.A.S">KERALTY S.A.S</option>
+<option value="LAZOS HUMANOS SAS">LAZOS HUMANOS SAS</option>
+<option value="SALUD OCUPACIONAL SANITAS SAS">SALUD OCUPACIONAL SANITAS SAS</option>
+<option value="MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL">MEDICINA NUCLEAR PALERMO ORGANIZACION SANITAS INTERNACIONAL</option>
+<option value="OFTALMOSANITAS CALI SAS">OFTALMOSANITAS CALI SAS</option>
+<option value="OPTICA COLSANITAS SAS">OPTICA COLSANITAS SAS</option>
+<option value="UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS">UNIDAD DE CUIDADOS PALIATIVOS PRESENTES SAS</option>
+<option value="VERSANIA PRIMERA INFANCIA SAS">VERSANIA PRIMERA INFANCIA SAS</option>
+<option value="VERSANIA PSICOSOCIAL ITA S.A.S.">VERSANIA PSICOSOCIAL ITA S.A.S.</option>
+<option value="VERSANIA SENIOR S.A.S">VERSANIA SENIOR S.A.S</option>
+<option value="FUNDACION UNIVERSITARIA SANITAS">FUNDACION UNIVERSITARIA SANITAS</option>
+<option value="MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA">MEDISANITAS S.A.S. COMPAÑIA DE MEDICINA PREPAGADA</option>
+<option value="FUNDACION KERALTY">FUNDACION KERALTY</option>
+<option value="PROMOTORA INMOBILIARIA SANITAS LTDA.">PROMOTORA INMOBILIARIA SANITAS LTDA.</option>
+<option value="SOCIEDAD CLINICA IBEROAMERICA S.A.S">SOCIEDAD CLINICA IBEROAMERICA S.A.S</option>
+<option value="OFTALMOSANITAS SAS">OFTALMOSANITAS SAS</option>
+<option value="EDITORIAL BIENESTAR S A S">EDITORIAL BIENESTAR S A S</option>
+<option value="SALUD OCUPACIONAL SANITAS SAS">SALUD OCUPACIONAL SANITAS SAS</option>
 
           </select>
           {errors.empresa && <p className="error">{errors.empresa}</p>}
         </div>
 
-{/* Renderizado condicional del input Unidad de Negocio */}
-
-
-
         <div className="select-container">
-          <label htmlFor="servicio">Servicio</label>
+          <label htmlFor="prioridad">Prioridad</label>
           <select
-            name="servicio"
-            id="servicio"
-            value={values.servicio}
-            onChange={(e) => handleChange(e, 'servicio')}
+            name="prioridad"
+            id="prioridad"
+            value={values.prioridad}
+            onChange={(e) => handleChange(e, 'prioridad')}
           >
-            <option value="">- Selecciona un servicio -</option>
-            <option value="GINECOBSTETRICIA">GINECOBSTETRICIA</option>
-            <option value="TRABAJO DE PARTO TPR">TRABAJO DE PARTO TPR</option>
-            <option value="MATERNOFETAL">MATERNOFETAL</option>
-            <option value="UNIDAD DE CUIDADO INTERMEDIO ADULTO">UNIDAD DE CUIDADO INTERMEDIO ADULTO</option>
-            <option value="UNIDAD DE CUIDADO INTENSIVO ADULTO">UNIDAD DE CUIDADO INTENSIVO ADULTO</option>
-            <option value="UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATA">UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATA</option>
-            <option value="UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATAL">UNIDAD DE CUIDADO INTERMEDIO PEDIATRICO O NEONATAL</option>
-            <option value="URGENCIAS">URGENCIAS</option>
-            <option value="PREHOSPITALARIO - APH ">PREHOSPITALARIO - APH </option>
-            <option value="SALAS  DE CIRUGIA">SALAS  DE CIRUGIA</option>
-            <option value="PEDIATRIA">PEDIATRIA</option>
-            <option value="NEONATOS">NEONATOS</option>
-            <option value="CUIDADO PALIATIVO ">CUIDADO PALIATIVO </option>
-            <option value="IMAGENES DIAGNOSTICAS">IMAGENES DIAGNOSTICAS</option>
-            <option value="LABORATORIO">LABORATORIO</option>
-            <option value="OPTOMETRAS">OPTOMETRAS</option>
-            <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
-            <option value="CONSULTA EXTERNA">CONSULTA EXTERNA</option>
-            <option value="UNIDAD RENAL">UNIDAD RENAL</option>
-            <option value="HOSPITALIZACION">HOSPITALIZACION</option>
-            <option value="TERAPEUTICO">TERAPEUTICO</option>
+            <option value="">- Selecciona uno -</option>
+            <option value="ALTA">ALTA</option>
+<option value="NORMAL">NORMAL</option>
           </select>
-          {errors.servicio && <p className="error">{errors.servicio}</p>}
+          {errors.prioridad && <p className="error">{errors.prioridad}</p>}
         </div>
 
 
-
-        <div className="input-container">
-          <label htmlFor="posicion">Posición</label>
-          <input
-            type="text"
-            id="posicion"
-            name="posicion"
-            placeholder="Posición"
-            value={values.posicion}
-            onChange={(e) => handleChange(e, 'posicion')}
-          />
-          {errors.posicion && <p className="error">{errors.posicion}</p>}
-        </div>
-        
-
-      
         <div className="select-container">
-          <label htmlFor="nuevoReingreso">Nuevo o Reingreso</label>
+          <label htmlFor="nombreCargo">Nombre del Cargo</label>
           <select
-            name="nuevoReingreso"
-            id="nuevoReingreso"
-            value={values.nuevoReingreso}
-            onChange={(e) => handleChange(e, 'nuevoReingreso')}
-          >
-            <option value="">- Selecciona  -</option>
-            <option value="NUEVO">NUEVO</option>
-            <option value="REINGRESO">REINGRESO</option>
-
-          </select>
-          {errors.nuevoReingreso && <p className="error">{errors.nuevoReingreso}</p>}
-        </div>
-              
-        <div className="select-container">
-          <label htmlFor="ciudad">Ciudad</label>
-          <select
-            name="ciudad"
-            id="ciudad"
-            value={values.ciudad}
-            onChange={(e) => handleChange(e, 'ciudad')}
-          >
-            <option value="">- Selecciona la ciudad  -</option>
-            <option value="ACACÍAS">ACACÍAS</option>
-            <option value="AGUACHICA">AGUACHICA</option>
-            <option value="AGUAZUL">AGUAZUL</option>
-            <option value="ALBANIA">ALBANIA</option>
-            <option value="ALTO BAUDÓ">ALTO BAUDÓ</option>
-            <option value="ARAUCA">ARAUCA</option>
-            <option value="ARAUQUITA">ARAUQUITA</option>
-            <option value="ATACO - TOLIMA">ATACO - TOLIMA</option>
-            <option value="ARMENIA">ARMENIA</option>
-            <option value="BARRANCABERMEJA">BARRANCABERMEJA</option>
-            <option value="BARRANCAS">BARRANCAS</option>
-            <option value="BARRANQUILLA">BARRANQUILLA</option>
-            <option value="BOGOTÁ, D.C.">BOGOTÁ, D.C.</option>
-            <option value="BUCARAMANGA">BUCARAMANGA</option>
-            <option value="BUENAVENTURA">BUENAVENTURA</option>
-            <option value="CAJICÁ">CAJICÁ</option>
-            <option value="CALI">CALI</option>
-            <option value="CARTAGENA">CARTAGENA</option>
-            <option value="CARTAGO">CARTAGO</option>
-            <option value="CHÍA">CHÍA</option>
-            <option value="CHIQUINQUIRÁ">CHIQUINQUIRÁ</option>
-            <option value="CHITAGÁ">CHITAGÁ</option>
-            <option value="CÚCUTA">CÚCUTA</option>
-            <option value="DIBULLA">DIBULLA</option>
-            <option value="DUITAMA">DUITAMA</option>
-            <option value="FACATATIVÁ">FACATATIVÁ</option>
-            <option value="FLORENCIA">FLORENCIA</option>
-            <option value="FONSECA">FONSECA</option>
-            <option value="FORTUL">FORTUL</option>
-            <option value="FUSAGASUGÁ">FUSAGASUGÁ</option>
-            <option value="GARZÓN">GARZÓN</option>
-            <option value="GIRARDOT">GIRARDOT</option>
-            <option value="GUACA">GUACA</option>
-            <option value="GUADALUPE">GUADALUPE</option>
-            <option value="HONDA">HONDA</option>
-            <option value="IBAGUÉ">IBAGUÉ</option>
-            <option value="IPIALES">IPIALES</option>
-            <option value="ISNOS">ISNOS</option>
-            <option value="ISTMINA">ISTMINA</option>
-            <option value="LA CALERA">LA CALERA</option>
-            <option value="LA PLATA">LA PLATA</option>
-            <option value="LETICIA">LETICIA</option>
-            <option value="MAICAO">MAICAO</option>
-            <option value="MÁLAGA">MÁLAGA</option>
-            <option value="MANIZALES">MANIZALES</option>
-            <option value="MEDELLÍN">MEDELLÍN</option>
-            <option value="MONTELÍBANO">MONTELÍBANO</option>
-            <option value="MONTERÍA">MONTERÍA</option>
-            <option value="NEIVA">NEIVA</option>
-            <option value="OCAÑA">OCAÑA</option>
-            <option value="PALESTINA">PALESTINA</option>
-            <option value="PALMIRA">PALMIRA</option>
-            <option value="PASTO">PASTO</option>
-            <option value="BOGOTÁ, D.C.">BOGOTÁ, D.C.</option>
-            <option value="PEREIRA">PEREIRA</option>
-            <option value="PIENDAMÓ">PIENDAMÓ</option>
-            <option value="PITALITO">PITALITO</option>
-            <option value="POPAYÁN">POPAYÁN</option>
-            <option value="QUIBDÓ">QUIBDÓ</option>
-            <option value="RIOHACHA">RIOHACHA</option>
-            <option value="RIONEGRO">RIONEGRO</option>
-            <option value="SAN ANDRÉS">SAN ANDRÉS</option>
-            <option value="SAN GIL">SAN GIL</option>
-            <option value="SAN JUAN DEL CESAR">SAN JUAN DEL CESAR</option>
-            <option value="SANTA MARTA">SANTA MARTA</option>
-            <option value="SANTANDER DE QUILICHAO">SANTANDER DE QUILICHAO</option>
-            <option value="SARDINATA">SARDINATA</option>
-            <option value="SINCELEJO">SINCELEJO</option>
-            <option value="SOACHA">SOACHA</option>
-            <option value="SOGAMOSO">SOGAMOSO</option>
-            <option value="SOLEDAD">SOLEDAD</option>
-            <option value="TAME">TAME</option>
-            <option value="TULUÁ">TULUÁ</option>
-            <option value="TUNJA">TUNJA</option>
-            <option value="URIBIA">URIBIA</option>
-            <option value="VALLEDUPAR">VALLEDUPAR</option>
-            <option value="VILLANUEVA">VILLANUEVA</option>
-            <option value="VILLAVICENCIO">VILLAVICENCIO</option>
-            <option value="VILLETA">VILLETA</option>
-            <option value="YOPAL">YOPAL</option>
-            <option value="ZIPAQUIRÁ">ZIPAQUIRÁ</option>
-            <option value="TAURAMENA">TAURAMENA</option>
-            <option value="CHAPARRAL">CHAPARRAL</option>
-            <option value="CAMPOALEGRE">CAMPOALEGRE</option>
-            <option value="MONTERREY">MONTERREY</option>
-            <option value="PAZ DE ARIPORO">PAZ DE ARIPORO</option>
-            <option value="USA">USA</option>
-            <option value="MONGUA">MONGUA</option>
-            <option value="GIGANTE">GIGANTE</option>
-            <option value="SORA - CUCAITA">SORA - CUCAITA</option>
-            <option value="TINJACA">TINJACA</option>
-            <option value="JUNIN">JUNIN</option>
-            <option value="NIMAIMA">NIMAIMA</option>
-            <option value="FLORIDABLANCA">FLORIDABLANCA</option>
-          </select>
-          {errors.ciudad && <p className="error">{errors.ciudad}</p>}
-        </div>
-
-        {(values.psicologos === 'TIBI' || values.psicologos === 'JESSI'|| values.psicologos === 'ALE DUQUE') && (
-  <div className="select-container">
-    <label htmlFor="teletrabajo">Teletrabajo</label>
-    <select
-      name="teletrabajo"
-      id="teletrabajo"
-      value={values.teletrabajo}
-      onChange={(e) => handleChange(e, 'teletrabajo')}
-    >
-      <option value="">- Selecciona  -</option>
-      <option value="SÍ">SÍ</option>
-      <option value="NO">NO</option>
-    </select>
-    {errors.teletrabajo && <p className="error">{errors.teletrabajo}</p>}
-  </div>
-)}
-
-
-        <div className="select-container">
-          <label htmlFor="fechaExpedicionCedula">Fecha de Expedicion de la Cedula</label>
-          <DatePicker
-            selected={values.fechaExpedicionCedula}
-            onChange={(date) => handleDateChange(date, 'fechaExpedicionCedula')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la Fecha de Expedicion de la Cedula"
-            className="date-picker-input"
-          />
-          {errors.fechaExpedicionCedula && <p className="error">{errors.fechaExpedicionCedula}</p>}
-        </div>
-
-        {/* Campo de entrada para Documento */}
-        <div className="input-container">
-          <label htmlFor="cedula">Cédula</label>
-          <input
-            type="text"
-            id="cedula"
-            name="cedula"
-            placeholder='Cédula'
-            value={values.cedula}
-            onChange={(e) => handleChange(e, 'cedula')}
-          />
-          {errors.cedula && <p className="error">{errors.cedula}</p>}
-        </div>
-
-        {/* Campo de entrada para Nombre Completo */}
-        <div className="input-container">
-          <label htmlFor="nombreCandidato">Nombre del Candidato</label>
-          <input
-            type="text"
-            id="nombreCandidato"
-            name="nombreCandidato"
-            placeholder="Nombre del Candidato"
-            value={values.nombreCandidato}
-            onChange={(e) => handleChange(e, 'nombreCandidato')}
-          />
-          {errors.nombreCandidato && <p className="error">{errors.nombreCandidato}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="cargo">Cargo</label>
-          <select
-            name="cargo"
-            id="cargo"
-            value={values.cargo}
-            onChange={(e) => handleChange(e, 'cargo')}
+            name="nombreCargo"
+            id="nombreCargo"
+            value={values.nombreCargo}
+            onChange={(e) => handleChange(e, 'nombreCargo')}
           >
             <option value="">- Selecciona un cargo -</option>
             <option value="AUXILIAR ADMINISTRATIVO">AUXILIAR ADMINISTRATIVO</option>
@@ -2735,33 +2677,191 @@ function DatosPersonalesSeleccion() {
 <option value="GESTOR OPERATIVO DE VACUNACION">GESTOR OPERATIVO DE VACUNACION</option>
 
           </select>
-          {errors.cargo && <p className="error">{errors.cargo}</p>}
+          {errors.nombreCargo && <p className="error">{errors.nombreCargo}</p>}
         </div>
 
         <div className="input-container">
-          <label htmlFor="correo">Correo</label>
+          <label htmlFor="posicion">Posición</label>
           <input
             type="text"
-            id="correo"
-            name="correo"
-            placeholder="Correo"
-            value={values.correo}
-            onChange={(e) => handleChange(e, 'correo')}
+            id="posicion"
+            name="posicion"
+            placeholder="Posición"
+            value={values.posicion}
+            onChange={(e) => handleChange(e, 'posicion')}
           />
-          {errors.correo && <p className="error">{errors.correo}</p>}
+          {errors.posicion && <p className="error">{errors.posicion}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="ciudades">Ciudades</label>
+          <select
+            name="ciudades"
+            id="ciudades"
+            value={values.ciudades}
+            onChange={(e) => handleChange(e, 'ciudades')}
+          >
+            <option value="">- Selecciona una ciudad -</option>
+            <option value="ARAUCA">ARAUCA</option>
+<option value="ARMENIA">ARMENIA</option>
+<option value="BARRANQUILLA">BARRANQUILLA</option>
+<option value="Bogotá, D.C.">Bogotá, D.C.</option>
+<option value="BUCARAMANGA">BUCARAMANGA</option>
+<option value="CALI">CALI</option>
+<option value="CARTAGENA">CARTAGENA</option>
+<option value="Cúcuta">Cúcuta</option>
+<option value="PASTO">PASTO</option>
+<option value="PEREIRA">PEREIRA</option>
+<option value="Popayán">Popayán</option>
+<option value="URIBIA">URIBIA</option>
+<option value="ALBANIA">ALBANIA</option>
+<option value="VALLEDUPAR">VALLEDUPAR</option>
+<option value="VILLAVICENCIO">VILLAVICENCIO</option>
+<option value="YOPAL">YOPAL</option>
+<option value="CHOCO">CHOCO</option>
+<option value="GIRARDOT">GIRARDOT</option>
+<option value="ARAUQUITA">ARAUQUITA</option>
+<option value="Quibdó">Quibdó</option>
+<option value="AGUACHICA">AGUACHICA</option>
+<option value="SINCELEJO">SINCELEJO</option>
+<option value="PROVIDENCIA">PROVIDENCIA</option>
+<option value="PALMIRA">PALMIRA</option>
+<option value="CAJICA">CAJICA</option>
+<option value="SOLEDAD">SOLEDAD</option>
+<option value="CHITAGA">CHITAGA</option>
+<option value="PASTO">PASTO</option>
+<option value="SOGAMOSO">SOGAMOSO</option>
+<option value="LETICIA">LETICIA</option>
+<option value="TULUA">TULUA</option>
+<option value="OCAÑA">OCAÑA</option>
+<option value="TAME">TAME</option>
+<option value="Málaga">Málaga</option>
+<option value="BARRANCABERMEJA">BARRANCABERMEJA</option>
+<option value="BARRANCAS">BARRANCAS</option>
+<option value="SOACHA">SOACHA</option>
+<option value="OCAÑA">OCAÑA</option>
+<option value="SARDINATA">SARDINATA</option>
+<option value="HONDA">HONDA</option>
+<option value="IPIALES">IPIALES</option>
+<option value="MINGUEO">MINGUEO</option>
+<option value="GUACA">GUACA</option>
+<option value="SAN ANDRES SANTANDER">SAN ANDRES SANTANDER</option>
+<option value="DIBULLA">DIBULLA</option>
+<option value="NEIVA">NEIVA</option>
+<option value="SARDINATA">SARDINATA</option>
+<option value="APRENDIZ">APRENDIZ</option>
+<option value="FLORENCIA">FLORENCIA</option>
+<option value="Montelíbano">Montelíbano</option>
+<option value="Tuluá">Tuluá</option>
+<option value="TAURAMENA">TAURAMENA</option>
+<option value="San Andrés">San Andrés</option>
+<option value="Floridablanca">Floridablanca</option>
+<option value="Pamplona">Pamplona</option>
+<option value="Málaga">Málaga</option>
+<option value="Uribe">Uribe</option>
+<option value="Villagarzón">Villagarzón</option>
+<option value="Pitalito">Pitalito</option>
+<option value="Santander de Quilichao">Santander de Quilichao</option>
+<option value="Chiquinquirá">Chiquinquirá</option>
+<option value="PUERTO BOLIVAR">PUERTO BOLIVAR</option>
+<option value="Medellín">Medellín</option>
+<option value="SAN ANDRES">SAN ANDRES</option>
+<option value="DUITAMA">DUITAMA</option>
+<option value="Chía">Chía</option>
+<option value="MANIZALES">MANIZALES</option>
+<option value="Garzón">Garzón</option>
+<option value="TUNJA">TUNJA</option>
+<option value="Montería">Montería</option>
+<option value="SANTA MARTA">SANTA MARTA</option>
+<option value="SAN GIL">SAN GIL</option>
+<option value="RIOHACHA">RIOHACHA</option>
+<option value="Ibagué">Ibagué</option>
+<option value="Santafé de Antioquia">Santafé de Antioquia</option>
+<option value="SANTA MARTA">SANTA MARTA</option>
+          </select>
+          {errors.ciudades && <p className="error">{errors.ciudades}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="regional">Regional</label>
+          <select
+            name="regional"
+            id="regional"
+            value={values.regional}
+            onChange={(e) => handleChange(e, 'regional')}
+          >
+            <option value="">- Selecciona una regional-</option>
+            <option value="Regional Barranquilla">Regional Barranquilla</option>
+<option value="Regional Bucaramanga">Regional Bucaramanga</option>
+<option value="Regional Bogotá">Regional Bogotá</option>
+<option value="Regional Cali">Regional Cali</option>
+<option value="Regional Centro Oriente">Regional Centro Oriente</option>
+<option value="Regional Medellín">Regional Medellín</option>
+          </select>
+          {errors.regional && <p className="error">{errors.regional}</p>}
+        </div>
+
+
+        <div className="select-container">
+          <label htmlFor="porcentajeSalario">Porcentaje Salario</label>
+          <select
+            name="porcentajeSalario"
+            id="porcentajeSalario"
+            value={values.porcentajeSalario}
+            onChange={(e) => handleChange(e, 'porcentajeSalario')}
+          >
+            <option value="">- Selecciona un Porcentaje -</option>
+            <option value="80%">80%</option>
+<option value="100%">100%</option>
+          </select>
+          {errors.porcentajeSalario && <p className="error">{errors.porcentajeSalario}</p>}
         </div>
 
         <div className="input-container">
-          <label htmlFor="celular">Celular</label>
+          <label htmlFor="salario"> Salario</label>
           <input
             type="text"
-            id="celular"
-            name="celular"
-            placeholder="Celular"
-            value={values.celular}
-            onChange={(e) => handleChange(e, 'celular')}
+            id="salario"
+            name="salario"
+            placeholder=" Salario"
+            value={values.salario}
+            onChange={(e) => handleChange(e, 'salario')}
           />
-          {errors.celular && <p className="error">{errors.celular}</p>}
+          {errors.salario && <p className="error">{errors.salario}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="jornada">Jornada</label>
+          <select
+            name="jornada"
+            id="jornada"
+            value={values.jornada}
+            onChange={(e) => handleChange(e, 'jornada')}
+          >
+            <option value="">- Selecciona una jornada-</option>
+            <option value="34_140HORAS_STRD">34_140HORAS_STRD</option>
+<option value="02_180HORAS_STRD">02_180HORAS_STRD</option>
+<option value="03_120HORAS_STRD">03_120HORAS_STRD</option>
+<option value="05_150HORAS_STRD">05_150HORAS_STRD</option>
+<option value="06_90HORAS_STRD">06_90HORAS_STRD</option>
+<option value="07_100HORAS_STRD">07_100HORAS_STRD</option>
+<option value="08_210HORAS_STRD">08_210HORAS_STRD</option>
+<option value="09_60HORAS_STRD">09_60HORAS_STRD</option>
+<option value="19_135HORAS_STRD">19_135HORAS_STRD</option>
+<option value="20_75HORAS_STRD">20_75HORAS_STRD</option>
+<option value="21_30HORAS_STRD">21_30HORAS_STRD</option>
+<option value="25_32HORAS_STRD">25_32HORAS_STRD</option>
+<option value="28_35HORAS_STRD">28_35HORAS_STRD</option>
+<option value="39_110HORAS_STRD">39_110HORAS_STRD</option>
+<option value="40_195HORAS_STRD">40_195HORAS_STRD</option>
+<option value="41_225HORAS_STRD">41_225HORAS_STRD</option>
+<option value="42_190HORAS_STRD">42_190HORAS_STRD</option>
+<option value="43_220HORAS_STRD">43_220HORAS_STRD</option>
+<option value="44_148HORAS_STRD">44_148HORAS_STRD</option>
+<option value="51_230HORAS_STRD">51_230HORAS_STRD</option>
+<option value="38_200HORAS_STRD">38_200HORAS_STRD</option>
+          </select>
+          {errors.jornada && <p className="error">{errors.jornada}</p>}
         </div>
 
         <div className="select-container">
@@ -2772,786 +2872,1442 @@ function DatosPersonalesSeleccion() {
             value={values.tipoPlanta}
             onChange={(e) => handleChange(e, 'tipoPlanta')}
           >
-            <option value="">- Selecciona un tipo de planta -</option>
-            <option value="PLANTA APRENDIZ">PLANTA APRENDIZ</option>
-            <option value="PLANTA FIJA COL ">PLANTA FIJA COL</option>
-            <option value="PLANTA TEMPORAL COL"> PLANTA TEMPORAL COL</option>
+            <option value="">- Selecciona una planta -</option>
+            <option value="PLANTA FIJA COL">PLANTA FIJA COL</option>
+<option value="PLANTA TEMPORAL COL">PLANTA TEMPORAL COL</option>
+<option value="PLANTA APRENDIZ">PLANTA APRENDIZ</option>
 
           </select>
           {errors.tipoPlanta && <p className="error">{errors.tipoPlanta}</p>}
         </div>
 
-        <div className="input-container">
-          <label htmlFor="tiempoContrato">Tiempo del Contrato</label>
-          <input
-            type="text"
-            id="tiempoContrato"
-            name="tiempoContrato"
-            placeholder="Tiempo del Contrato"
-            value={values.tiempoContrato}
-            onChange={(e) => handleChange(e, 'tiempoContrato')}
-          />
-          {errors.tiempoContrato && <p className="error">{errors.tiempoContrato}</p>}
-        </div>
-
-        {/* Campo fechaIngreso con DatePicker */}
-        <div className="select-container">
-          <label htmlFor="fechaEnvioDocumentos">Fecha de Envio de documentos o paso por ch al candidato</label>
-          <DatePicker
-            selected={values.fechaEnvioDocumentos}
-            onChange={(date) => handleDateChange(date, 'fechaEnvioDocumentos')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la Fecha de Envio de documentos o paso por ch al candidato"
-            className="date-picker-input"
-          />
-          {errors.fechaEnvioDocumentos && <p className="error">{errors.fechaEnvioDocumentos}</p>}
-        </div>
-
-        {/* Campo fechaTerminacion con DatePicker */}
-        <div className="select-container">
-          <label htmlFor="solicitudExamenMedico">Solicitud de Examen Médico</label>
-          <DatePicker
-            selected={values.solicitudExamenMedico}
-            onChange={(date) => handleDateChange(date, 'solicitudExamenMedico')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la fecha de solicitud de Examen Médico"
-            className="date-picker-input"
-          />
-          {errors.solicitudExamenMedico && <p className="error">{errors.solicitudExamenMedico}</p>}
-        </div>
 
         <div className="select-container">
-          <label htmlFor="fechaProgramacionExamenMedico">Fecha de Programacion del Examen Médico</label>
-          <DatePicker
-            selected={values.fechaProgramacionExamenMedico}
-            onChange={(date) => handleDateChange(date, 'fechaProgramacionExamenMedico')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la Fecha de Programacion del Examen Médico"
-            className="date-picker-input"
-          />
-          {errors.fechaProgramacionExamenMedico && <p className="error">{errors.fechaProgramacionExamenMedico}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="fechaConceptoExamenMedico">Fecha de Concepto del Examen Médico</label>
-          <DatePicker
-            selected={values.fechaConceptoExamenMedico}
-            onChange={(date) => handleDateChange(date, 'fechaConceptoExamenMedico')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la Fecha de Concepto del Examen Médico"
-            className="date-picker-input"
-          />
-          {errors.fechaConceptoExamenMedico && <p className="error">{errors.fechaConceptoExamenMedico}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="fechaProgramacionEstudioAYC">Fecha de Programacion del Estudio AYC</label>
-          <DatePicker
-            selected={values.fechaProgramacionEstudioAYC}
-            onChange={(date) => handleDateChange(date, 'fechaProgramacionEstudioAYC')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la Fecha de Programacion del Estudio AYC"
-            className="date-picker-input"
-          />
-          {errors.fechaProgramacionEstudioAYC && <p className="error">{errors.fechaProgramacionEstudioAYC}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="fechaConceptoEstudioSeguridad">Fecha de Concepto del Estudio de Seguridad</label>
-          <DatePicker
-            selected={values.fechaConceptoEstudioSeguridad}
-            onChange={(date) => handleDateChange(date, 'fechaConceptoEstudioSeguridad')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la Fecha de Concepto del Estudio de Seguridad"
-            className="date-picker-input"
-          />
-          {errors.fechaConceptoEstudioSeguridad && <p className="error">{errors.fechaConceptoEstudioSeguridad}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="fechaAsignacionAnalista">Fecha de Asignación Analista</label>
-          <DatePicker
-            selected={values.fechaAsignacionAnalista}
-            onChange={(date) => handleDateChange(date, 'fechaAsignacionAnalista')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la fecha de Asignación Analista"
-            className="date-picker-input"
-          />
-          {errors.fechaAsignacionAnalista && <p className="error">{errors.fechaAsignacionAnalista}</p>}
-        </div>
-
-        {/* Campo Regional con opciones específicas */}
-        <div className="select-container">
-          <label htmlFor="hojaVidaKeralty">Hoja de Vida Keralty</label>
+          <label htmlFor="motivo">Motivo</label>
           <select
-            name="hojaVidaKeralty"
-            id="hojaVidaKeralty"
-            value={values.hojaVidaKeralty}
-            onChange={(e) => handleChange(e, 'hojaVidaKeralty')}
+            name="motivo"
+            id="motivo"
+            value={values.motivo}
+            onChange={(e) => handleChange(e, 'motivo')}
           >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
+            <option value="">- Selecciona un motivo -</option>
+            <option value="REMPLAZO VACANTE">REMPLAZO VACANTE</option>
+<option value="CUBRIMIENTO POSICION NUEVA">CUBRIMIENTO POSICION NUEVA</option>
+<option value="POR VACACIONES">POR VACACIONES</option>
+<option value="POR INCAPACIDAD">POR INCAPACIDAD</option>
+<option value="POR LIC DE MATERNIDAD">POR LIC DE MATERNIDAD</option>
+<option value="POR RECOMENDACIONES LABORALES">POR RECOMENDACIONES LABORALES</option>
+<option value="POR PICO RESPIRATORIO">POR PICO RESPIRATORIO</option>
+<option value="APRENDIZ LECTIVO">APRENDIZ LECTIVO</option>
+<option value="APRENDIZ PRODUCTIVO">APRENDIZ PRODUCTIVO</option>
+<option value="INCREMENTO EN LA OPERACIÓN">INCREMENTO EN LA OPERACIÓN</option>
           </select>
-          {errors.hojaVidaKeralty && <p className="error">{errors.hojaVidaKeralty}</p>}
+          {errors.motivo && <p className="error">{errors.motivo}</p>}
         </div>
 
         <div className="select-container">
-          <label htmlFor="cedulaPapel">Cedula</label>
+          <label htmlFor="fuente">Fuente</label>
           <select
-            name="cedulaPapel"
-            id="cedulaPapel"
-            value={values.cedulaPapel}
-            onChange={(e) => handleChange(e, 'cedulaPapel')}
+            name="fuente"
+            id="fuente"
+            value={values.fuente}
+            onChange={(e) => handleChange(e, 'fuente')}
           >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
+            <option value="">- Selecciona uno -</option>
+            <option value="MANUAL">MANUAL</option>
+<option value="ONBOARDING">ONBOARDING</option>
           </select>
-          {errors.cedulaPapel && <p className="error">{errors.cedulaPapel}</p>}
+          {errors.fuente && <p className="error">{errors.fuente}</p>}
         </div>
 
         <div className="select-container">
-          <label htmlFor="infolaft">Infolaft</label>
+          <label htmlFor="observacionSeleccion">Observaciones Selección</label>
           <select
-            name="infolaft"
-            id="infolaft"
-            value={values.infolaft}
-            onChange={(e) => handleChange(e, 'infolaft')}
+            name="observacionSeleccion"
+            id="observacionSeleccion"
+            value={values.observacionSeleccion}
+            onChange={(e) => handleChange(e, 'observacionSeleccion')}
           >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
+            <option value="">- Selecciona uno -</option>
+            <option value="ACTIVO INDEPENDIENTE SIN VOBO">ACTIVO INDEPENDIENTE SIN VOBO</option>
+<option value="CERTIFICADO SS ERRADO O PENDIENTE">CERTIFICADO SS ERRADO O PENDIENTE</option>
+<option value="DOC DE IDENTIDAD NO PERMITIDO O CON INCONSISTENCIA">DOC DE IDENTIDAD NO PERMITIDO O CON INCONSISTENCIA</option>
+<option value="FALTA APROBACIÓN">FALTA APROBACIÓN</option>
+<option value="MARCADO COMO NO ADECUADO PARA RECONTRATAR">MARCADO COMO NO ADECUADO PARA RECONTRATAR</option>
+<option value="FALTA CARTA DEL INSTITUTO">FALTA CARTA DEL INSTITUTO</option>
+<option value="FALTA CONSULTA DE INHABILIDAD">FALTA CONSULTA DE INHABILIDAD</option>
+<option value="FALTA O INCOMPLETO INFOLAFT">FALTA O INCOMPLETO INFOLAFT</option>
+<option value="PENDIENTE RETIRO COLABORADOR(A)">PENDIENTE RETIRO COLABORADOR(A)</option>
+<option value="FALTA DOCUMENTO DE IDENTIDAD">FALTA DOCUMENTO DE IDENTIDAD</option>
+<option value="FALTA REQUISICIÓN">FALTA REQUISICIÓN</option>
+<option value="FALTA SOPORTE DE INCAPACIDAD">FALTA SOPORTE DE INCAPACIDAD</option>
+<option value="FALTA O INCONSISTENCIA CAPRENDIZAJE">FALTA O INCONSISTENCIA CAPRENDIZAJE</option>
+<option value="FALTA SOPORTE DE LICENCIA DE MATERNIDAD">FALTA SOPORTE DE LICENCIA DE MATERNIDAD</option>
+<option value="FALTA CONFLICTO DE INTERES">FALTA CONFLICTO DE INTERES</option>
+<option value="HOJA DE VIDA INCOMPLETA">HOJA DE VIDA INCOMPLETA</option>
+<option value="CARPETA NO CREADA">CARPETA NO CREADA</option>
+<option value="POSICIÓN NO APARECE O ERRÓNEA">POSICIÓN NO APARECE O ERRÓNEA</option>
+<option value="POSICIÓN OCUPADA O NO VACANTE">POSICIÓN OCUPADA O NO VACANTE</option>
+<option value="REQUISICIÓN ERRADA">REQUISICIÓN ERRADA</option>
+<option value="PERFIL DEL CARGO ERRADO">PERFIL DEL CARGO ERRADO</option>
+<option value="SIN VACÍO LABORAL">SIN VACÍO LABORAL</option>
+<option value="SIN PERFIL DE CARGO">SIN PERFIL DE CARGO</option>
+<option value="DOC INCOMPLETOS O CON INCONSISTENCIA">DOC INCOMPLETOS O CON INCONSISTENCIA</option>
+<option value="FALTA LA HOJA DE VIDA">FALTA LA HOJA DE VIDA</option>
+<option value="CARPETA MAL CREADA">CARPETA MAL CREADA</option>
+<option value="CERTIFICADO BANCARIO VENCIDO O ERRADO">CERTIFICADO BANCARIO VENCIDO O ERRADO</option>
+<option value="ACTIVO SIN NOVEDAD DE RENUNCIA">ACTIVO SIN NOVEDAD DE RENUNCIA</option>
+<option value="OK">OK</option>
           </select>
-          {errors.infolaft && <p className="error">{errors.infolaft}</p>}
+          {errors.observacionSeleccion && <p className="error">{errors.observacionSeleccion}</p>}
         </div>
 
         <div className="select-container">
-          <label htmlFor="inhabilidades">Inhabilidades</label>
+          <label htmlFor="responsableSeleccion">Responsable Selección</label>
           <select
-            name="inhabilidades"
-            id="inhabilidades"
-            value={values.inhabilidades}
-            onChange={(e) => handleChange(e, 'inhabilidades')}
+            name="responsableSeleccion"
+            id="responsableSeleccion"
+            value={values.responsableSeleccion}
+            onChange={(e) => handleChange(e, 'responsableSeleccion')}
           >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
+            <option value="">- Selecciona uno -</option>
+            <option value="ANALISTA DE SELECCION">ANALISTA DE SELECCION</option>
+<option value="AUXILIAR DE SELECCION">AUXILIAR DE SELECCION</option>
           </select>
-          {errors.inhabilidades && <p className="error">{errors.inhabilidades}</p>}
+          {errors.responsableSeleccion && <p className="error">{errors.responsableSeleccion}</p>}
         </div>
 
         <div className="select-container">
-          <label htmlFor="certificadoBancario">Certificado Bancario</label>
-          <select
-            name="certificadoBancario"
-            id="certificadoBancario"
-            value={values.certificadoBancario}
-            onChange={(e) => handleChange(e, 'certificadoBancario')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.certificadoBancario && <p className="error">{errors.certificadoBancario}</p>}
-        </div>
-
-        
-        <div className="select-container">
-          <label htmlFor="certificadoEPS">Certificado EPS</label>
-          <select
-            name="certificadoEPS"
-            id="certificadoEPS"
-            value={values.certificadoEPS}
-            onChange={(e) => handleChange(e, 'certificadoEPS')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.certificadoEPS && <p className="error">{errors.certificadoEPS}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="certificadoPension">Certificado Pensión</label>
-          <select
-            name="certificadoPension"
-            id="certificadoPension"
-            value={values.certificadoPension}
-            onChange={(e) => handleChange(e, 'certificadoPension')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.certificadoPension && <p className="error">{errors.certificadoPension}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="certificadoCesantias">Certificado Cesantias</label>
-          <select
-            name="certificadoCesantias"
-            id="certificadoCesantias"
-            value={values.certificadoCesantias}
-            onChange={(e) => handleChange(e, 'certificadoCesantias')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.certificadoCesantias && <p className="error">{errors.certificadoCesantias}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="certificadosLaborales">Certificados Laborales</label>
-          <select
-            name="certificadosLaborales"
-            id="certificadosLaborales"
-            value={values.certificadosLaborales}
-            onChange={(e) => handleChange(e, 'certificadosLaborales')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.certificadosLaborales && <p className="error">{errors.certificadosLaborales}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="diplomaBachiller">Diploma Bachiller</label>
-          <select
-            name="diplomaBachiller"
-            id="diplomaBachiller"
-            value={values.diplomaBachiller}
-            onChange={(e) => handleChange(e, 'diplomaBachiller')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.diplomaBachiller && <p className="error">{errors.diplomaBachiller}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="actaBachiller">Acta Bachiller</label>
-          <select
-            name="actaBachiller"
-            id="actaBachiller"
-            value={values.actaBachiller}
-            onChange={(e) => handleChange(e, 'actaBachiller')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.actaBachiller && <p className="error">{errors.actaBachiller}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="diplomaPregado">Diploma Pregado</label>
-          <select
-            name="diplomaPregado"
-            id="diplomaPregado"
-            value={values.diplomaPregado}
-            onChange={(e) => handleChange(e, 'diplomaPregado')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.diplomaPregado && <p className="error">{errors.diplomaPregado}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="actaPregado">Acta Pregado</label>
-          <select
-            name="actaPregado"
-            id="actaPregado"
-            value={values.actaPregado}
-            onChange={(e) => handleChange(e, 'actaPregado')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.actaPregado && <p className="error">{errors.actaPregado}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="diplomaPosgrado">Diploma Posgrado</label>
-          <select
-            name="diplomaPosgrado"
-            id="diplomaPosgrado"
-            value={values.diplomaPosgrado}
-            onChange={(e) => handleChange(e, 'diplomaPosgrado')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.diplomaPosgrado && <p className="error">{errors.diplomaPosgrado}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="actaPosgrado">Acta Posgrado</label>
-          <select
-            name="actaPosgrado"
-            id="actaPosgrado"
-            value={values.actaPosgrado}
-            onChange={(e) => handleChange(e, 'actaPosgrado')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.actaPosgrado && <p className="error">{errors.actaPosgrado}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="resolucionSecretariaSalud">Resolución de la Secretaria Salud</label>
-          <select
-            name="resolucionSecretariaSalud"
-            id="resolucionSecretariaSalud"
-            value={values.resolucionSecretariaSalud}
-            onChange={(e) => handleChange(e, 'resolucionSecretariaSalud')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.resolucionSecretariaSalud && <p className="error">{errors.resolucionSecretariaSalud}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="tarjetaProfesional">Tarjeta Profesional</label>
-          <select
-            name="tarjetaProfesional"
-            id="tarjetaProfesional"
-            value={values.tarjetaProfesional}
-            onChange={(e) => handleChange(e, 'tarjetaProfesional')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.tarjetaProfesional && <p className="error">{errors.tarjetaProfesional}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="rethus">Rethus</label>
-          <select
-            name="rethus"
-            id="rethus"
-            value={values.rethus}
-            onChange={(e) => handleChange(e, 'rethus')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.rethus && <p className="error">{errors.rethus}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="violenciaSexual">Violencia Sexual</label>
-          <select
-            name="violenciaSexual"
-            id="violenciaSexual"
-            value={values.violenciaSexual}
-            onChange={(e) => handleChange(e, 'violenciaSexual')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.violenciaSexual && <p className="error">{errors.violenciaSexual}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="gestionDuelo">Gestión del Duelo</label>
-          <select
-            name="gestionDuelo"
-            id="gestionDuelo"
-            value={values.gestionDuelo}
-            onChange={(e) => handleChange(e, 'gestionDuelo')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.gestionDuelo && <p className="error">{errors.gestionDuelo}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="ataquesQuimicos">Ataques Quimicos</label>
-          <select
-            name="ataquesQuimicos"
-            id="ataquesQuimicos"
-            value={values.ataquesQuimicos}
-            onChange={(e) => handleChange(e, 'ataquesQuimicos')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.ataquesQuimicos && <p className="error">{errors.ataquesQuimicos}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="donacionOrganos">Donación de Organos</label>
-          <select
-            name="donacionOrganos"
-            id="donacionOrganos"
-            value={values.donacionOrganos}
-            onChange={(e) => handleChange(e, 'donacionOrganos')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.donacionOrganos && <p className="error">{errors.donacionOrganos}</p>}
-        </div>
-
-        
-        <div className="select-container">
-          <label htmlFor="tomaMuestrasCitologia">Toma de muestras/ toma citología</label>
-          <select
-            name="tomaMuestrasCitologia"
-            id="tomaMuestrasCitologia"
-            value={values.tomaMuestrasCitologia}
-            onChange={(e) => handleChange(e, 'tomaMuestrasCitologia')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.tomaMuestrasCitologia && <p className="error">{errors.tomaMuestrasCitologia}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="soporteVitalBasico">Soporte Vital Básico</label>
-          <select
-            name="soporteVitalBasico"
-            id="soporteVitalBasico"
-            value={values.soporteVitalBasico}
-            onChange={(e) => handleChange(e, 'soporteVitalBasico')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.soporteVitalBasico && <p className="error">{errors.soporteVitalBasico}</p>}
-        </div>
-
-        
-        <div className="select-container">
-          <label htmlFor="soporteVitalAvanzado">Soporte Vital Avanzado</label>
-          <select
-            name="soporteVitalAvanzado"
-            id="soporteVitalAvanzado"
-            value={values.soporteVitalAvanzado}
-            onChange={(e) => handleChange(e, 'soporteVitalAvanzado')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.soporteVitalAvanzado && <p className="error">{errors.soporteVitalAvanzado}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="PALS">PALS</label>
-          <select
-            name="PALS"
-            id="PALS"
-            value={values.PALS}
-            onChange={(e) => handleChange(e, 'PALS')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.PALS && <p className="error">{errors.PALS}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="NALS">NALS</label>
-          <select
-            name="NALS"
-            id="NALS"
-            value={values.NALS}
-            onChange={(e) => handleChange(e, 'NALS')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.NALS && <p className="error">{errors.NALS}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="vacunasCovid">Vacunas Covid</label>
-          <select
-            name="vacunasCovid"
-            id="vacunasCovid"
-            value={values.vacunasCovid}
-            onChange={(e) => handleChange(e, 'vacunasCovid')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.vacunasCovid && <p className="error">{errors.vacunasCovid}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="vacunasHepatitis">Vacunas Hepatitis B y otras</label>
-          <select
-            name="vacunasHepatitis"
-            id="vacunasHepatitis"
-            value={values.vacunasHepatitis}
-            onChange={(e) => handleChange(e, 'vacunasHepatitis')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.vacunasHepatitis && <p className="error">{errors.vacunasHepatitis}</p>}
-        </div>
-
-        
-        <div className="select-container">
-          <label htmlFor="conceptoMedico">Concepto Médico</label>
-          <select
-            name="conceptoMedico"
-            id="conceptoMedico"
-            value={values.conceptoMedico}
-            onChange={(e) => handleChange(e, 'conceptoMedico')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.conceptoMedico && <p className="error">{errors.conceptoMedico}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="conceptoInformeFinal">Concepto Informe Final/ Validación de títulos AYC</label>
-          <select
-            name="conceptoInformeFinal"
-            id="conceptoInformeFinal"
-            value={values.conceptoInformeFinal}
-            onChange={(e) => handleChange(e, 'conceptoInformeFinal')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.conceptoInformeFinal && <p className="error">{errors.conceptoInformeFinal}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="sintesis">Sintesis o CIFIN</label>
-          <select
-            name="sintesis"
-            id="sintesis"
-            value={values.sintesis}
-            onChange={(e) => handleChange(e, 'sintesis')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.sintesis && <p className="error">{errors.sintesis}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="certificadoInduccion">Certificado de Inducción Corporativa</label>
-          <select
-            name="certificadoInduccion"
-            id="certificadoInduccion"
-            value={values.certificadoInduccion}
-            onChange={(e) => handleChange(e, 'certificadoInduccion')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.certificadoInduccion && <p className="error">{errors.certificadoInduccion}</p>}
-        </div>
-
-        <div className="select-container">
-          <label htmlFor="cargaInhabilidades">Carga Inhabilidades</label>
-          <select
-            name="cargaInhabilidades"
-            id="cargaInhabilidades"
-            value={values.cargaInhabilidades}
-            onChange={(e) => handleChange(e, 'cargaInhabilidades')}
-          >
-            <option value="">- Selecciona -</option>
-            <option value="OK">OK</option>
-            <option value="PENDIENTE">PENDIENTE</option>
-            <option value="NO APLICA">NO APLICA</option>
-            <option value="PRELIMINAR">PRELIMINAR</option>
-
-          </select>
-          {errors.cargaInhabilidades && <p className="error">{errors.cargaInhabilidades}</p>}
-        </div>
-        
-        <div className="input-container">
-          <label htmlFor="observacionesAuxOperativo">Observaciones Aux Operativo</label>
-          <input
-            type="text"
-            id="observacionesAuxOperativo"
-            name="observacionesAuxOperativo"
-            placeholder="Observaciones Aux Operativo"
-            value={values.observacionesAuxOperativo}
-            onChange={(e) => handleChange(e, 'observacionesAuxOperativo')}
-          />
-          {errors.observacionesAuxOperativo && <p className="error">{errors.observacionesAuxOperativo}</p>}
-        </div>
-
-
-        <div className="select-container">
-          <label htmlFor="fechaIngreso">Fecha de Ingreso</label>
-          <DatePicker
-            selected={values.fechaIngreso}
-            onChange={(date) => handleDateChange(date, 'fechaIngreso')}
-
-            dateFormat="yyyy-MM-dd"
-            placeholderText="Selecciona la fecha de Ingreso"
-            className="date-picker-input"
-          />
-          {errors.fechaIngreso && <p className="error">{errors.fechaIngreso}</p>}
-        </div>
-
-        {/* Campo Estado con opciones */}
-        <div className="select-container">
-          <label htmlFor="estado">Estado</label>
+          <label htmlFor="estado"> Estado</label>
           <select
             name="estado"
             id="estado"
             value={values.estado}
             onChange={(e) => handleChange(e, 'estado')}
           >
-            <option value="">- Selecciona un estado -</option>
-            <option value="EN PROCESO">EN PROCESO</option>
-            <option value="COMPLETADO">COMPLETADO</option>
-            <option value="ENVIADO CON NOVEDADES">ENVIADO CON NOVEDADES</option>
-            <option value="NO PASA FASE DEL PROCESO">NO PASA FASE DEL PROCESO</option>
-            <option value="DESISTE">DESISTE</option>
+            <option value="">- Selecciona uno -</option>
+            <option value="ASIGNADO">ASIGNADO</option>
+<option value="RECHAZADO">RECHAZADO</option>
+<option value="DEVUELTO POR GESTOR">DEVUELTO POR GESTOR</option>
+<option value="INGRESO ERRADO">INGRESO ERRADO</option>
 
           </select>
           {errors.estado && <p className="error">{errors.estado}</p>}
         </div>
 
-        {/* Botón de envío */}
+        <div className="input-container">
+          <label htmlFor="telefono"> Teléfono</label>
+          <input
+            type="text"
+            id="telefono"
+            name="telefono"
+            placeholder=" Teléfono"
+            value={values.telefono}
+            onChange={(e) => handleChange(e, 'telefono')}
+          />
+          {errors.telefono && <p className="error">{errors.telefono}</p>}
+        </div>
+
+        <div className="input-container">
+          <label htmlFor="correo"> Correo</label>
+          <input
+            type="text"
+            id="correo"
+            name="correo"
+            placeholder=" Correo"
+            value={values.correo}
+            onChange={(e) => handleChange(e, 'correo')}
+          />
+          {errors.correo && <p className="error">{errors.correo}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="estadoCivil"> Estado Civil</label>
+          <select
+            name="estadoCivil"
+            id="estadoCivil"
+            value={values.estadoCivil}
+            onChange={(e) => handleChange(e, 'estadoCivil')}
+          >
+            <option value="">- Selecciona uno -</option>
+            <option value="SOLTERO/A">SOLTERO/A</option>
+<option value="CASADO/A">CASADO/A</option>
+<option value="UNION LIBRE">UNION LIBRE</option>
+<option value="VIUDO/A">VIUDO/A</option>
+<option value="SEPARADO/A">SEPARADO/A</option>
+<option value="DIVORCIADO/A">DIVORCIADO/A</option>
+          </select>
+          {errors.estadoCivil && <p className="error">{errors.estadoCivil}</p>}
+        </div>
+
+
+        {/* Campo fechaIngreso con DatePicker */}
+        <div className="select-container">
+          <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
+          <DatePicker
+            selected={values.fechaNacimiento}
+            onChange={(date) => handleDateChange(date, 'fechaNacimiento')}
+
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Selecciona la Fecha de Nacimiento"
+            className="date-picker-input"
+          />
+          {errors.fechaNacimiento && <p className="error">{errors.fechaNacimiento}</p>}
+        </div>
+
+        <div className="input-container">
+          <label htmlFor="direccion"> Dirección</label>
+          <input
+            type="text"
+            id="direccion"
+            name="direccion"
+            placeholder=" Dirección"
+            value={values.direccion}
+            onChange={(e) => handleChange(e, 'direccion')}
+          />
+          {errors.direccion && <p className="error">{errors.direccion}</p>}
+        </div>
+
+        <div className="input-container">
+          <label htmlFor="idIdentidad"> Id </label>
+          <input
+            type="text"
+            id="idIdentidad"
+            name="idIdentidad"
+            placeholder=" ID"
+            value={values.idIdentidad}
+            onChange={(e) => handleChange(e, 'idIdentidad')}
+          />
+          {errors.idIdentidad && <p className="error">{errors.idIdentidad}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="clausulaAdicional"> Clausula Adicional</label>
+          <select
+            name="clausulaAdicional"
+            id="clausulaAdicional"
+            value={values.clausulaAdicional}
+            onChange={(e) => handleChange(e, 'clausulaAdicional')}
+          >
+            <option value="">- Selecciona uno -</option>
+            <option value="GASTO DE TRANSPORTE">GASTO DE TRANSPORTE</option>
+<option value="PRIMA DE LOCALIZACION">PRIMA DE LOCALIZACION</option>
+<option value="AUXILIO DE RODAMIENTO">AUXILIO DE RODAMIENTO</option>
+<option value="GARANTIZADO">GARANTIZADO</option>
+<option value="INCENTIVO">INCENTIVO</option>
+<option value="VENTAS">VENTAS</option>
+<option value="DISPONIBILIDAD">DISPONIBILIDAD</option>
+<option value="COMISIONES">COMISIONES</option>
+          </select>
+          {errors.clausulaAdicional && <p className="error">{errors.clausulaAdicional}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="retefuente"> Retefuente</label>
+          <select
+            name="retefuente"
+            id="retefuente"
+            value={values.retefuente}
+            onChange={(e) => handleChange(e, 'retefuente')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="OK">OK</option>
+            <option value="NO ">NO </option>
+          </select>
+          {errors.retefuente && <p className="error">{errors.retefuente}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="gen"> Gen</label>
+          <select
+            name="gen"
+            id="gen"
+            value={values.gen}
+            onChange={(e) => handleChange(e, 'gen')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="OK">OK</option>
+            <option value="NO ">NO </option>
+          </select>
+          {errors.gen && <p className="error">{errors.gen}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="pa40EPS"> PA40_EPS</label>
+          <select
+            name="pa40EPS"
+            id="pa40EPS"
+            value={values.pa40EPS}
+            onChange={(e) => handleChange(e, 'pa40EPS')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SURA">SURA</option>
+<option value="ADRES">ADRES</option>
+<option value="PIJAOS">PIJAOS</option>
+<option value="AMBUQ">AMBUQ</option>
+<option value="SANITAS">SANITAS</option>
+<option value="CONVIDA">CONVIDA</option>
+<option value="FAMILIAR DEL CHOCO">FAMILIAR DEL CHOCO</option>
+<option value="CAJACOPI">CAJACOPI</option>
+<option value="MEDIMAS">MEDIMAS</option>
+<option value="COOMEVA">COOMEVA</option>
+<option value="COOSALUD">COOSALUD</option>
+<option value="ECOOPSOS">ECOOPSOS</option>
+<option value="EMSSANAR">EMSSANAR</option>
+<option value="DUSAKAWI">DUSAKAWI</option>
+<option value="NUEVA EPS">NUEVA EPS</option>
+<option value="SALUD BOLÍVAR">SALUD BOLÍVAR</option>
+<option value="SALUD MIA">SALUD MIA</option>
+<option value="COMPARTA">COMPARTA</option>
+<option value="MALLAMAS">MALLAMAS</option>
+<option value="CAPRESOCA">CAPRESOCA</option>
+<option value="SALUD VIDA">SALUD VIDA</option>
+<option value="FAMISANAR">FAMISANAR</option>
+<option value="ALIANSALUD">ALIANSALUD</option>
+<option value="COMPENSAR">COMPENSAR</option>
+<option value="SAVIA SALUD">SAVIA SALUD</option>
+<option value="MUTUAL SER">MUTUAL SER</option>
+<option value="INDÍGENA ANAS WAYUU EPSI">INDÍGENA ANAS WAYUU EPSI</option>
+<option value="SALUD TOTAL">SALUD TOTAL</option>
+<option value="COMFAGUAJIRA">COMFAGUAJIRA</option>
+<option value="COMFAORIENTE">COMFAORIENTE</option>
+<option value="ASMET SALUD">ASMET SALUD</option>
+<option value="CAPITAL SALUD">CAPITAL SALUD</option>
+<option value="COMFAMILIAR HUILA">COMFAMILIAR HUILA</option>
+<option value="COMFENALCO VALLE">COMFENALCO VALLE</option>
+<option value="FAMILIAR DE COLOMBIA S.A.S">FAMILIAR DE COLOMBIA S.A.S</option>
+<option value="COMFACHOCO">COMFACHOCO</option>
+<option value="ASOCIACIÓN INDIGENA DEL CAUCA">ASOCIACIÓN INDIGENA DEL CAUCA</option>
+<option value="DUSAKAWI EPS">DUSAKAWI EPS</option>
+          </select>
+          {errors.pa40EPS && <p className="error">{errors.pa40EPS}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="pa40AFP">PA40_AFP</label>
+          <select
+            name="pa40AFP"
+            id="pa40AFP"
+            value={values.pa40AFP}
+            onChange={(e) => handleChange(e, 'pa40AFP')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="COLPENSIONES">COLPENSIONES</option>
+<option value="PORVENIR">PORVENIR</option>
+<option value="PROTECCION">PROTECCION</option>
+<option value="SKANDIA">SKANDIA</option>
+<option value="COLFONDOS">COLFONDOS</option>
+<option value="NA">NA</option>
+<option value="NUEVO PORVENIR">NUEVO PORVENIR</option>
+<option value="NUEVO PROTECCION">NUEVO PROTECCION</option>
+<option value="NUEVO SKANDIA">NUEVO SKANDIA</option>
+<option value="NUEVO COLFONDOS">NUEVO COLFONDOS</option>
+          </select>
+          {errors.pa40AFP && <p className="error">{errors.pa40AFP}</p>}
+        </div>
+
+ 
+        <div className="input-container">
+          <label htmlFor="pa40CCF">PA40_CCF</label>
+          <input
+            type="text"
+            id="pa40CCF"
+            name="pa40CCF"
+            placeholder="PA40_CCF"
+            value={values.pa40CCF}
+            onChange={(e) => handleChange(e, 'pa40CCF')}
+          />
+          {errors.pa40CCF && <p className="error">{errors.pa40CCF}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="pa40AFC">PA40_AFC</label>
+          <select
+            name="pa40AFC"
+            id="pa40AFC"
+            value={values.pa40AFC}
+            onChange={(e) => handleChange(e, 'pa40AFC')}
+          >
+            <option value="">- Selecciona -</option>
+<option value="PORVENIR">PORVENIR</option>
+<option value="PROTECCION">PROTECCION</option>
+<option value="SKANDIA">SKANDIA</option>
+<option value="COLFONDOS">COLFONDOS</option>
+<option value="FNA">FNA</option>
+<option value="NA">NA</option>
+<option value="NUEVO PORVENIR">NUEVO PORVENIR</option>
+<option value="NUEVO PROTECCION">NUEVO PROTECCION</option>
+<option value="NUEVO SKANDIA">NUEVO SKANDIA</option>
+<option value="NUEVO COLFONDOS">NUEVO COLFONDOS</option>
+          </select>
+          {errors.pa40AFC && <p className="error">{errors.pa40AFC}</p>}
+        </div>
+
+
+        <div className="select-container">
+  <label htmlFor="fechaEntregaGestionDocumental">Fecha Entrega Gestión Documental</label>
+  <DatePicker
+    selected={values.fechaEntregaGestionDocumental}
+    onChange={(date) => handleDateChange(date, 'fechaEntregaGestionDocumental')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Entrega de GestiónDocumental"
+    className="date-picker-input"
+  />
+  {errors.fechaEntregaGestionDocumental && <p className="error">{errors.fechaEntregaGestionDocumental}</p>}
+</div>
+
+        <div className="select-container">
+          <label htmlFor="estadoProceso">Estado</label>
+          <select
+            name="estadoProceso"
+            id="estadoProceso"
+            value={values.estadoProceso}
+            onChange={(e) => handleChange(e, 'estadoProceso')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.estadoProceso && <p className="error">{errors.estadoProceso}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="causalDevolucion">Causal Devolución</label>
+          <select
+            name="causalDevolucion"
+            id="causalDevolucion"
+            value={values.causalDevolucion}
+            onChange={(e) => handleChange(e, 'causalDevolucion')}
+          >
+                        <option value="">- Selecciona uno -</option>
+
+                        <option value="ERROR EN EMPRESA">ERROR EN EMPRESA</option>
+<option value="ERROR FECHA DE NACIMIENTO">ERROR FECHA DE NACIMIENTO</option>
+<option value="ERROR FECHA DE INGRESO">ERROR FECHA DE INGRESO</option>
+<option value="ERROR FECHA TERMINACIÓN">ERROR FECHA TERMINACIÓN</option>
+<option value="ERROR FECHA DE CAMBIO ETAPA">ERROR FECHA DE CAMBIO ETAPA</option>
+<option value="FALTA O CON INCONCISTENCIA INFOLAFT">FALTA O CON INCONCISTENCIA INFOLAFT</option>
+<option value="FALTA O CON INCONCISTENCIA INHABILIDADES">FALTA O CON INCONCISTENCIA INHABILIDADES</option>
+<option value="CERTIFICADO BANCARIO VENCIDO">CERTIFICADO BANCARIO VENCIDO</option>
+<option value="ERROR SEGURIDAD SOCIAL">ERROR SEGURIDAD SOCIAL</option>
+<option value="ERROR BANCO, NÚMERO Y/O TIPO DE CUENTA">ERROR BANCO, NÚMERO Y/O TIPO DE CUENTA</option>
+<option value="ERROR INFORMACIÓN PERSONAL Y DE CONTACTO">ERROR INFORMACIÓN PERSONAL Y DE CONTACTO</option>
+<option value="CONDICIONES LABORALES, NO COINCIDEN CON PLANTA Y/O APROBACIONES">CONDICIONES LABORALES, NO COINCIDEN CON PLANTA Y/O APROBACIONES</option>
+<option value="ERROR TIPO DE MINUTA">ERROR TIPO DE MINUTA</option>
+<option value="FALTA DOCUMENTO">FALTA DOCUMENTO</option>
+<option value="CONTRATO MAL PRESENTADO">CONTRATO MAL PRESENTADO</option>
+<option value="CONTRATO O DOCUMENTOS NO CORRESPONDEN">CONTRATO O DOCUMENTOS NO CORRESPONDEN</option>
+<option value="ERROR INFORMACIÓN INSTITUTO Y/O PROGRAMA">ERROR INFORMACIÓN INSTITUTO Y/O PROGRAMA</option>
+<option value="FALTA CLÁUSULA ADICIONAL">FALTA CLÁUSULA ADICIONAL</option>
+<option value="ERROR CARTA SS">ERROR CARTA SS</option>
+<option value="NO MARCACION DE CLAUSULA EN EL CUADRO">NO MARCACION DE CLAUSULA EN EL CUADRO</option>
+<option value="FALTA O MAL GRABADA LA PA40">FALTA O MAL GRABADA LA PA40</option>
+<option value="FECHA DE CAMBIO O TERMINACION MAL GRABADA">FECHA DE CAMBIO O TERMINACION MAL GRABADA</option>
+<option value="SIN NIVELACION O TERMINACION EN CH">SIN NIVELACION O TERMINACION EN CH</option>
+<option value="ERROR FECHA DE PREAVISO">ERROR FECHA DE PREAVISO</option>
+<option value="SIN PERFIL DEL CARGO">SIN PERFIL DEL CARGO</option>
+<option value="NIT DE EMPRESA ERRADO">NIT DE EMPRESA ERRADO</option>
+<option value="FALTA PREAVISO">FALTA PREAVISO</option>
+<option value="NO ENVIA EL INGRESO POR ONBASE">NO ENVIA EL INGRESO POR ONBASE</option>
+<option value="NO ADJUNTA CONTRATO POR ONBASE">NO ADJUNTA CONTRATO POR ONBASE</option>
+<option value="NO ADJUNTA CONTRATO EN DRIVE">NO ADJUNTA CONTRATO EN DRIVE</option>
+
+          </select>
+          {errors.causalDevolucion && <p className="error">{errors.causalDevolucion}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaRevision">Fecha Revisión</label>
+  <DatePicker
+    selected={values.fechaRevision}
+    onChange={(date) => handleDateChange(date, 'fechaRevision')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Revisión"
+    className="date-picker-input"
+  />
+  {errors.fechaRevision && <p className="error">{errors.fechaRevision}</p>}
+</div>
+
+        {/* Campo Estado con opciones */}
+        <div className="select-container">
+          <label htmlFor="estadoRevision">Estado Revisión</label>
+          <select
+            name="estadoRevision"
+            id="estadoRevision"
+            value={values.estadoRevision}
+            onChange={(e) => handleChange(e, 'estadoRevision')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="DEVUELTO">DEVUELTO</option>
+            <option value="RECIBIDO">RECIBIDO</option>
+
+          </select>
+          {errors.estadoRevision && <p className="error">{errors.estadoRevision}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="revisadoEnviado">Revisado Enviado por</label>
+          <select
+            name="revisadoEnviado"
+            id="revisadoEnviado"
+            value={values.revisadoEnviado}
+            onChange={(e) => handleChange(e, 'revisadoEnviado')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="STEFANY MORENO">STEFANY MORENO</option>
+<option value="CAROLINA BONILLA">CAROLINA BONILLA</option>
+<option value="XIMENA RIAÑO">XIMENA RIAÑO</option>
+<option value="MARILYN GUAQUETA">MARILYN GUAQUETA</option>
+<option value="CAREN MACIAS">CAREN MACIAS</option>
+<option value="GESTION ANDRES">GESTION ANDRES</option>
+<option value="MAGNOLIA ALFONSO">MAGNOLIA ALFONSO</option>
+<option value="NATALIA ROJAS">NATALIA ROJAS</option>
+<option value="STEPHANYA GAITAN">STEPHANYA GAITAN</option>
+<option value="CRISTIAN RAMIREZ">CRISTIAN RAMIREZ</option>
+<option value="FABIOLA CUEVAS">FABIOLA CUEVAS</option>
+<option value="VALENTINA SANCHEZ">VALENTINA SANCHEZ</option>
+<option value="NATALIA BARRETO">NATALIA BARRETO</option>
+
+
+          </select>
+          {errors.revisadoEnviado && <p className="error">{errors.revisadoEnviado}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaContratoEnvioFirmar">Fecha Contrato Envio Firmar</label>
+  <DatePicker
+    selected={values.fechaContratoEnvioFirmar}
+    onChange={(date) => handleDateChange(date, 'fechaContratoEnvioFirmar')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Contrato Envio Firmar"
+    className="date-picker-input"
+  />
+  {errors.fechaContratoEnvioFirmar && <p className="error">{errors.fechaContratoEnvioFirmar}</p>}
+</div>
+
+                <div className="select-container">
+      <label htmlFor="contratoEnvioFirmar">Contrato Envio Firma</label>
+      <select
+        name="contratoEnvioFirmar"
+        id="contratoEnvioFirmar"
+        value={values.contratoEnvioFirmar} // Vincula el valor con el estado
+        onChange={(e) => handleChange(e, 'contratoEnvioFirmar')} // Llama a handleChange para actualizar el estado
+      >
+        <option value="">- Selecciona un estado -</option>
+        <option value="SI">SI</option>
+        <option value="NO">NO</option>
+      </select>
+      {values.contratoEnvioFirmar === '' && <p className="error"></p>}
+    </div>
+
+        
+    <div className="select-container">
+  <label htmlFor="fechaContratoRecibidoFirmado">Fecha Contrato Recibido Firmado</label>
+  <DatePicker
+    selected={values.fechaContratoRecibidoFirmado}
+    onChange={(date) => handleDateChange(date, 'fechaContratoRecibidoFirmado')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Contrato Recibido Firmado"
+    className="date-picker-input"
+  />
+  {errors.fechaContratoRecibidoFirmado && <p className="error">{errors.fechaContratoRecibidoFirmado}</p>}
+</div>
+
+<div className="select-container">
+      <label htmlFor="contratoRecibidoFirmado">Contrato Recibido Firmado</label>
+      <select
+        name="contratoRecibidoFirmado" // Elimina los espacios extra
+        id="contratoRecibidoFirmado" // Elimina los espacios extra
+        value={values.contratoRecibidoFirmado} // Vincula el valor con el estado
+        onChange={(e) => handleChange(e, 'contratoRecibidoFirmado')} // Llama a handleChange para actualizar el estado
+      >
+        <option value="">- Selecciona un estado -</option>
+        <option value="SI">SI</option>
+        <option value="NO">NO</option>
+      </select>
+      {values.contratoRecibidoFirmado === '' && <p className="error"></p>}
+    </div>
+
+    <div className="select-container">
+  <label htmlFor="fechaClausulaEnvioFirmar">Fecha Clausula Envio Firmar</label>
+  <DatePicker
+    selected={values.fechaClausulaEnvioFirmar}
+    onChange={(date) => handleDateChange(date, 'fechaClausulaEnvioFirmar')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Clausula Envio Firmar"
+    className="date-picker-input"
+  />
+  {errors.fechaClausulaEnvioFirmar && <p className="error">{errors.fechaClausulaEnvioFirmar}</p>}
+</div>
+
+        <div className="select-container">
+          <label htmlFor="clausulaEnvioFirmar">Clausula Envio Firma</label>
+          <select
+            name="clausulaEnvioFirmar"
+            id="clausulaEnvioFirmar"
+            value={values.clausulaEnvioFirmar}
+            onChange={(e) => handleChange(e, 'clausulaEnvioFirmar')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.clausulaEnvioFirmar && <p className="error">{errors.clausulaEnvioFirmar}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaRecibidoClausulaFirmada">Fecha Recibido Clausula Firmada</label>
+  <DatePicker
+    selected={values.fechaRecibidoClausulaFirmada}
+    onChange={(date) => handleDateChange(date, 'fechaRecibidoClausulaFirmada')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Recibido Clausula Firmada"
+    className="date-picker-input"
+  />
+  {errors.fechaRecibidoClausulaFirmada && <p className="error">{errors.fechaRecibidoClausulaFirmada}</p>}
+</div>
+
+        <div className="select-container">
+          <label htmlFor="recibidoClausulaFirmada
+          ">Recibido Clausula Firmada	</label>
+          <select
+            name="recibidoClausulaFirmada"
+            id="recibidoClausulaFirmada"
+            value={values.recibidoClausulaFirmada}
+            onChange={(e) => handleChange(e, 'recibidoClausulaFirmada')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.recibidoClausulaFirmada	&& <p className="error">{errors.recibidoClausulaFirmada}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaPrimerSeguimiento">Fecha Primer Seguimiento</label>
+  <DatePicker
+    selected={values.fechaPrimerSeguimiento}
+    onChange={(date) => handleDateChange(date, 'fechaPrimerSeguimiento')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Primer Seguimiento"
+    className="date-picker-input"
+  />
+  {errors.fechaPrimerSeguimiento && <p className="error">{errors.fechaPrimerSeguimiento}</p>}
+</div>
+
+        <div className="select-container">
+          <label htmlFor="primerSeguimiento">Primer Seguimiento	</label>
+          <select
+            name="primerSeguimiento"
+            id="primerSeguimiento"
+            value={values.primerSeguimiento}
+            onChange={(e) => handleChange(e, 'primerSeguimiento')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.primerSeguimiento && <p className="error">{errors.primerSeguimiento}</p>}
+        </div>
+        
+        <div className="select-container">
+  <label htmlFor="fechaSegundoSeguimiento">Fecha Segundo Seguimiento</label>
+  <DatePicker
+    selected={values.fechaSegundoSeguimiento}
+    onChange={(date) => handleDateChange(date, 'fechaSegundoSeguimiento')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Segundo Seguimiento"
+    className="date-picker-input"
+  />
+  {errors.fechaSegundoSeguimiento && <p className="error">{errors.fechaSegundoSeguimiento}</p>}
+</div>
+
+        <div className="select-container">
+          <label htmlFor="segundoSeguimiento">Segundo Seguimiento	</label>
+          <select
+            name="segundoSeguimiento"
+            id="segundoSeguimiento"
+            value={values.segundoSeguimiento}
+            onChange={(e) => handleChange(e, 'segundoSeguimiento')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.segundoSeguimiento && <p className="error">{errors.segundoSeguimiento}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="envioInformeOnboarding">Envio Informe Onboarding	</label>
+          <select
+            name="envioInformeOnboarding"
+            id="envioInformeOnboarding"
+            value={values.envioInformeOnboarding}
+            onChange={(e) => handleChange(e, 'envioInformeOnboarding')}
+          >
+            <option value="">- Selecciona un estado -</option>
+            <option value="ENVIADO">ENVIADO</option>
+            <option value="NO APLICA">NO APLICA</option>
+
+          </select>
+          {errors.envioInformeOnboarding	&& <p className="error">{errors.envioInformeOnboarding}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaPorletRepositorio">Fecha Porlet Repositorio</label>
+  <DatePicker
+    selected={values.fechaPorletRepositorio}
+    onChange={(date) => handleDateChange(date, 'fechaPorletRepositorio')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} // Intervalos de 15 minutos, puedes cambiarlo si lo prefieres
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Porlet Repositorio"
+    className="date-picker-input"
+  />
+  {errors.fechaPorletRepositorio && <p className="error">{errors.fechaPorletRepositorio}</p>}
+</div>
+
+<div className="select-container">
+  <label htmlFor="porletRepositorio">Porlet Repositorio</label>
+  <select
+    name="porletRepositorio"
+    id="porletRepositorio" 
+    value={values.porletRepositorio}
+    onChange={(e) => handleChange(e, 'porletRepositorio')}
+  >
+    <option value="">- Selecciona un estado -</option>
+    <option value="SI">SI</option>
+    <option value="NO">NO</option>
+  </select>
+  {errors.porletRepositorio && <p className="error">{errors.porletRepositorio}</p>}
+</div>
+
+<div className="select-container">
+  <label htmlFor="recuperadoPor">Recuperado Por</label>
+  <select
+    name="recuperadoPor" 
+    id="recuperadoPor" 
+    value={values.recuperadoPor}
+    onChange={(e) => handleChange(e, 'recuperadoPor')}
+  >
+    <option value="">- Selecciona un estado -</option>
+    <option value="STEFANY">STEFANY</option>
+    <option value="CAROLINA">CAROLINA</option>
+    <option value="STPHEPANYA">STPHEPANYA</option>
+    <option value="FABIOLA">FABIOLA</option>
+    <option value="MARIA JOSE">MARIA JOSE</option>
+  </select>
+  {errors.recuperadoPor && <p className="error">{errors.recuperadoPor}</p>}
+</div>
+
+<div className="select-container">
+  <label htmlFor="observacionRecuperacionContrato">Observación Recuperación Contrato</label>
+  <select
+    name="observacionRecuperacionContrato" 
+    id="observacionRecuperacionContrato" 
+    value={values.observacionRecuperacionContrato}
+    onChange={(e) => handleChange(e, 'observacionRecuperacionContrato')}
+  >
+    <option value="">- Selecciona un estado -</option>
+    <option value="FALTAN FIRMAS">FALTAN FIRMAS</option>
+    <option value="CONTRATO INCOMPLETO">CONTRATO INCOMPLETO</option>
+    <option value="MODIFICO FORMATO">MODIFICO FORMATO</option>
+    <option value="DESISTIO DEL PROCESO">DESISTIO DEL PROCESO</option>
+    <option value="RENUNCIO">RENUNCIO</option>
+    <option value="SIN PERFIL DEL CARGO">SIN PERFIL DEL CARGO</option>
+  </select>
+  {errors.observacionRecuperacionContrato && <p className="error">{errors.observacionRecuperacionContrato}</p>}
+</div>
+
+<div className="select-container">
+  <label htmlFor="inconsistenciaCuadro">Inconsistencia Cuadro</label>
+  <select
+    name="inconsistenciaCuadro" 
+    id="inconsistenciaCuadro"
+    value={values.inconsistenciaCuadro}
+    onChange={(e) => handleChange(e, 'inconsistenciaCuadro')}
+  >
+    <option value="">- Selecciona un estado -</option>
+    <option value="INFORMACION PERSONAL MAL">INFORMACION PERSONAL MAL</option>
+    <option value="INFORMACION LABORAL MAL">INFORMACION LABORAL MAL</option>
+  </select>
+  {errors.inconsistenciaCuadro && <p className="error">{errors.inconsistenciaCuadro}</p>}
+</div>
+
+<div className="select-container">
+  <label htmlFor="tipoFirma">Tipo Firma</label>
+  <select
+    name="tipoFirma" 
+    id="tipoFirma" 
+    value={values.tipoFirma}
+    onChange={(e) => handleChange(e, 'tipoFirma')}
+  >
+    <option value="">- Selecciona un estado -</option>
+    <option value="VIRTUAL">VIRTUAL</option>
+    <option value="PRESENCIAL">PRESENCIAL</option>
+  </select>
+  {errors.tipoFirma && <p className="error">{errors.tipoFirma}</p>}
+</div>
+
+        {(values.periodo === 'OCTUBRE' || values.periodo === 'NOVIEMBRE'|| values.periodo === 'SEPTIEMBRE') && (
+          <>
+
+        <div className="select-container">
+  <label htmlFor="fechaRadicadoEPS">Fecha Radicado EPS</label>
+  <DatePicker
+    selected={values.fechaRadicadoEPS}
+    onChange={(date) => handleDateChange(date, 'fechaRadicadoEPS')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de radicado EPS"
+    className="date-picker-input"
+  />
+  {errors.fechaRadicadoEPS && <p className="error">{errors.fechaRadicadoEPS}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="radicadoEPS">Radicado EPS	</label>
+          <select
+            name="radicadoEPS"
+            id="radicadoEPS"
+            value={values.radicadoEPS}
+            onChange={(e) => handleChange(e, 'radicadoEPS')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.radicadoEPS	&& <p className="error">{errors.radicadoEPS}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaRecibidoEPS">Fecha Recibido EPS</label>
+  <DatePicker
+    selected={values.fechaRecibidoEPS}
+    onChange={(date) => handleDateChange(date, 'fechaRecibidoEPS')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de recibido EPS"
+    className="date-picker-input"
+  />
+  {errors.fechaRecibidoEPS && <p className="error">{errors.fechaRecibidoEPS}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="recibidoEPS">Recibido EPS	</label>
+          <select
+            name="recibidoEPS"
+            id="recibidoEPS"
+            value={values.recibidoEPS}
+            onChange={(e) => handleChange(e, 'recibidoEPS')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.recibidoEPS && <p className="error">{errors.recibidoEPS}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaRepositorio">Fecha Repositorio</label>
+  <DatePicker
+    selected={values.fechaRepositorio}
+    onChange={(date) => handleDateChange(date, 'fechaRepositorio')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Repositorio"
+    className="date-picker-input"
+  />
+  {errors.fechaRepositorio && <p className="error">{errors.fechaRepositorio}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="repositorio2">Repositorio</label>
+          <select
+            name="repositorio2"
+            id="repositorio2"
+            value={values.repositorio2}
+            onChange={(e) => handleChange(e, 'repositorio2')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.repositorio2 && <p className="error">{errors.repositorio2}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaPorlet2">Fecha Porlet</label>
+  <DatePicker
+    selected={values.fechaPorlet2}
+    onChange={(date) => handleDateChange(date, 'fechaPorlet2')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Porlet"
+    className="date-picker-input"
+  />
+  {errors.fechaPorlet2 && <p className="error">{errors.fechaPorlet2}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="porlet2">Porlet</label>
+          <select
+            name="porlet2"
+            id="porlet2"
+            value={values.porlet2}
+            onChange={(e) => handleChange(e, 'porlet2')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.porlet2	&& <p className="error">{errors.porlet2}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="inconsistencia2">Inconsistencia</label>
+          <select
+            name="inconsistencia2"
+            id="inconsistencia2"
+            value={values.inconsistencia2}
+            onChange={(e) => handleChange(e, 'inconsistencia2')}
+          >
+<option value="">- Selecciona -</option>
+<option value="FECHA_DE_NACIMIENTO">FECHA DE NACIMIENTO</option>
+<option value="RETROACTIVO">RETROACTIVO</option>
+<option value="EMPRESA_ERRADA">EMPRESA ERRADA</option>
+<option value="RIESGO_ERRADO">RIESGO ERRADO</option>
+<option value="FECHA_DE_INGRESO_ERRADA">FECHA DE INGRESO ERRADA</option>
+<option value="DATOS_PERSONALES_ERRADOS">DATOS PERSONALES ERRADOS</option>
+<option value="MAL_CARGADO_PORTLET">MAL CARGADO PORTLET</option>
+<option value="DOCUMENTO_NO_CARGADO_EN_CONEXION">DOCUMENTO NO CARGADO EN CONEXIÓN</option>
+          </select>
+          {errors.inconsistencia2	 && <p className="error">{errors.inconsistencia2	}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaCambioEPS">Fecha Cambio EPS</label>
+  <DatePicker
+    selected={values.fechaCambioEPS}
+    onChange={(date) => handleDateChange(date, 'fechaCambioEPS')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10}
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Cambio de EPS"
+    className="date-picker-input"
+  />
+  {errors.fechaCambioEPS && <p className="error">{errors.fechaCambioEPS}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="cambioEPS">Cambio EPS</label>
+          <select
+            name="cambioEPS"
+            id="cambioEPS"
+            value={values.cambioEPS}
+            onChange={(e) => handleChange(e, 'cambioEPS')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="CAMBIO DE FECHA DE INGRESO">CAMBIO DE FECHA DE INGRESO</option>
+  <option value="CAMBIO DE SALARIO">CAMBIO DE SALARIO</option>XS
+          </select>
+          {errors.cambioEPS	&& <p className="error">{errors.cambioEPS}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="nuevaFechaIngresoEPS">Nueva Fecha Ingreso EPS</label>
+  <DatePicker
+    selected={values.nuevaFechaIngresoEPS}
+    onChange={(date) => handleDateChange(date, 'nuevaFechaIngresoEPS')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Nueva Fecha Ingreso EPS"
+    className="date-picker-input"
+  />
+  {errors.nuevaFechaIngresoEPS && <p className="error">{errors.nuevaFechaIngresoEPS}</p>}
+</div>
+
+<div className="select-container">
+  <label htmlFor="fechaRadicadoARL"> Fecha Radicado ARL</label>
+  <DatePicker
+    selected={values.fechaRadicadoARL}
+    onChange={(date) => handleDateChange(date, 'fechaRadicadoARL')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Fecha Radicado ARL"
+    className="date-picker-input"
+  />
+  {errors.fechaRadicadoARL && <p className="error">{errors.fechaRadicadoARL}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="afiliacionARL">Afiliación ARL</label>
+          <select
+            name="afiliacionARL"
+            id="afiliacionARL"
+            value={values.afiliacionARL}
+            onChange={(e) => handleChange(e, 'afiliacionARL')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.afiliacionARL	&& <p className="error">{errors.afiliacionARL}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaRepositorio1">Fecha Repositorio</label>
+  <DatePicker
+    selected={values.fechaRepositorio1}
+    onChange={(date) => handleDateChange(date, 'fechaRepositorio1')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10
+    } 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Repositorio"
+    className="date-picker-input"
+  />
+  {errors.fechaRepositorio1 && <p className="error">{errors.fechaRepositorio1}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="repositorio">Repositorio</label>
+          <select
+            name="repositorio"
+            id="repositorio"
+            value={values.repositorio}
+            onChange={(e) => handleChange(e, 'repositorio')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.repositorio	&& <p className="error">{errors.repositorio}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaPorlet">Fecha Porlet</label>
+  <DatePicker
+    selected={values.fechaPorlet}
+    onChange={(date) => handleDateChange(date, 'fechaPorlet')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Porlet"
+    className="date-picker-input"
+  />
+  {errors.fechaPorlet && <p className="error">{errors.fechaPorlet}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="porlet">Porlet</label>
+          <select
+            name="porlet"
+            id="porlet"
+            value={values.porlet}
+            onChange={(e) => handleChange(e, 'porlet')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.porlet && <p className="error">{errors.porlet}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="inconsistencia1">Inconsistencia</label>
+          <select
+            name="inconsistencia1"
+            id="inconsistencia1"
+            value={values.inconsistencia1}
+            onChange={(e) => handleChange(e, 'inconsistencia1')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="FECHA_INGRESO_ERRADA">FECHA DE INGRESO ERRADA</option>
+  <option value="EMPRESA_ERRADA">EMPRESA ERRADA</option>
+  <option value="SALARIO_ERRADO">SALARIO ERRADO</option>
+  <option value="DATOS_PERSONALES_ERRADOS">DATOS PERSONALES ERRADOS</option>
+  <option value="EPS_ERRADA">EPS ERRADA</option>
+  <option value="TRASLADO_AGENDADO">TRASLADO AGENDADO</option>
+  <option value="MAL_CARGADO_PORTLET">MAL CARGADO PORTLET</option>
+  <option value="DOCUMENTO_NO_CARGADO_CONEXION_HUMANA">DOCUMENTO NO CARGADO EN CONEXIÓN HUMANA</option>
+  <option value="EMPRESA_NO_CREADA">EMPRESA NO CREADA</option>
+  <option value="RETIRO_PENDIENTE">RETIRO PENDIENTE</option>
+  <option value="SIN_FECHA_DE_NOVEDAD">SIN FECHA DE NOVEDAD</option>
+
+          </select>
+          {errors.inconsistencia1	&& <p className="error">{errors.inconsistencia1}</p>}
+        </div>   
+
+         <div className="select-container">
+  <label htmlFor="fechaCambioARL">Fecha Cambio ARL</label>
+  <DatePicker
+    selected={values.fechaCambioARL}
+    onChange={(date) => handleDateChange(date, 'fechaCambioARL')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Cambio de EPS"
+    className="date-picker-input"
+  />
+  {errors.fechaCambioARL && <p className="error">{errors.fechaCambioARL}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="cambioARL">Cambio ARL</label>
+          <select
+            name="cambioARL"
+            id="cambioARL"
+            value={values.cambioARL}
+            onChange={(e) => handleChange(e, 'cambioARL')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="ACTUALIZACION_DE_RIESGO">ACTUALIZACIÓN DE RIESGO</option>
+  <option value="CAMBIO_DE_SALARIO">CAMBIO DE SALARIO</option>
+  <option value="CAMBIO_DE_FECHA_DE_INGRESO">CAMBIO DE FECHA DE INGRESO</option>
+  <option value="CAMBIO_DE_EMPRESA">CAMBIO DE EMPRESA</option>
+  <option value="SOLICITUD_DE_RETIRO">SOLICITUD DE RETIRO</option>
+  <option value="CAMBIO_DE_TIPO_DE_DOCUMENTO">CAMBIO DE TIPO DE DOCUMENTO</option>
+  <option value="AJUSTE_DATOS_PERSONALES">AJUSTE DATOS PERSONALES</option>
+          </select>
+          {errors.cambioARL && <p className="error">{errors.cambioARL}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="nuevaFechaIngresoARL">Nueva Fecha Ingreso ARL</label>
+  <DatePicker
+    selected={values.nuevaFechaIngresoARL}
+    onChange={(date) => handleDateChange(date, 'nuevaFechaIngresoARL')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Nueva Fecha Ingreso EPS"
+    className="date-picker-input"
+  />
+  {errors.nuevaFechaIngresoARL && <p className="error">{errors.nuevaFechaIngresoARL}</p>}
+</div>
+     
+<div className="select-container">
+  <label htmlFor="fechaRadicadoCCF">Fecha Radicado CCF</label>
+  <DatePicker
+    selected={values.fechaRadicadoCCF}
+    onChange={(date) => handleDateChange(date, 'fechaRadicadoCCF')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Radicado CCF"
+    className="date-picker-input"
+  />
+  {errors.fechaRadicadoCCF && <p className="error">{errors.fechaRadicadoCCF}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="afiliacionCCF">Afiliación CCF</label>
+          <select
+            name="afiliacionCCF"
+            id="afiliacionCCF"
+            value={values.afiliacionCCF}
+            onChange={(e) => handleChange(e, 'afiliacionCCF')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.afiliacionCCF	&& <p className="error">{errors.afiliacionCCF}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaRecibidoCCF">Fecha Recibido CCF</label>
+  <DatePicker
+    selected={values.fechaRecibidoCCF}
+    onChange={(date) => handleDateChange(date, 'fechaRecibidoCCF')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Recibido CCF"
+    className="date-picker-input"
+  />
+  {errors.fechaRecibidoCCF && <p className="error">{errors.fechaRecibidoCCF}</p>}
+</div>
+
+<div className="select-container">
+  <label htmlFor="fechaRepositorio2">Fecha Repositorio</label>
+  <DatePicker
+    selected={values.fechaRepositorio2}
+    onChange={(date) => handleDateChange(date, 'fechaRepositorio2')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Repositorio"
+    className="date-picker-input"
+  />
+  {errors.fechaRepositorio2 && <p className="error">{errors.fechaRepositorio2}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="repositorio3">Repositorio</label>
+          <select
+            name="repositorio3"
+            id="repositorio3"
+            value={values.repositorio3}
+            onChange={(e) => handleChange(e, 'repositorio3')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.repositorio3 && <p className="error">{errors.repositorio3}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaPorlet3">Fecha Porlet</label>
+  <DatePicker
+    selected={values.fechaPorlet3}
+    onChange={(date) => handleDateChange(date, 'fechaPorlet3')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Porlet"
+    className="date-picker-input"
+  />
+  {errors.fechaPorlet3 && <p className="error">{errors.fechaPorlet3}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="porlet3">Porlet</label>
+          <select
+            name="porlet3"
+            id="porlet3"
+            value={values.porlet3}
+            onChange={(e) => handleChange(e, 'porlet3')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.porlet3 && <p className="error">{errors.porlet3}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="inconsistencia3">Inconsistencia</label>
+          <select
+            name="inconsistencia3"
+            id="inconsistencia3"
+            value={values.inconsistencia3}
+            onChange={(e) => handleChange(e, 'inconsistencia3')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="CAJA_ERRADA">CAJA ERRADA</option>
+  <option value="SALARIO_ERRADO">SALARIO ERRADO</option>
+  <option value="FECHA_DE_INGRESO_ERRADA">FECHA DE INGRESO ERRADA</option>
+  <option value="EMPRESA_ERRADA">EMPRESA ERRADA</option>
+  <option value="JORNADA_LABORAL">JORNADA LABORAL</option>
+  <option value="MAL_CARGADO_PORTLET">MAL CARGADO PORTLET</option>
+  <option value="EMPRESA_NO_CREADA">EMPRESA NO CREADA</option>
+  <option value="RETIRO_PENDIENTE">RETIRO PENDIENTE</option>
+  <option value="ERROR_PLATAFORMA_USUARIO">ERROR PLATAFORMA(USUARIO)</option>
+  <option value="REPORTADO_DESPUES_DE_LA_FI">REPORTADO DESPUES DE LA FI</option>
+  <option value="FECHA_DE_AFILIACION">FECHA DE AFILIACIÓN</option>
+  <option value="DOCUMENTO_NO_CARGADO_EN_CONEXION">DOCUMENTO NO CARGADO EN CONEXIÓN</option>
+
+          </select>
+          {errors.inconsistencia3 && <p className="error">{errors.inconsistencia3}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaCambioCaja">Fecha Cambio Caja</label>
+  <DatePicker
+    selected={values.fechaCambioCaja}
+    onChange={(date) => handleDateChange(date, 'fechaCambioCaja')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Cambio de Caja"
+    className="date-picker-input"
+  />
+  {errors.fechaCambioCaja && <p className="error">{errors.fechaCambioCaja}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="cambioCaja">Cambio Caja</label>
+          <select
+            name="cambioCaja"
+            id="cambioCaja"
+            value={values.cambioCaja}
+            onChange={(e) => handleChange(e, 'cambioCaja')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="CAMBIO_DE_FECHA_DE_INGRESO">CAMBIO DE FECHA DE INGRESO</option>
+  <option value="CAMBIO_DE_SALARIO">CAMBIO DE SALARIO</option>
+  <option value="CAMBIO_DE_EMPRESA">CAMBIO DE EMPRESA</option>
+  <option value="EMPRESA_NO_CREADA">EMPRESA NO CREADA</option>
+          </select>
+          {errors.cambioCaja && <p className="error">{errors.cambioCaja}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="nuevaFechaIngresoCaja">Nueva Fecha Ingreso Caja</label>
+  <DatePicker
+    selected={values.nuevaFechaIngresoCaja}
+    onChange={(date) => handleDateChange(date, 'nuevaFechaIngresoCaja')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de Nueva Fecha Ingreso  de Caja"
+    className="date-picker-input"
+  />
+  {errors.nuevaFechaIngresoCaja && <p className="error">{errors.nuevaFechaIngresoCaja}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="afiliacionPensionesCesantias">Afiliación Pensiones y Cesantías</label>
+          <select
+            name="afiliacionPensionesCesantias"
+            id="afiliacionPensionesCesantias"
+            value={values.afiliacionPensionesCesantias}
+            onChange={(e) => handleChange(e, 'afiliacionPensionesCesantias')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="AFILIACION NUEVA">AFILIACION NUEVA</option>
+  <option value="AFILIADO ANTIGUO">AFILIADO ANTIGUO</option>
+          </select>
+          {errors.afiliacionPensionesCesantias && <p className="error">{errors.afiliacionPensionesCesantias}</p>}
+        </div>
+
+        <div className="select-container">
+  <label htmlFor="fechaPorletRepositorio2"> Fecha PORLET Y REPOSITORIO</label>
+  <DatePicker
+    selected={values.fechaPorletRepositorio2}
+    onChange={(date) => handleDateChange(date, 'fechaPorletRepositorio2')}
+    showTimeSelect
+    timeFormat="HH:mm"
+    timeIntervals={10} 
+    dateFormat="yyyy-MM-dd HH:mm"
+    placeholderText="Selecciona la fecha de PORLET Y REPOSITORIO"
+    className="date-picker-input"
+  />
+  {errors.fechaPorletRepositorio2 && <p className="error">{errors.fechaPorletRepositorio2}</p>}
+</div>
+
+<div className="select-container">
+          <label htmlFor="porletRepositorio2">Porlet y repositorio</label>
+          <select
+            name="porletRepositorio2"
+            id="porletRepositorio2"
+            value={values.porletRepositorio2}
+            onChange={(e) => handleChange(e, 'porletRepositorio2')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+
+          </select>
+          {errors.porletRepositorio2	&& <p className="error">{errors.porletRepositorio2}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="erroresPA40Contratacion">Errores PA40 Contratación</label>
+          <select
+            name="erroresPA40Contratacion"
+            id="erroresPA40Contratacion"
+            value={values.erroresPA40Contratacion}
+            onChange={(e) => handleChange(e, 'erroresPA40Contratacion')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="RIESGO_MAL_GRABADO">RIESGO MAL GRABADO</option>
+  <option value="ENTIDAD_NO_CORRESPONDE">ENTIDAD NO CORRESPONDE</option>
+  <option value="REGIMEN_ESPECIAL_SIN_AUTORIZACION">REGIMEN ESPECIAL SIN AUTORIZACION</option>
+  <option value="MAS_DE_1_DIAS_SIN_PA40">MAS DE 1 DIAS SIN PA40</option>
+  <option value="NOMBRE_O_DOCUMENTO_MAL_EN_CH">NOMBRE O DOCUMENTO MAL EN CH</option>
+  <option value="PENSION_SIN_PORCENTAJE">PENSION SIN %</option>
+
+          </select>
+          {errors.erroresPA40Contratacion	&& <p className="error">{errors.erroresPA40Contratacion}</p>}
+        </div>
+
+        <div className="select-container">
+          <label htmlFor="inconsistenciaCuadro2">Inconsistencia Cuadro</label>
+          <select
+            name="inconsistenciaCuadro2"
+            id="inconsistenciaCuadro2"
+            value={values.inconsistenciaCuadro2}
+            onChange={(e) => handleChange(e, 'inconsistenciaCuadro2')}
+          >
+            <option value="">- Selecciona -</option>
+            <option value="INFORMACION PERSONAL MAL">INFORMACION PERSONAL MAL</option>
+  <option value="INFORMACION LABORAL MAL">INFORMACION LABORAL MAL</option>
+
+          </select>
+          {errors.inconsistenciaCuadro2 && <p className="error">{errors.inconsistenciaCuadro2}</p>}
+        </div>
+</>
+        )}
+
+
+
         <div className="button-container">
           <button type="submit" className="Guardar">Guardar</button>
           <button type="button" className="Cancelar" onClick={() => navigate(-1)}>Cancelar</button>
@@ -3561,7 +4317,7 @@ function DatosPersonalesSeleccion() {
   );
 }
 
-export default DatosPersonalesSeleccion;
+export default DatosPersonalesContratador;
 
 
 

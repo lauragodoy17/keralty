@@ -20,16 +20,26 @@ import PerfilSiete from './Pages/PerfilSiete/PerfilSiete';
 import Navbar from './Components/Navbar/Navbar';
 import Estadistica from './Pages/Estadistica/Estadistica';
 import DatosRegistroPersonales from './Pages/DatosRegistro/DatosRegistroPersonales';
-import PerfilContratador from './Pages/PerfilContratador/PerfilContratador';
-import PerfilSeleccion from './Pages/PerfilSeleccion/PerfilSeleccion';
 import IngresoSeleccion from './Pages/IngresoSeleccion/IngresoSeleccion';
 import BusquedaPsicologos from './Pages/BusquedaPsicologos/BusquedaPsicologos';
+import ModificarDatosPersonalesPsicologos from './Pages/ModificarDatosPersonalesPsicologos/ModificarDatosPersonalesPsicologos';
+import ModificarPsicologos from './Pages/ModificarPsicologos/ModificarPsicologos';
+import PerfilContratador from './Pages/PerfilContratador/PerfilContratador';
+import IngresoContratador from './Pages/IngresoContratador/IngresoContratador';
+import PerfilGestion from './Pages/PerfilGestion/PerfilGestion';
+import IngresoGestion from './Pages/IngresoGestion/IngresoGestion';
+import ModificarGestion from './Pages/ModificarGestion/ModificarGestion';
+import PerfilSeleccion from './Pages/PerfilSeleccion/PerfilSeleccion';
+import BusquedaGestion from './Pages/BusquedaGestion/BusquedaGestion';
+import DatosPersonalesGestion from './Pages/DatosPersonalesGestion/DatosPersonalesGestion';
+import ModificarContratador from './Pages/ModificarContratador/ModificarContratador';
+import BusquedaContratacion from './Pages/BusquedaContratacion/BusquedaContratacion';
 
 function AppContent() {
   const location = useLocation();
 
   const headerRoutes = ['/home', '/inicio', '/registro','/'];
-  const navbarRoutes=['/selecciona', '/busqueda', '/busquedaPropia', '/modificar', '/registrarbus', '/perfilcinco', '/perfilseis', '/perfilsiete', '/estadistica','/registrar', '/perfilseleccion', '/ingresoseleccion']
+  const navbarRoutes=['/selecciona', '/busqueda', '/busquedaPropia', '/modificar', '/registrarbus', '/perfilcinco', '/perfilseis', '/perfilsiete', '/estadistica','/registrar', '/perfilseleccion', '/ingresoseleccion', '/busquedapsicologos', '/modificarpsicologos', '/perfilcontratador', '/ingresocontratador', '/perfilgestion', '/ingresogestion', '/modificargestion', '/busquedagestion', '/modificarcontratador', '/busquedacontratacion',]
   return (
     <div>
       {headerRoutes.includes(location.pathname.toLowerCase()) && <Header />}
@@ -53,16 +63,37 @@ function AppContent() {
               <Route path='PerfilCinco' element={<PerfilCinco/>}/>
               <Route path='PerfilSeis' element={<PerfilSeis/>}/>
               <Route path='PerfilSiete' element={<PerfilSiete/>}/>
+              <Route path='PerfilGestion' element={<PerfilGestion/>}/>
+              <Route path='PerfilSeleccion' element={<PerfilSeleccion/>}/>
+
+
               <Route path='Estadistica' element={<Estadistica/>}/>
               <Route path='RegistrarDatosUnicos' element={<DatosRegistroPersonales/>}/>
               <Route path='PerfilContratador' element={<PerfilContratador/>}/>
-              <Route path='PerfilSeleccion' element={<PerfilSeleccion/>}/>
+              <Route path='PerfilSelecciPerfilContratadoron' element={<PerfilSeleccion/>}/>
+
               <Route path='IngresoSeleccion' element={<IngresoSeleccion/>}/>
+              <Route path='IngresoContratador' element={<IngresoContratador/>}/>
+              <Route path='IngresoGestion' element={<IngresoGestion/>}/>
+
+
               <Route path='BusquedaPsicologos' element={<BusquedaPsicologos />} />
+              <Route path='ModificarDatosPersonalesPsicologos' element={<ModificarDatosPersonalesPsicologos />} />
+              <Route path='ModificarPsicologos' element={<ModificarPsicologos/>}/>
+              <Route path='ModificarGestion' element={<ModificarGestion/>}/>
+              <Route path='ModificarContratador' element={<ModificarContratador/>}/>
+
+
+              <Route path='DatosPersonalesGestion' element={<DatosPersonalesGestion/>}/>
+
 
 
               <Route path='Busqueda' element={<Busqueda />} />
               <Route path='BusquedaPropia' element={<BusquedaPropia />} />
+              <Route path='BusquedaGestion' element={<BusquedaGestion />} />
+              <Route path='BusquedaContratacion' element={<BusquedaContratacion />} />
+
+
 
           </Route>
       </Routes>

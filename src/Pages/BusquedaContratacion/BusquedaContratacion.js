@@ -1,18 +1,12 @@
-import BusquedaPropia from '../DatosBusqueda/BusquedaPropia/BusquedaPropia'
 import MainWrapper from '../../Components/MainWrapper';
 import axios from 'axios';
 import api from '../../Utils/Api';
 import React, { useEffect, useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom';
-import BusquedaDatosPersonal from '../DatosBusqueda/BusquedaDatosPersonal/BusquedaDatosPersonal';
-import BusquedaDatosFormacion from '../DatosBusqueda/BusquedaDatosFormacion/BusquedaDatosFormacion';
-import BusquedaDatosLaboral from '../DatosBusqueda/BusquedaDatosLaboral/BusquedaDatosLaboral';
-import BusquedaDatosNomina from '../DatosBusqueda/BusquedaDatosNomina/BusquedaDatosNomina';
-import Estadistica from '../Estadistica/Estadistica';
-import DatosBusquedaPsicologos from '../DatosBusquedaPsicologos/DatosBusquedaPsicologos';
+import DatosBusquedaContratacion from '../DatosBusquedaContratacion/DatosBusquedaContratacion';
 
 
-function BusquedaPsicologos() {
+function BusquedaContratacion() {
   const [auth,setAuth]= useState(false);
   const [message, setMessage]=useState('')
   const [cedula, setCedula]= useState(' ')
@@ -23,7 +17,7 @@ function BusquedaPsicologos() {
     const [selectedOption, setSelectedOption]= React.useState(null)
 
     const buttons={
-        'Datos personales y únicos': <DatosBusquedaPsicologos/>,
+        'Datos personales y únicos': <DatosBusquedaContratacion/>,
     
 
     }
@@ -65,4 +59,4 @@ function BusquedaPsicologos() {
   )
 }
 
-export default BusquedaPsicologos
+export default BusquedaContratacion

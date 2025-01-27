@@ -369,6 +369,8 @@ function ModificarDatosLaboral() {
           >
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
+            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
+
           </Select>
         </FormControl>
       </Grid>
@@ -432,7 +434,6 @@ function ModificarDatosLaboral() {
           >
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -605,7 +606,7 @@ function ModificarDatosLaboral() {
           >
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
+            <MenuItem value="APRENDIZ LECTIVO">APRENDIZ LECTIVO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -653,7 +654,6 @@ function ModificarDatosLaboral() {
           >
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
-            <MenuItem value="NO APLICA">NO APLICA</MenuItem>
           </Select>
         </FormControl>
       </Grid>
@@ -747,11 +747,9 @@ function ModificarDatosLaboral() {
             value={body.clausulaAdicional}
             onChange={e => onChange({ target: { name: 'clausulaAdicional', value: e.target.value } })}
           >
-            <MenuItem value="VACIO">VACIO</MenuItem>
             <MenuItem value="PENDIENTE">PENDIENTE</MenuItem>
             <MenuItem value="ARCHIVADO">ARCHIVADO</MenuItem>
             <MenuItem value="NO APLICA">NO APLICA</MenuItem>
-            <MenuItem value="INGRESO ERRADO">INGRESO ERRADO</MenuItem>
           </Select>
         </FormControl>
       </Grid>
