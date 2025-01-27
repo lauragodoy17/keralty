@@ -1,4 +1,3 @@
-import './Busqueda.css'
 import BusquedaPropia from '../DatosBusqueda/BusquedaPropia/BusquedaPropia'
 import MainWrapper from '../../Components/MainWrapper';
 import axios from 'axios';
@@ -12,7 +11,7 @@ import BusquedaDatosNomina from '../DatosBusqueda/BusquedaDatosNomina/BusquedaDa
 import Estadistica from '../Estadistica/Estadistica';
 
 
-function Busqueda() {
+function BusquedaPsicologos() {
   const [auth,setAuth]= useState(false);
   const [message, setMessage]=useState('')
   const [cedula, setCedula]= useState(' ')
@@ -27,8 +26,6 @@ function Busqueda() {
         'Datos Personal':<BusquedaDatosPersonal/>,
         'Datos Formación':<BusquedaDatosLaboral/>,
         'Datos Laboral':<BusquedaDatosFormacion/>,
-        'Datos Nomina':<BusquedaDatosNomina/>,
-        'Generar Reporte': <Estadistica/>
 
     }
 
@@ -69,4 +66,4 @@ function Busqueda() {
   )
 }
 
-export default Busqueda
+export default BusquedaPsicologos

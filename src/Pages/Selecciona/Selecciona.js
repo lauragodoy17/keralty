@@ -18,42 +18,46 @@ export default function Selecciona() {
 
   axios.defaults.withCredentials=true; 
 
-  useEffect(()=> {
+  useEffect(() => {
     axios.get(`${api}`)
-    .then(res=> {
-        if (res.data.Status === "Success"){
-            setAuth(true)
-            setCedula(res.data.cedula)
-        } else{
-            setAuth(false)
-            setMessage(res.data.Error)
-            navigate('/Inicio')
-        }
-    })
-    .then(err=> console.log(err));
-  },[])
+        .then(res => {
+            if (res.data.Status === "Success") {
+                setAuth(true);
+                setCedula(res.data.cedula);
+            } else {
+                setAuth(false);
+                setMessage(res.data.Error);
+                navigate('/Inicio');
+            }
+        })
+        .catch(err => console.log(err)); // Agrega .catch para manejar errores
+}, []);
 
-  const handleDelete= ()=>{
-    axios.get(`${api}/logout`)
-    .then(res=> {
-        window.location.reload(true);
-    }).catch(err=>console.log(err));
-  }
 
-  const handleCardClick = () => {
-    navigate('/Busqueda');
-  };
+const handleDelete = () => {
+  axios.get(`${api}/logout`)
+      .then(res => {
+          setAuth(false); // Cambiar estado de autenticación
+          navigate('/Inicio'); // Redirigir a la página de inicio
+      })
+      .catch(err => console.log(err));
+};
 
-  const handleCardClickModificar = () => {
-    navigate('/Modificar');
-  };
 
   const handleCardClickRegistrar = () => {
     navigate('/Registrar');
   };
-  const handleCardClickEstadistica = () => {
-    navigate('/Estadistica');
+  const handleCardClickModificar = () => {
+    navigate('/Modificar');
   };
+  const handleCardClick = () => {
+    navigate('/Busqueda');
+  };
+
+
+
+
+
 
   return (
     <div className='main-wrapper'>
@@ -76,6 +80,20 @@ export default function Selecciona() {
 
       <div className='cartas-wrapper'>
 
+      <div className='Carta_ingreso' onClick={handleCardClickRegistrar}>
+        <img src={ingreso}className='Imagen-perfil'/>
+        <div className='NombrePerfil'>
+          Ingreso
+        </div>
+      </div>
+
+      <div className='Carta_modificar' onClick={handleCardClickModificar}>
+        <img src={modificar}className='Imagen-perfil'/>
+        <div className='NombrePerfil'>
+          Modificar Usuarios
+        </div>
+      </div>
+      
       <div className='Cartas' onClick={handleCardClick}>
         <img src={busqueda_imagen}className='Imagen-perfil'/>
         <div className='NombrePerfil'>
@@ -84,26 +102,9 @@ export default function Selecciona() {
         
       </div>
 
-      <div className='Carta_modificar' onClick={handleCardClickModificar}>
-        <img src={modificar}className='Imagen-perfil'/>
-        <div className='NombrePerfil'>
-          Modificar
-        </div>
-      </div>
 
-      <div className='Carta_ingreso' onClick={handleCardClickRegistrar}>
-        <img src={ingreso}className='Imagen-perfil'/>
-        <div className='NombrePerfil'>
-          Ingreso
-        </div>
-      </div>
 
-      <div className='Carta_estadistica' onClick={handleCardClickEstadistica}>
-        <img src={estadistica}className='Imagen-perfil'/>
-        <div className='NombrePerfil'>
-          Estadistica
-        </div>
-      </div>
+
 
       </div>
 

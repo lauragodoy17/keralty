@@ -1,36 +1,39 @@
-
 .main-wrapper {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Se ajusta a la altura de la ventana visible */
 }
-.wrapper-login{
+
+.wrapper-login {
     width: 420px;
-    height: 400px;
+    height: auto; /* Elimina la altura fija para que el contenido determine la altura */
     background: transparent;
-    border: 2px solid rgba(255,255,255, .1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(30px);
-    box-shadow: 0 0 10px rgba(0,0,0, .1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     color: #fff;
 }
-.wrapper-login .form-box{
-    width:100% ;
+
+.wrapper-login .form-box {
+    width: 100%;
     padding: 40px;
 }
-form h1{
+
+form h1 {
     font-size: 36px;
     text-align: center;
 }
 
-form .input-box{
+form .input-box {
     position: relative;
     width: 100%;
     height: 50px;
-    margin: 30px 0;
+    margin: 20px 0; /* Ajusta el margen para evitar espacio innecesario */
 }
-.input-box input{
+
+.input-box input {
     width: 100%;
     height: 100%;
     background: transparent;
@@ -43,35 +46,36 @@ form .input-box{
     padding: 20px 45px 20px 20px;
 }
 
-.input-box input::placeholder{
+.input-box input::placeholder {
     color: #fff;
 }
 
-.input-box .icon{
+.input-box .icon {
     position: absolute;
     right: 20px;
     top: 50%;
-    translate:0 -50% ;
+    transform: translateY(-50%);
     font-size: 16px;
 }
 
-.olvidaste{
-    margin-top: 100px;
-    margin-left: 140px;
+.olvidaste {
+    margin-top: 10px; /* Reduce el margen superior */
+    display: block;
+    text-align: right; /* Coloca el enlace a la derecha sin margen lateral fijo */
+    font-size: 14px; /* Ajusta el tamaño de fuente si es necesario */
 }
 
-
-
-form button{
+form button {
     width: 100%;
     height: 45px;
     background: #fff;
     border: none;
     outline: none;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0, .1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     font-size: 16px;
     color: #333;
     font-weight: 700;
 }
+

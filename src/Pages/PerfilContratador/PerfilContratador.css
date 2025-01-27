@@ -1,0 +1,21 @@
+.main-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+    flex-direction: column;
+	height: 1000px;
+}
+.boton_salir {
+    width: 7%;
+    height: 45px;
+    background: #7B68EE;
+    border:none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0,0, 0, .1);
+    cursor: pointer;
+    font-size: 16px;
+    color:white;
+    font-weight: bold;
+    margin-right: 75px;
+}

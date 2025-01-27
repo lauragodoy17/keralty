@@ -29,8 +29,8 @@ export default function Registro() {
       if (values.contraseña.length < 5) {
         formErrors.contraseña = 'La contraseña debe tener al menos 5 caracteres';
       }
-      if (values.cedula.toString().length < 10) {
-        formErrors.cedula = 'La cédula debe tener al menos 10 dígitos';
+      if (values.cedula.toString().length < 6) {
+        formErrors.cedula = 'La cédula debe tener al menos 6 dígitos';
       }
       return formErrors;
     };  

@@ -13,27 +13,30 @@ function NoAutorizado() {
   
     axios.defaults.withCredentials=true; 
   
-    useEffect(()=> {
+    useEffect(() => {
       axios.get(`${api}`)
-      .then(res=> {
-          if (res.data.Status === "Success"){
-              setAuth(true)
-              setCedula(res.data.cedula)
-          } else{
-              setAuth(false)
-              setMessage(res.data.Error)
-              navigate('/Inicio')
-          }
-      })
-      .then(err=> console.log(err));
-    },[])
+          .then(res => {
+              if (res.data.Status === "Success") {
+                  setAuth(true);
+                  setCedula(res.data.cedula);
+              } else {
+                  setAuth(false);
+                  setMessage(res.data.Error);
+                  navigate('/Inicio');
+              }
+          })
+          .catch(err => console.log(err)); // Agrega .catch para manejar errores
+  }, []);
   
-    const handleDelete= ()=>{
-      axios.get(`${api}/logout`)
-      .then(res=> {
-          window.location.reload(true);
-      }).catch(err=>console.log(err));
-    }
+  
+  const handleDelete = () => {
+    axios.get(`${api}/logout`)
+        .then(res => {
+            setAuth(false); // Cambiar estado de autenticación
+            navigate('/Inicio'); // Redirigir a la página de inicio
+        })
+        .catch(err => console.log(err));
+  };
 
   return (
     <div className='main-wrapper'>

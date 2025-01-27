@@ -31,8 +31,8 @@ export default function Inicio() {
 
       console.log(response.data);
       if (response.data.Status === "Success") {
-        const { role } = response.data; 
-        
+        const { role } = response.data;
+        setAuth({ roles: [role] });        
         if (role === 1) {
           navigate('/Selecciona');
         } else if (role === 2) {
@@ -48,6 +48,12 @@ export default function Inicio() {
         } else if(role===7){
           navigate('/PerfilSiete')
         }
+        else if(role==9){
+          navigate('/PerfilContratador')
+        }
+        else if(role==10){
+          navigate('/PerfilSeleccion')
+        }
         else if(role === 0){
           navigate('/noAutorizado')
         }
@@ -61,6 +67,7 @@ export default function Inicio() {
       }
     } catch (error) {
       setError('Error al intentar iniciar sesión. Verifique sus credenciales.');
+      console.log(error)
     }
   };
 

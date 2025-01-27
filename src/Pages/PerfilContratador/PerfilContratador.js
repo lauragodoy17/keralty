@@ -1,29 +1,18 @@
-import './Registrar.css'
-import MainWrapper from '../../Components/MainWrapper';
-import axios from 'axios';
 import api from '../../Utils/Api';
-import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import { Link,useNavigate } from 'react-router-dom';
-import DatosRegistroPersonales from '../DatosRegistro/DatosRegistroPersonales';
+import React, { useEffect, useState } from 'react'
+import './PerfilContratador.css'
 
 
-function Registrar() {
+export default function PerfilContratador() {
     const [auth,setAuth]= useState(false);
     const [message, setMessage]=useState('')
     const [cedula, setCedula]= useState(' ')
-
-  
     const navigate= useNavigate()
-  
     axios.defaults.withCredentials=true; 
-  
-      const [selectedOption, setSelectedOption]= React.useState(null)
-  
-      const buttons={
-          'Datos personales y únicos': <DatosRegistroPersonales/>,
-      }
-  
-      useEffect(() => {
+
+    useEffect(() => {
         axios.get(`${api}`)
             .then(res => {
                 if (res.data.Status === "Success") {
@@ -35,28 +24,34 @@ function Registrar() {
                     navigate('/Inicio');
                 }
             })
-            .catch(err => console.log(err)); 
+            .catch(err => console.log(err)); // Agrega .catch para manejar errores
     }, []);
     
     
     const handleDelete = () => {
       axios.get(`${api}/logout`)
           .then(res => {
-              setAuth(false); 
-              navigate('/Inicio'); 
+              setAuth(false); // Cambiar estado de autenticación
+              navigate('/Inicio'); // Redirigir a la página de inicio
           })
           .catch(err => console.log(err));
     };
   return (
-    <div>
-    <div>
+    <div className='main-wrapper'>
+        <h1>Hola hola</h1>
+        {
+          auth ?
+          <div>
             <button className='boton_salir' onClick={handleDelete} >Cerrar sesión</button>
           </div>
-    <MainWrapper buttons={buttons} selectedOption={selectedOption} setSelectedOption={setSelectedOption} nombre={'Registro'} >
-
-    </MainWrapper>
-    </div> 
-  )
+          :
+          <div>
+            <h3>{message}</h3>
+            <h3></h3>
+            <Link to="/Inicio" className='boton_primario'></Link>
+          </div>
+        }
+    </div>  )
 }
 
-export default Registrar
+ 

@@ -1,8 +1,8 @@
 .busqueda-propia-container {
   overflow: auto;
-
   width: 100%;
 }
+
 .Busqueda_Datos_Personal h1 {
   color: rgb(39, 26, 230);
 }
@@ -10,70 +10,61 @@
 .select-container {
   display: flex;
   align-items: center;
-  margin-bottom: 0; 
+  margin-bottom: 0;
 }
 
 .select-container label {
-  margin-right: 10px; 
-  white-space: nowrap; 
-  margin-left: 0; 
+  margin-right: 10px;
+  white-space: nowrap;
+  margin-left: 0;
   width: 50%;
 }
 
 .select-container .select {
-  width: 200px;
-  font-size: 16px; 
+  width: 400px;
+  font-size: 16px;
 }
 
 .input-container-filtro {
-  margin-top: 10px; 
+  margin-top: 10px;
 }
 
 .input-container-filtro input {
-  width: 100%; 
-  max-width: 400px; 
-  height: 40px; 
+  width: 100%;
+  max-width: 400px;
+  height: 40px;
   background: white;
   outline: none;
   border: 1px solid #ccc;
-  border-radius: 20px; 
-  font-size: 16px; 
+  border-radius: 20px;
+  font-size: 16px;
   color: black;
   box-sizing: border-box;
   padding-right: 20px;
 }
 
 .table-container {
-  width: 100%;
-
-  background-color: red;
-
   overflow-x: auto;
-  margin: 20px 0;   
-  padding: 0 10px; 
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: start;
+  width: 100%;
+  background-color: white;
+  margin: 20px 0;
+  padding: 0 10px;
 }
 
 .table {
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
   width: 100%;
-
+  border-collapse: collapse;
 }
 
 .table th, .table td {
-  max-width: 300px;
   padding: 8px;
-  text-align: left;
-  white-space: nowrap;
   text-align: center;
-  text-overflow: elipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px solid #ddd;
 }
+
 
 
 

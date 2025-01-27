@@ -1,13 +1,12 @@
-import './Registrar.css'
 import MainWrapper from '../../Components/MainWrapper';
 import axios from 'axios';
 import api from '../../Utils/Api';
 import React, { useEffect, useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom';
-import DatosRegistroPersonales from '../DatosRegistro/DatosRegistroPersonales';
+import DatosPersonalesSeleccion from '../DatosPersonalesSeleccion/DatosPersonalesSeleccion';
 
 
-function Registrar() {
+function IngresoSeleccion() {
     const [auth,setAuth]= useState(false);
     const [message, setMessage]=useState('')
     const [cedula, setCedula]= useState(' ')
@@ -20,7 +19,7 @@ function Registrar() {
       const [selectedOption, setSelectedOption]= React.useState(null)
   
       const buttons={
-          'Datos personales y únicos': <DatosRegistroPersonales/>,
+          'Datos personales y únicos': <DatosPersonalesSeleccion/>,
       }
   
       useEffect(() => {
@@ -52,11 +51,11 @@ function Registrar() {
     <div>
             <button className='boton_salir' onClick={handleDelete} >Cerrar sesión</button>
           </div>
-    <MainWrapper buttons={buttons} selectedOption={selectedOption} setSelectedOption={setSelectedOption} nombre={'Registro'} >
+    <MainWrapper buttons={buttons} selectedOption={selectedOption} setSelectedOption={setSelectedOption} nombre={'Ingreso'} >
 
     </MainWrapper>
     </div> 
   )
 }
 
-export default Registrar
+export default IngresoSeleccion

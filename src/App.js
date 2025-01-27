@@ -20,12 +20,16 @@ import PerfilSiete from './Pages/PerfilSiete/PerfilSiete';
 import Navbar from './Components/Navbar/Navbar';
 import Estadistica from './Pages/Estadistica/Estadistica';
 import DatosRegistroPersonales from './Pages/DatosRegistro/DatosRegistroPersonales';
+import PerfilContratador from './Pages/PerfilContratador/PerfilContratador';
+import PerfilSeleccion from './Pages/PerfilSeleccion/PerfilSeleccion';
+import IngresoSeleccion from './Pages/IngresoSeleccion/IngresoSeleccion';
+import BusquedaPsicologos from './Pages/BusquedaPsicologos/BusquedaPsicologos';
 
 function AppContent() {
   const location = useLocation();
 
   const headerRoutes = ['/home', '/inicio', '/registro','/'];
-  const navbarRoutes=['/selecciona', '/busqueda', '/busquedaPropia', '/modificar', '/registrarbus', '/perfilcinco', '/perfilseis', '/perfilsiete', '/estadistica','/registrar']
+  const navbarRoutes=['/selecciona', '/busqueda', '/busquedaPropia', '/modificar', '/registrarbus', '/perfilcinco', '/perfilseis', '/perfilsiete', '/estadistica','/registrar', '/perfilseleccion', '/ingresoseleccion']
   return (
     <div>
       {headerRoutes.includes(location.pathname.toLowerCase()) && <Header />}
@@ -51,6 +55,11 @@ function AppContent() {
               <Route path='PerfilSiete' element={<PerfilSiete/>}/>
               <Route path='Estadistica' element={<Estadistica/>}/>
               <Route path='RegistrarDatosUnicos' element={<DatosRegistroPersonales/>}/>
+              <Route path='PerfilContratador' element={<PerfilContratador/>}/>
+              <Route path='PerfilSeleccion' element={<PerfilSeleccion/>}/>
+              <Route path='IngresoSeleccion' element={<IngresoSeleccion/>}/>
+              <Route path='BusquedaPsicologos' element={<BusquedaPsicologos />} />
+
 
               <Route path='Busqueda' element={<Busqueda />} />
               <Route path='BusquedaPropia' element={<BusquedaPropia />} />
